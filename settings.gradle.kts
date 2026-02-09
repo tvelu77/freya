@@ -21,3 +21,5 @@ dependencyResolutionManagement {
 
 rootProject.name = "Freya"
 include(":app")
+include(":domain")
+include(":sqlite-adapter")
