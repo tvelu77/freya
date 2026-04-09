@@ -74,15 +74,15 @@ fun CycleScreen(viewModel: CycleViewModel = hiltViewModel()) {
 
             Spacer(Modifier.height(24.dp))
             Text("Historique des cycles", style = MaterialTheme.typography.titleMedium)
-            LazyColumn {
+
+            LazyColumn(modifier = Modifier.weight(1f)) {
                 items(history) { entry ->
                     CycleHistoryItem(entry)
                 }
             }
 
-            Spacer(Modifier.weight(1f))
+            Spacer(Modifier.height(16.dp))
 
-            // Bouton entrée règles
             Button(
                 onClick = { showAddDialog = true },
                 modifier = Modifier.fillMaxWidth()
