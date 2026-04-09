@@ -9,9 +9,10 @@ import io.tvelu77.freya.data.PeriodRepository
 import io.tvelu77.freya.models.Period
 import io.tvelu77.freya.models.Phase
 import jakarta.inject.Inject
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -26,44 +27,43 @@ class CycleViewModel @Inject constructor(
     val periods = repository.allPeriods.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
     val lastPeriod = repository.lastPeriod.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
 
-    private val _currentPhase = MutableStateFlow<Phase?>(null)
-    val currentPhase: StateFlow<Phase?> = _currentPhase
+    val averageCycleLength: StateFlow<Int> = periods.map { list ->
+        calculateAverageCycleLength(list)
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 28)
 
-    private val _averageCycleLength = MutableStateFlow(28)
-    val averageCycleLength: StateFlow<Int> = _averageCycleLength
-
-    init {
-        viewModelScope.launch {
-            periods.collect { list ->
-                _averageCycleLength.value = calculateAverageCycleLength(list)
-                updateCurrentPhase()
-            }
+    val history: StateFlow<List<CycleEntry>> = periods.map { list ->
+        list.zipWithNext { prev, next ->
+            CycleEntry(
+                startDate = prev.startDate,
+                periodDuration = ChronoUnit.DAYS.between(prev.startDate, prev.endDate).toInt() + 1,
+                cycleLength = ChronoUnit.DAYS.between(prev.startDate, next.startDate).toInt()
+            )
         }
-    }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
+    val nextPeriod: StateFlow<LocalDate?> = combine(lastPeriod, averageCycleLength) { last, avg ->
+        last?.startDate?.plusDays(avg.toLong())
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
+
+    val currentPhase: StateFlow<Phase?> = combine(lastPeriod, averageCycleLength) { last, avg ->
+        calculatePhase(last, avg)
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
 
     private fun calculateAverageCycleLength(list: List<Period>): Int {
         if (list.size < 2) return 28
         val lengths = list.zipWithNext { a, b ->
             ChronoUnit.DAYS.between(a.startDate, b.startDate).toInt()
         }
-        return lengths.average().toInt().coerceIn(21, 45) // variations individuelles réalistes
+        return lengths.average().toInt().coerceIn(21, 45)
     }
 
-    fun addNewPeriod(start: LocalDate, end: LocalDate, notes: String? = null) {
-        viewModelScope.launch {
-            repository.addPeriod(start, end, notes)
-        }
-    }
-
-    private fun updateCurrentPhase() {
-        val last = lastPeriod.value ?: return
+    private fun calculatePhase(last: Period?, avgLength: Int): Phase? {
+        if (last == null) return null
         val today = LocalDate.now()
-        if (today.isBefore(last.startDate)) return
+        if (today.isBefore(last.startDate)) return null
 
         val cycleDay = ChronoUnit.DAYS.between(last.startDate, today).toInt() + 1
-        val avgLength = _averageCycleLength.value
-
-        _currentPhase.value = when {
+        return when {
             !today.isAfter(last.endDate) -> Phase.MENSTRUELLE
             cycleDay <= 5 -> Phase.MENSTRUELLE
             else -> {
@@ -78,18 +78,9 @@ class CycleViewModel @Inject constructor(
         }
     }
 
-    fun predictNextPeriod(): LocalDate? {
-        val last = lastPeriod.value ?: return null
-        return last.startDate.plusDays(averageCycleLength.value.toLong())
-    }
-
-    fun getCycleHistory(): List<CycleEntry> {
-        return periods.value.zipWithNext { prev, next ->
-            CycleEntry(
-                startDate = prev.startDate,
-                periodDuration = ChronoUnit.DAYS.between(prev.startDate, prev.endDate).toInt() + 1,
-                cycleLength = ChronoUnit.DAYS.between(prev.startDate, next.startDate).toInt()
-            )
+    fun addNewPeriod(start: LocalDate, end: LocalDate, notes: String? = null) {
+        viewModelScope.launch {
+            repository.addPeriod(start, end, notes)
         }
     }
 }
