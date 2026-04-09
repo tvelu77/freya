@@ -32,11 +32,15 @@ class CycleViewModel @Inject constructor(
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 28)
 
     val history: StateFlow<List<CycleEntry>> = periods.map { list ->
-        list.zipWithNext { prev, next ->
+        list.mapIndexed { index, period ->
+            val previousPeriod = list.getOrNull(index + 1)
+
             CycleEntry(
-                startDate = prev.startDate,
-                periodDuration = ChronoUnit.DAYS.between(prev.startDate, prev.endDate).toInt() + 1,
-                cycleLength = ChronoUnit.DAYS.between(prev.startDate, next.startDate).toInt()
+                startDate = period.startDate,
+                periodDuration = ChronoUnit.DAYS.between(period.startDate, period.endDate).toInt() + 1,
+                cycleLength = previousPeriod?.let { prev ->
+                    ChronoUnit.DAYS.between(prev.startDate, period.startDate).toInt()
+                }
             )
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
@@ -51,8 +55,9 @@ class CycleViewModel @Inject constructor(
 
     private fun calculateAverageCycleLength(list: List<Period>): Int {
         if (list.size < 2) return 28
+        // Calcul entre les dates de début successives
         val lengths = list.zipWithNext { a, b ->
-            ChronoUnit.DAYS.between(a.startDate, b.startDate).toInt()
+            ChronoUnit.DAYS.between(b.startDate, a.startDate).toInt()
         }
         return lengths.average().toInt().coerceIn(21, 45)
     }
@@ -88,5 +93,5 @@ class CycleViewModel @Inject constructor(
 data class CycleEntry(
     val startDate: LocalDate,
     val periodDuration: Int,
-    val cycleLength: Int
+    val cycleLength: Int?
 )
