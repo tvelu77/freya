@@ -23,7 +23,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -42,8 +41,8 @@ import java.time.format.DateTimeFormatter
 fun CycleScreen(viewModel: CycleViewModel = hiltViewModel()) {
     val phase by viewModel.currentPhase.collectAsState()
     val avgLength by viewModel.averageCycleLength.collectAsState()
-    val nextPeriod by remember { derivedStateOf { viewModel.predictNextPeriod() } }
-    val history by remember { derivedStateOf { viewModel.getCycleHistory() } }
+    val nextPeriod by viewModel.nextPeriod.collectAsState()
+    val history by viewModel.history.collectAsState()
     var showAddDialog by remember { mutableStateOf(false) }
 
     Scaffold(
