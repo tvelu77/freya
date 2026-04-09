@@ -11,8 +11,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -42,7 +42,8 @@ fun CycleScreen(viewModel: CycleViewModel = hiltViewModel()) {
     val phase by viewModel.currentPhase.collectAsState()
     val avgLength by viewModel.averageCycleLength.collectAsState()
     val nextPeriod by viewModel.nextPeriod.collectAsState()
-    val history by viewModel.history.collectAsState()
+    val periods by viewModel.periods.collectAsState()
+    
     var showAddDialog by remember { mutableStateOf(false) }
 
     Scaffold(
@@ -51,37 +52,40 @@ fun CycleScreen(viewModel: CycleViewModel = hiltViewModel()) {
         Column(
             modifier = Modifier
                 .padding(padding)
-                .padding(16.dp)
-                .fillMaxSize(),
+                .padding(horizontal = 16.dp)
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            Spacer(Modifier.height(8.dp))
+            
             Card(
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(24.dp)) {
-                    Text(phase?.emoji ?: "🌸", fontSize = 64.sp)
-                    Text(phase?.title ?: "Chargement...", style = MaterialTheme.typography.headlineLarge)
-                }
-            }
-
-            Spacer(Modifier.height(24.dp))
-
-            Row(horizontalArrangement = Arrangement.SpaceEvenly, modifier = Modifier.fillMaxWidth()) {
-                StatCard("Cycle moyen", "$avgLength jours")
-                StatCard("Prochaines règles", nextPeriod?.format(DateTimeFormatter.ofPattern("dd MMM")) ?: "—")
-            }
-
-            Spacer(Modifier.height(24.dp))
-            Text("Historique des cycles", style = MaterialTheme.typography.titleMedium)
-
-            LazyColumn(modifier = Modifier.weight(1f)) {
-                items(history) { entry ->
-                    CycleHistoryItem(entry)
+                Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(20.dp)) {
+                    Text(phase?.emoji ?: "🌸", fontSize = 48.sp)
+                    Text(phase?.title ?: "Chargement...", style = MaterialTheme.typography.headlineMedium)
                 }
             }
 
             Spacer(Modifier.height(16.dp))
+
+            CycleCalendar(
+                periods = periods,
+                nextPeriodDate = nextPeriod,
+                avgCycleLength = avgLength,
+                onDayClick = { _ -> showAddDialog = true }
+            )
+
+            Spacer(Modifier.height(16.dp))
+
+            Row(horizontalArrangement = Arrangement.SpaceEvenly, modifier = Modifier.fillMaxWidth()) {
+                StatCard("Cycle moyen", "$avgLength j")
+                StatCard("Prochaines règles", nextPeriod?.format(DateTimeFormatter.ofPattern("dd MMM")) ?: "—")
+            }
+
+            Spacer(Modifier.height(24.dp))
 
             Button(
                 onClick = { showAddDialog = true },
@@ -89,6 +93,9 @@ fun CycleScreen(viewModel: CycleViewModel = hiltViewModel()) {
             ) {
                 Text("📅 Entrer mes règles")
             }
+            
+            Spacer(Modifier.height(24.dp))
+            
             if (showAddDialog) {
                 AddPeriodDialog(
                     onDismiss = { showAddDialog = false },
@@ -104,9 +111,9 @@ fun CycleScreen(viewModel: CycleViewModel = hiltViewModel()) {
 @Composable
 private fun StatCard(label: String, value: String) {
     Card(modifier = Modifier.width(160.dp)) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(16.dp)) {
-            Text(label, style = MaterialTheme.typography.labelMedium)
-            Text(value, style = MaterialTheme.typography.headlineMedium, color = MaterialTheme.colorScheme.primary)
+        Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(12.dp)) {
+            Text(label, style = MaterialTheme.typography.labelSmall)
+            Text(value, style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.primary)
         }
     }
 }
