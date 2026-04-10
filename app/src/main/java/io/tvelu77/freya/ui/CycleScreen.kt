@@ -2,6 +2,7 @@ package io.tvelu77.freya.ui
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -32,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import io.tvelu77.freya.models.Phase
 import io.tvelu77.freya.viewModels.CycleViewModel
 import java.time.format.DateTimeFormatter
 
@@ -45,6 +47,7 @@ fun CycleScreen(viewModel: CycleViewModel = hiltViewModel()) {
     val periods by viewModel.periods.collectAsState()
     
     var showAddDialog by remember { mutableStateOf(false) }
+    var showAdviceDialog by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = { TopAppBar(title = { Text("Mon cycle 🌸", style = MaterialTheme.typography.headlineMedium) }) }
@@ -62,6 +65,7 @@ fun CycleScreen(viewModel: CycleViewModel = hiltViewModel()) {
             Card(
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
                 modifier = Modifier.fillMaxWidth()
+                    .clickable { showAdviceDialog = true }
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(20.dp)) {
                     Text(phase?.emoji ?: "🌸", fontSize = 48.sp)
@@ -103,6 +107,9 @@ fun CycleScreen(viewModel: CycleViewModel = hiltViewModel()) {
                         viewModel.addNewPeriod(start, end, notes)
                     }
                 )
+            }
+            if (showAdviceDialog) {
+                AdviceDialog(phase ?: Phase.MENSTRUAL, onDismiss = { showAdviceDialog = false })
             }
         }
     }

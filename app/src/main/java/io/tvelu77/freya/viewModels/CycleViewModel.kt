@@ -69,15 +69,15 @@ class CycleViewModel @Inject constructor(
 
         val cycleDay = ChronoUnit.DAYS.between(last.startDate, today).toInt() + 1
         return when {
-            !today.isAfter(last.endDate) -> Phase.MENSTRUELLE
-            cycleDay <= 5 -> Phase.MENSTRUELLE
+            !today.isAfter(last.endDate) -> Phase.MENSTRUAL
+            cycleDay <= 5 -> Phase.MENSTRUAL
             else -> {
                 val ovulationWindowStart = avgLength - 16
                 val ovulationWindowEnd = avgLength - 12
                 when {
-                    cycleDay in ovulationWindowStart..ovulationWindowEnd -> Phase.OVULATOIRE
-                    cycleDay < ovulationWindowStart -> Phase.FOLLICULAIRE
-                    else -> Phase.LUTEALE
+                    cycleDay in ovulationWindowStart..ovulationWindowEnd -> Phase.OVULATION
+                    cycleDay < ovulationWindowStart -> Phase.FOLLICULAR
+                    else -> Phase.LUTEAL
                 }
             }
         }
