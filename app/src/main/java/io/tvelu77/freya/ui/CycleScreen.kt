@@ -68,8 +68,12 @@ fun CycleScreen(viewModel: CycleViewModel = hiltViewModel()) {
                     .clickable { showAdviceDialog = true }
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(20.dp)) {
-                    Text(phase?.emoji ?: "🌸", fontSize = 48.sp)
-                    Text(phase?.title ?: "Chargement...", style = MaterialTheme.typography.headlineMedium)
+                    Text(phase.emoji, fontSize = 48.sp)
+                    if (phase == Phase.UNKNOWN) {
+                        Text("Bienvenue", style = MaterialTheme.typography.headlineMedium)
+                    } else {
+                        Text(phase.title, style = MaterialTheme.typography.headlineMedium)
+                    }
                 }
             }
 
@@ -109,7 +113,7 @@ fun CycleScreen(viewModel: CycleViewModel = hiltViewModel()) {
                 )
             }
             if (showAdviceDialog) {
-                AdviceDialog(phase ?: Phase.MENSTRUAL, onDismiss = { showAdviceDialog = false })
+                AdviceDialog(phase, onDismiss = { showAdviceDialog = false })
             }
         }
     }

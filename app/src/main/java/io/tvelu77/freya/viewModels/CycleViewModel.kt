@@ -49,9 +49,9 @@ class CycleViewModel @Inject constructor(
         last?.startDate?.plusDays(avg.toLong())
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
 
-    val currentPhase: StateFlow<Phase?> = combine(lastPeriod, averageCycleLength) { last, avg ->
+    val currentPhase: StateFlow<Phase> = combine(lastPeriod, averageCycleLength) { last, avg ->
         calculatePhase(last, avg)
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), Phase.UNKNOWN)
 
     private fun calculateAverageCycleLength(list: List<Period>): Int {
         if (list.size < 2) return 28
@@ -62,11 +62,11 @@ class CycleViewModel @Inject constructor(
         return lengths.average().toInt().coerceIn(21, 45)
     }
 
-    private fun calculatePhase(last: Period?, avgLength: Int): Phase? {
-        if (last == null) return null
+    private fun calculatePhase(last: Period?, avgLength: Int): Phase {
         val today = LocalDate.now()
-        if (today.isBefore(last.startDate)) return null
-
+        if (last == null || today.isBefore(last.startDate)) {
+            return Phase.UNKNOWN
+        }
         val cycleDay = ChronoUnit.DAYS.between(last.startDate, today).toInt() + 1
         return when {
             !today.isAfter(last.endDate) -> Phase.MENSTRUAL

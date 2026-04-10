@@ -24,18 +24,11 @@ fun AdviceDialog(
     onDismiss: () -> Unit
 ) {
 
-    val adviceText = when (phase) {
-        Phase.MENSTRUAL -> "Prenez soin de vous, reposez-vous et hydratez-vous bien. Évitez les efforts intenses."
-        Phase.FOLLICULAR -> "C’est une période d’énergie ! Profitez-en pour être active et planifier des projets."
-        Phase.OVULATION -> "Votre énergie et votre libido sont au maximum. Idéal pour les activités sociales et créatives."
-        Phase.LUTEAL -> "Écoutez votre corps, gérez le stress et privilégiez une alimentation équilibrée."
-    }
-
     AlertDialog(
         onDismissRequest = onDismiss,
         title = {
             Text(
-                text = "🌸 Conseils pour la phase : ${phase.name.lowercase().replaceFirstChar { it.uppercase() }}",
+                text = createDialogTitle(phase),
                 style = MaterialTheme.typography.headlineSmall
             )
         },
@@ -47,7 +40,7 @@ fun AdviceDialog(
                     .padding(horizontal = 16.dp)
             ) {
                 Text(
-                    text = adviceText,
+                    text = phase.advice,
                     style = MaterialTheme.typography.bodyMedium
                 )
             }
@@ -58,5 +51,12 @@ fun AdviceDialog(
             }
         }
     )
+}
 
+private fun createDialogTitle(phase: Phase): String {
+    val adviceText = "Conseil pour la phase : "
+    if (phase == Phase.UNKNOWN) {
+        return ""
+    }
+    return adviceText + phase.title
 }
