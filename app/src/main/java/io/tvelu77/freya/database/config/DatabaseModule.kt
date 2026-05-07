@@ -19,6 +19,7 @@ object DatabaseModule {
   @Singleton
   fun provideDatabase(@ApplicationContext context: Context): FreyaDatabase =
     Room.databaseBuilder(context, FreyaDatabase::class.java, "freya.db")
+      .fallbackToDestructiveMigration(true)
       .build()
 
   @Provides fun provideCycleDao(db: FreyaDatabase): CycleDao = db.cycleDao()
