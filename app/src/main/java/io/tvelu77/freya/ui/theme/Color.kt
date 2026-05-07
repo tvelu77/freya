@@ -4,7 +4,6 @@ import androidx.compose.ui.graphics.Color
 
 val Rose100    = Color(0xFFFCE4EC)
 val Rose300    = Color(0xFFF48FB1)
-val Rose500    = Color(0xFFE91E8C).copy(alpha = 0.75f)
 
 val Sage100    = Color(0xFFF1F8E9)
 val Sage300    = Color(0xFFA5D6A7)
@@ -19,7 +18,6 @@ val Lavender300 = Color(0xFFCE93D8)
 val Neutral50  = Color(0xFFFAFAFA)
 val Neutral100 = Color(0xFFF5F5F5)
 val Neutral300 = Color(0xFFE0E0E0)
-val Neutral600 = Color(0xFF757575)
 val Neutral900 = Color(0xFF212121)
 
 val ScoreGood   = Sage500

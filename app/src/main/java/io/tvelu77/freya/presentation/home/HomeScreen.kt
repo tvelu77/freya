@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ChevronRight
@@ -26,37 +27,31 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.tvelu77.freya.domain.models.PhaseInfo
-import io.tvelu77.freya.domain.models.PhaseType
 import io.tvelu77.freya.domain.models.TCAAlert
 import io.tvelu77.freya.ui.components.HealthScoreCard
 import io.tvelu77.freya.ui.components.NutritionAdviceCard
 import io.tvelu77.freya.ui.components.PhaseChip
 import io.tvelu77.freya.ui.theme.Amber100
-import io.tvelu77.freya.ui.theme.Amber300
-import io.tvelu77.freya.ui.theme.Lavender100
-import io.tvelu77.freya.ui.theme.Lavender300
-import io.tvelu77.freya.ui.theme.Neutral100
-import io.tvelu77.freya.ui.theme.Neutral50
-import io.tvelu77.freya.ui.theme.Rose100
-import io.tvelu77.freya.ui.theme.Rose300
-import io.tvelu77.freya.ui.theme.Sage100
-import io.tvelu77.freya.ui.theme.Sage300
+import io.tvelu77.freya.ui.theme.phaseGradientColors
 
 @Composable
 fun HomeScreen(
@@ -154,13 +149,9 @@ private fun HomeContent(
 
 @Composable
 private fun HomeHeader(date: String, phaseInfo: PhaseInfo?) {
-  val gradientColors = when (phaseInfo?.phase) {
-    PhaseType.MENSTRUAL  -> listOf(Rose100, Rose300.copy(alpha = 0.3f))
-    PhaseType.FOLLICULAR -> listOf(Lavender100, Lavender300.copy(alpha = 0.3f))
-    PhaseType.OVULATORY  -> listOf(Sage100, Sage300.copy(alpha = 0.3f))
-    PhaseType.LUTEAL     -> listOf(Amber100, Amber300.copy(alpha = 0.3f))
-    null                 -> listOf(Neutral50, Neutral100)
-  }
+  val gradientColors = phaseGradientColors(phaseInfo?.phase)
+  val textPrimary = MaterialTheme.colorScheme.onSurface
+  val textSecondary = MaterialTheme.colorScheme.onSurfaceVariant
 
   Box(
     modifier = Modifier
@@ -172,12 +163,13 @@ private fun HomeHeader(date: String, phaseInfo: PhaseInfo?) {
       Text(
         text = date,
         style = MaterialTheme.typography.bodyMedium,
-        color = MaterialTheme.colorScheme.onSurfaceVariant
+        color = textSecondary
       )
       Spacer(Modifier.height(4.dp))
       Text(
         text = "Bonjour 🌸",
-        style = MaterialTheme.typography.headlineLarge
+        style = MaterialTheme.typography.headlineLarge,
+        color = textPrimary
       )
       phaseInfo?.let {
         Spacer(Modifier.height(8.dp))
@@ -185,6 +177,7 @@ private fun HomeHeader(date: String, phaseInfo: PhaseInfo?) {
       }
     }
   }
+  Spacer(Modifier.height(16.dp))
 }
 
 @Composable

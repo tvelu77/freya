@@ -6,6 +6,7 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import io.tvelu77.freya.domain.models.PhaseType
 
 private val LightColorScheme = lightColorScheme(
   primary          = Rose300,
@@ -51,4 +52,30 @@ fun FreyaTheme(
     typography = FreyaTypography,
     content = content
   )
+}
+
+@Composable
+fun phaseGradientColors(phase: PhaseType?): List<Color> {
+  val isDark = isSystemInDarkTheme()
+  return when (phase) {
+    PhaseType.MENSTRUAL  -> if (isDark)
+      listOf(Color(0xFF4A1530), Color(0xFF2E1020))
+    else listOf(Rose100, Rose300.copy(alpha = 0.3f))
+
+    PhaseType.FOLLICULAR -> if (isDark)
+      listOf(Color(0xFF2E1A47), Color(0xFF1A0F2E))
+    else listOf(Lavender100, Lavender300.copy(alpha = 0.3f))
+
+    PhaseType.OVULATORY  -> if (isDark)
+      listOf(Color(0xFF1A3A2A), Color(0xFF0F2A1A))
+    else listOf(Sage100, Sage300.copy(alpha = 0.3f))
+
+    PhaseType.LUTEAL     -> if (isDark)
+      listOf(Color(0xFF3A2A0A), Color(0xFF2A1A05))
+    else listOf(Amber100, Amber300.copy(alpha = 0.3f))
+
+    null                 -> if (isDark)
+      listOf(Color(0xFF1E1E2E), Color(0xFF2A2A3E))
+    else listOf(Neutral50, Neutral100)
+  }
 }
