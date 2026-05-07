@@ -5,10 +5,11 @@ import io.tvelu77.freya.domain.models.NutritionAdvice
 import io.tvelu77.freya.domain.models.PhaseInfo
 import io.tvelu77.freya.domain.models.PhaseType
 import io.tvelu77.freya.domain.ports.api.PhaseCalculator
+import jakarta.inject.Inject
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
 
-class PhaseCalculatorAdapter: PhaseCalculator  {
+class PhaseCalculatorAdapter @Inject constructor(): PhaseCalculator  {
 
   override fun getCurrentPhase(
     cycleEntry: CycleEntry,
