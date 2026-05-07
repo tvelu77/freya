@@ -25,4 +25,8 @@ object DatabaseModule {
   @Provides fun provideCycleDao(db: FreyaDatabase): CycleDao = db.cycleDao()
   @Provides fun provideFoodDao(db: FreyaDatabase): FoodDao = db.foodDao()
 
+  @Provides @Singleton
+  fun provideUserProfileDataStore(
+    @ApplicationContext context: Context
+  ): UserProfileDataStore = UserProfileDataStore(context)
 }

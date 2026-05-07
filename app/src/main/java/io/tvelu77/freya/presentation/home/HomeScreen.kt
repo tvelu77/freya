@@ -21,6 +21,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.AccountCircle
 import androidx.compose.material.icons.rounded.ChevronRight
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material3.Button
@@ -57,6 +58,7 @@ import io.tvelu77.freya.ui.theme.phaseGradientColors
 fun HomeScreen(
   onNavigateToCycle: () -> Unit,
   onNavigateToFood: () -> Unit,
+  onNavigateToProfile: () -> Unit,
   viewModel: HomeViewModel = hiltViewModel()
 ) {
   val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -80,7 +82,8 @@ fun HomeScreen(
           onStartCycle = viewModel::startNewCycle,
           onDismissTcaAlert = viewModel::dismissTcaAlert,
           onNavigateToCycle = onNavigateToCycle,
-          onNavigateToFood = onNavigateToFood
+          onNavigateToFood = onNavigateToFood,
+          onNavigateToProfile = onNavigateToProfile
         )
       }
     }
@@ -93,7 +96,8 @@ private fun HomeContent(
   onStartCycle: () -> Unit,
   onDismissTcaAlert: () -> Unit,
   onNavigateToCycle: () -> Unit,
-  onNavigateToFood: () -> Unit
+  onNavigateToFood: () -> Unit,
+  onNavigateToProfile: () -> Unit
 ) {
   Column(
     modifier = Modifier
@@ -102,8 +106,10 @@ private fun HomeContent(
   ) {
 
     HomeHeader(
+      uiState = uiState,
       date = uiState.currentDate,
-      phaseInfo = uiState.phaseInfo
+      phaseInfo = uiState.phaseInfo,
+      onNavigateToProfile = onNavigateToProfile
     )
 
     Column(
@@ -148,7 +154,7 @@ private fun HomeContent(
 }
 
 @Composable
-private fun HomeHeader(date: String, phaseInfo: PhaseInfo?) {
+private fun HomeHeader(uiState: HomeUiState, date: String, phaseInfo: PhaseInfo?, onNavigateToProfile: () -> Unit) {
   val gradientColors = phaseGradientColors(phaseInfo?.phase)
   val textPrimary = MaterialTheme.colorScheme.onSurface
   val textSecondary = MaterialTheme.colorScheme.onSurfaceVariant
@@ -167,7 +173,10 @@ private fun HomeHeader(date: String, phaseInfo: PhaseInfo?) {
       )
       Spacer(Modifier.height(4.dp))
       Text(
-        text = "Bonjour 🌸",
+        text = if (uiState.greetingName.isNotBlank())
+          "Bonjour ${uiState.greetingName} 🌸"
+        else
+          "Bonjour 🌸",
         style = MaterialTheme.typography.headlineLarge,
         color = textPrimary
       )
@@ -175,6 +184,16 @@ private fun HomeHeader(date: String, phaseInfo: PhaseInfo?) {
         Spacer(Modifier.height(8.dp))
         PhaseChip(phase = it.phase)
       }
+    }
+    IconButton(
+      onClick = onNavigateToProfile,
+      modifier = Modifier.align(Alignment.TopEnd)
+    ) {
+      Icon(
+        Icons.Rounded.AccountCircle,
+        contentDescription = "Mon profil",
+        tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+      )
     }
   }
   Spacer(Modifier.height(16.dp))

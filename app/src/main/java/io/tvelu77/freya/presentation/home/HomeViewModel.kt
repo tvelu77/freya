@@ -9,6 +9,7 @@ import io.tvelu77.freya.domain.models.PhaseInfo
 import io.tvelu77.freya.domain.models.TCAAlert
 import io.tvelu77.freya.domain.ports.api.GetHealthScoreUseCase
 import io.tvelu77.freya.domain.ports.api.GetNutritionAdviceUseCase
+import io.tvelu77.freya.domain.ports.api.GetUserProfileUseCase
 import io.tvelu77.freya.domain.ports.api.TCAGuardUseCase
 import io.tvelu77.freya.domain.ports.api.TrackCycleUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,6 +17,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -40,7 +42,8 @@ class HomeViewModel @Inject constructor(
   private val trackCycleUseCase: TrackCycleUseCase,
   private val getNutritionAdviceUseCase: GetNutritionAdviceUseCase,
   private val getHealthScoreUseCase: GetHealthScoreUseCase,
-  private val tcaGuardUseCase: TCAGuardUseCase
+  private val tcaGuardUseCase: TCAGuardUseCase,
+  private val getUserProfileUseCase: GetUserProfileUseCase
 ) : ViewModel() {
 
   private val _uiState = MutableStateFlow(HomeUiState())
@@ -53,29 +56,23 @@ class HomeViewModel @Inject constructor(
   }
 
   private fun loadHomeData() {
-    viewModelScope.launch {
-      _uiState.update { it.copy(currentDate = formatDate(today)) }
-
-      combine(
-        trackCycleUseCase.getCurrentPhase(today),
-        getNutritionAdviceUseCase.getAdviceForToday(today),
-        getHealthScoreUseCase.getScoreForDay(today)
-      ) { phase, advice, score ->
-        Triple(phase, advice, score)
-      }.catch { e ->
-        _uiState.update { it.copy(isLoading = false, error = e.message) }
-      }.collect { (phase, advice, score) ->
-        _uiState.update {
-          it.copy(
-            isLoading = false,
-            phaseInfo = phase,
-            nutritionAdvice = advice,
-            healthScore = score,
-            hasActiveCycle = phase != null
-          )
-        }
+    combine(
+      trackCycleUseCase.getCurrentPhase(today),
+      getNutritionAdviceUseCase.getAdviceForToday(today),
+      getHealthScoreUseCase.getScoreForDay(today),
+      getUserProfileUseCase.execute()
+    ) { phase, advice, score, profile ->
+      _uiState.update {
+        it.copy(
+          isLoading       = false,
+          phaseInfo       = phase,
+          nutritionAdvice = advice,
+          healthScore     = score,
+          hasActiveCycle  = phase != null,
+          greetingName    = profile.firstName
+        )
       }
-    }
+    }.launchIn(viewModelScope)
 
     viewModelScope.launch {
       val alert = tcaGuardUseCase.checkLastDays()

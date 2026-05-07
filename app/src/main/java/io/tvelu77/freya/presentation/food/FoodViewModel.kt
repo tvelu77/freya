@@ -3,10 +3,14 @@ package io.tvelu77.freya.presentation.food
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.tvelu77.freya.domain.models.CycleEntry
 import io.tvelu77.freya.domain.models.MealType
 import io.tvelu77.freya.domain.models.QuickFood
 import io.tvelu77.freya.domain.ports.api.GetNutritionAdviceUseCase
+import io.tvelu77.freya.domain.ports.api.GetUserProfileUseCase
 import io.tvelu77.freya.domain.ports.api.LogFoodUseCase
+import io.tvelu77.freya.domain.ports.api.PhaseCalculator
+import io.tvelu77.freya.domain.ports.api.TrackCycleUseCase
 import jakarta.inject.Inject
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,6 +20,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -26,7 +31,9 @@ import kotlin.collections.emptyList
 @HiltViewModel
 class FoodViewModel @Inject constructor(
   private val logFoodUseCase: LogFoodUseCase,
-  private val getNutritionAdviceUseCase: GetNutritionAdviceUseCase
+  private val getNutritionAdviceUseCase: GetNutritionAdviceUseCase,
+  private val getUserProfileUseCase: GetUserProfileUseCase,
+  private val trackCycleUseCase: TrackCycleUseCase
 ) : ViewModel() {
 
   private val _uiState = MutableStateFlow(FoodUiState())
@@ -40,15 +47,12 @@ class FoodViewModel @Inject constructor(
   }
 
   private fun loadFoodData() {
-    viewModelScope.launch {
       combine(
         logFoodUseCase.getFoodForDay(today),
-        getNutritionAdviceUseCase.getAdviceForToday(today)
-      ) { entries, advice ->
-        Pair(entries, advice)
-      }.catch { e ->
-        _uiState.update { it.copy(isLoading = false, error = e.message) }
-      }.collect { (entries, advice) ->
+        getNutritionAdviceUseCase.getAdviceForToday(today),
+        getUserProfileUseCase.execute(),
+        trackCycleUseCase.getCurrentPhase()
+      ) { entries, advice, profile, phase ->
         val totalKcal = entries.sumOf { it.calories }
         _uiState.update {
           it.copy(
@@ -58,12 +62,14 @@ class FoodViewModel @Inject constructor(
             proteins = entries.sumOf { e -> e.proteins.toDouble() }.toFloat(),
             carbs = entries.sumOf { e -> e.carbs.toDouble() }.toFloat(),
             fats = entries.sumOf { e -> e.fats.toDouble() }.toFloat(),
-            advice = advice
+            advice = advice,
+            caloriesTarget = getNutritionAdviceUseCase
+              .getCalorieTarget(profile.baseCalories, phase!!),
+            showCalories = profile.showCalories && !profile.tcaFriendlyMode
           )
         }
-      }
+      }.launchIn(viewModelScope)
     }
-  }
 
   private fun observeSearch() {
     viewModelScope.launch {

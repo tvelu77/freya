@@ -6,16 +6,20 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import io.tvelu77.freya.domain.ports.api.GetHealthScoreUseCase
 import io.tvelu77.freya.domain.ports.api.GetNutritionAdviceUseCase
+import io.tvelu77.freya.domain.ports.api.GetUserProfileUseCase
 import io.tvelu77.freya.domain.ports.api.LogFoodUseCase
 import io.tvelu77.freya.domain.ports.api.PhaseCalculator
 import io.tvelu77.freya.domain.ports.api.TCAGuardUseCase
 import io.tvelu77.freya.domain.ports.api.TrackCycleUseCase
+import io.tvelu77.freya.domain.ports.api.UpdateUserProfileUseCase
 import io.tvelu77.freya.domain.services.GetHealthScoreUseCaseAdapter
 import io.tvelu77.freya.domain.services.GetNutritionAdviceUseCaseAdapter
+import io.tvelu77.freya.domain.services.GetUserProfileUseCaseAdapter
 import io.tvelu77.freya.domain.services.LogFoodUseCaseAdapter
 import io.tvelu77.freya.domain.services.PhaseCalculatorAdapter
 import io.tvelu77.freya.domain.services.TCAGuardUseCaseAdapter
 import io.tvelu77.freya.domain.services.TrackCycleUseCaseAdapter
+import io.tvelu77.freya.domain.services.UpdateUserProfileUseCaseAdapter
 import jakarta.inject.Singleton
 
 @Module
@@ -45,4 +49,12 @@ abstract class UseCaseModule {
   @Binds
   @Singleton
   abstract fun bindLogFoodUseCase(adapter: LogFoodUseCaseAdapter): LogFoodUseCase
+
+  @Binds
+  @Singleton
+  abstract fun bindGetUserProfileUseCase(adapter: GetUserProfileUseCaseAdapter): GetUserProfileUseCase
+
+  @Binds
+  @Singleton
+  abstract fun bindUpdateUserProfileUseCase(adapter: UpdateUserProfileUseCaseAdapter): UpdateUserProfileUseCase
 }
