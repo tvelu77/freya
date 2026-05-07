@@ -5,6 +5,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import io.tvelu77.freya.presentation.cycle.CycleScreen
 import io.tvelu77.freya.presentation.home.HomeScreen
 
 sealed class Screen(val route: String) {
@@ -25,7 +26,9 @@ fun FreyaNavGraph(
       )
     }
     composable(Screen.Cycle.route) {
-      // TODO
+      CycleScreen(
+        onNavigateBack = { navController.popBackStack() }
+      )
     }
     composable(Screen.Food.route) {
       // TODO
