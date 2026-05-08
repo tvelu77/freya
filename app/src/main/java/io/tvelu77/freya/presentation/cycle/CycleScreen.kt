@@ -10,7 +10,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
-import androidx.compose.material.icons.rounded.ArrowBackIosNew
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -32,7 +31,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CycleScreen(
-  onNavigateBack: () -> Unit,
   viewModel: CycleViewModel = hiltViewModel()
 ) {
   val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -42,11 +40,6 @@ fun CycleScreen(
       TopAppBar(
         title = {
           Text("Mon cycle", style = MaterialTheme.typography.titleLarge)
-        },
-        navigationIcon = {
-          IconButton(onClick = onNavigateBack) {
-            Icon(Icons.Rounded.ArrowBackIosNew, contentDescription = "Retour")
-          }
         },
         actions = {
           IconButton(onClick = viewModel::onStartCycleClicked) {

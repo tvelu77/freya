@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ArrowBackIosNew
 import androidx.compose.material.icons.rounded.Visibility
 import androidx.compose.material.icons.rounded.VisibilityOff
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -27,7 +26,6 @@ import io.tvelu77.freya.domain.models.MealType
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FoodScreen(
-  onNavigateBack: () -> Unit,
   viewModel: FoodViewModel = hiltViewModel()
 ) {
   val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -36,11 +34,6 @@ fun FoodScreen(
     topBar = {
       TopAppBar(
         title = { Text("Mes repas", style = MaterialTheme.typography.titleLarge) },
-        navigationIcon = {
-          IconButton(onClick = onNavigateBack) {
-            Icon(Icons.Rounded.ArrowBackIosNew, contentDescription = "Retour")
-          }
-        },
         actions = {
           IconButton(onClick = viewModel::onToggleCaloriesVisibility) {
             Icon(

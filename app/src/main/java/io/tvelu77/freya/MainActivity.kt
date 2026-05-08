@@ -5,7 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import dagger.hilt.android.AndroidEntryPoint
-import io.tvelu77.freya.presentation.navigation.FreyaNavGraph
+import io.tvelu77.freya.presentation.navigation.NavGraph
 import io.tvelu77.freya.ui.theme.FreyaTheme
 
 @AndroidEntryPoint
@@ -15,7 +15,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             FreyaTheme {
-                FreyaNavGraph()
+                NavGraph()
             }
         }
     }

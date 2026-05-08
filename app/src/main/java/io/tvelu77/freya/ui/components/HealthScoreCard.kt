@@ -31,7 +31,7 @@ import io.tvelu77.freya.ui.theme.ScoreLow
 import io.tvelu77.freya.ui.theme.ScoreMedium
 
 @Composable
-fun HealthScoreCard(score: HealthScore, modifier: Modifier = Modifier) {
+fun HealthScoreCard(score: HealthScore, modifier: Modifier = Modifier, onClick: () -> Unit) {
   val animatedValue by animateFloatAsState(
     targetValue = score.value / 100f,
     animationSpec = tween(1000, easing = EaseOutCubic),
@@ -45,6 +45,7 @@ fun HealthScoreCard(score: HealthScore, modifier: Modifier = Modifier) {
   }
 
   Card(
+    onClick = onClick,
     modifier = modifier.fillMaxWidth(),
     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
     elevation = CardDefaults.cardElevation(2.dp),

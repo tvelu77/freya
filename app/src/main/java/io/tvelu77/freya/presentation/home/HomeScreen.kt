@@ -5,7 +5,6 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -18,29 +17,23 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.AccountCircle
 import androidx.compose.material.icons.rounded.ChevronRight
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -58,7 +51,6 @@ import io.tvelu77.freya.ui.theme.phaseGradientColors
 fun HomeScreen(
   onNavigateToCycle: () -> Unit,
   onNavigateToFood: () -> Unit,
-  onNavigateToProfile: () -> Unit,
   viewModel: HomeViewModel = hiltViewModel()
 ) {
   val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -82,8 +74,7 @@ fun HomeScreen(
           onStartCycle = viewModel::startNewCycle,
           onDismissTcaAlert = viewModel::dismissTcaAlert,
           onNavigateToCycle = onNavigateToCycle,
-          onNavigateToFood = onNavigateToFood,
-          onNavigateToProfile = onNavigateToProfile
+          onNavigateToFood = onNavigateToFood
         )
       }
     }
@@ -96,8 +87,7 @@ private fun HomeContent(
   onStartCycle: () -> Unit,
   onDismissTcaAlert: () -> Unit,
   onNavigateToCycle: () -> Unit,
-  onNavigateToFood: () -> Unit,
-  onNavigateToProfile: () -> Unit
+  onNavigateToFood: () -> Unit
 ) {
   Column(
     modifier = Modifier
@@ -109,7 +99,6 @@ private fun HomeContent(
       uiState = uiState,
       date = uiState.currentDate,
       phaseInfo = uiState.phaseInfo,
-      onNavigateToProfile = onNavigateToProfile
     )
 
     Column(
@@ -140,13 +129,8 @@ private fun HomeContent(
       }
 
       uiState.healthScore?.let { score ->
-        HealthScoreCard(score = score)
+        HealthScoreCard(score = score, onClick = onNavigateToFood)
       }
-
-      QuickActionsRow(
-        onLogFood = onNavigateToFood,
-        onTrackCycle = onNavigateToCycle
-      )
 
       Spacer(Modifier.height(24.dp))
     }
@@ -154,7 +138,7 @@ private fun HomeContent(
 }
 
 @Composable
-private fun HomeHeader(uiState: HomeUiState, date: String, phaseInfo: PhaseInfo?, onNavigateToProfile: () -> Unit) {
+private fun HomeHeader(uiState: HomeUiState, date: String, phaseInfo: PhaseInfo?) {
   val gradientColors = phaseGradientColors(phaseInfo?.phase)
   val textPrimary = MaterialTheme.colorScheme.onSurface
   val textSecondary = MaterialTheme.colorScheme.onSurfaceVariant
@@ -184,16 +168,6 @@ private fun HomeHeader(uiState: HomeUiState, date: String, phaseInfo: PhaseInfo?
         Spacer(Modifier.height(8.dp))
         PhaseChip(phase = it.phase)
       }
-    }
-    IconButton(
-      onClick = onNavigateToProfile,
-      modifier = Modifier.align(Alignment.TopEnd)
-    ) {
-      Icon(
-        Icons.Rounded.AccountCircle,
-        contentDescription = "Mon profil",
-        tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
-      )
     }
   }
   Spacer(Modifier.height(16.dp))
@@ -311,60 +285,6 @@ private fun TCAAlertBanner(
           modifier = Modifier.size(16.dp)
         )
       }
-    }
-  }
-}
-
-@Composable
-private fun QuickActionsRow(
-  onLogFood: () -> Unit,
-  onTrackCycle: () -> Unit
-) {
-  Row(
-    modifier = Modifier.fillMaxWidth(),
-    horizontalArrangement = Arrangement.spacedBy(12.dp)
-  ) {
-    QuickActionButton(
-      emoji = "🍽️",
-      label = "Ajouter un repas",
-      onClick = onLogFood,
-      modifier = Modifier.weight(1f)
-    )
-    QuickActionButton(
-      emoji = "🩸",
-      label = "Mettre à jour mon cycle",
-      onClick = onTrackCycle,
-      modifier = Modifier.weight(1f)
-    )
-  }
-}
-
-@Composable
-private fun QuickActionButton(
-  emoji: String,
-  label: String,
-  onClick: () -> Unit,
-  modifier: Modifier = Modifier
-) {
-  OutlinedCard(
-    onClick = onClick,
-    modifier = modifier,
-    shape = MaterialTheme.shapes.large,
-    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
-  ) {
-    Column(
-      modifier = Modifier
-        .fillMaxWidth()
-        .padding(16.dp),
-      horizontalAlignment = Alignment.CenterHorizontally,
-      verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-      Text(emoji, style = MaterialTheme.typography.headlineMedium)
-      Text(
-        text = label,
-        style = MaterialTheme.typography.labelSmall,
-        textAlign = TextAlign.Center
-      )
     }
   }
 }
