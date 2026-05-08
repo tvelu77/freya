@@ -46,10 +46,6 @@ class ProfileViewModel @Inject constructor(
   fun onCycleLengthChanged(value: String) =
     _uiState.update { it.copy(cycleLengthInput = value.filter { c -> c.isDigit() }) }
 
-  fun onShowCaloriesToggled(show: Boolean) {
-    viewModelScope.launch { updateProfile.updateShowCalories(show) }
-  }
-
   fun onTcaFriendlyToggled(enabled: Boolean) {
     viewModelScope.launch { updateProfile.updateTcaFriendlyMode(enabled) }
   }

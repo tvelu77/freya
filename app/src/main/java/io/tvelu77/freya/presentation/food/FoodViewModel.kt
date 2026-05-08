@@ -3,20 +3,17 @@ package io.tvelu77.freya.presentation.food
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.tvelu77.freya.domain.models.CycleEntry
 import io.tvelu77.freya.domain.models.MealType
 import io.tvelu77.freya.domain.models.QuickFood
 import io.tvelu77.freya.domain.ports.api.GetNutritionAdviceUseCase
 import io.tvelu77.freya.domain.ports.api.GetUserProfileUseCase
 import io.tvelu77.freya.domain.ports.api.LogFoodUseCase
-import io.tvelu77.freya.domain.ports.api.PhaseCalculator
 import io.tvelu77.freya.domain.ports.api.TrackCycleUseCase
 import jakarta.inject.Inject
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -65,7 +62,7 @@ class FoodViewModel @Inject constructor(
             advice = advice,
             caloriesTarget = getNutritionAdviceUseCase
               .getCalorieTarget(profile.baseCalories, phase!!),
-            showCalories = profile.showCalories && !profile.tcaFriendlyMode
+            showCalories = !profile.tcaFriendlyMode
           )
         }
       }.launchIn(viewModelScope)

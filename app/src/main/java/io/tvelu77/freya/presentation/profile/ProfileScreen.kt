@@ -26,13 +26,11 @@ import androidx.compose.material.icons.rounded.CheckCircle
 import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material.icons.rounded.Notifications
 import androidx.compose.material.icons.rounded.Save
-import androidx.compose.material.icons.rounded.Visibility
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -130,21 +128,8 @@ fun ProfileScreen(
       ProfileSection(title = "Affichage & confidentialité") {
 
         ProfileToggleRow(
-          title = "Afficher les calories",
-          subtitle = "Montre les valeurs caloriques dans l'app",
-          checked = uiState.profile.showCalories,
-          onCheckedChange = viewModel::onShowCaloriesToggled,
-          icon = Icons.Rounded.Visibility
-        )
-
-        HorizontalDivider(
-          thickness = 0.5.dp,
-          color = MaterialTheme.colorScheme.outlineVariant
-        )
-
-        ProfileToggleRow(
           title = "Mode bienveillant",
-          subtitle = "Masque tous les chiffres — focus sur le ressenti",
+          subtitle = "Masque les kcals — focus sur le ressenti",
           checked = uiState.profile.tcaFriendlyMode,
           onCheckedChange = viewModel::onTcaFriendlyToggled,
           icon = Icons.Rounded.Favorite

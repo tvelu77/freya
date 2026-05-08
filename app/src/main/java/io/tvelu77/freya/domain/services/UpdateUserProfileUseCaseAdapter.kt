@@ -21,9 +21,6 @@ class UpdateUserProfileUseCaseAdapter @Inject constructor(
     repository.updateCycleLength(safe)
   }
 
-  override suspend fun updateShowCalories(show: Boolean) =
-    repository.updateShowCalories(show)
-
   override suspend fun updateTcaFriendlyMode(enabled: Boolean) =
     repository.updateTcaFriendlyMode(enabled)
 

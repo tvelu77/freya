@@ -5,7 +5,6 @@ import io.tvelu77.freya.database.config.UserProfileDataStore.Companion.KEY_BASE_
 import io.tvelu77.freya.database.config.UserProfileDataStore.Companion.KEY_CYCLE_LENGTH
 import io.tvelu77.freya.database.config.UserProfileDataStore.Companion.KEY_NOTIFICATIONS
 import io.tvelu77.freya.database.config.UserProfileDataStore.Companion.KEY_ONBOARDING_COMPLETED
-import io.tvelu77.freya.database.config.UserProfileDataStore.Companion.KEY_SHOW_CALORIES
 import io.tvelu77.freya.database.config.UserProfileDataStore.Companion.KEY_TCA_FRIENDLY
 import io.tvelu77.freya.domain.models.UserProfile
 import io.tvelu77.freya.domain.ports.spi.UserProfileRepository
@@ -23,7 +22,6 @@ class DataStoreUserProfileRepository @Inject constructor(
       this[UserProfileDataStore.KEY_FIRST_NAME] = profile.firstName
       this[KEY_BASE_CALORIES] = profile.baseCalories
       this[KEY_CYCLE_LENGTH] = profile.cycleLengthDays
-      this[KEY_SHOW_CALORIES] = profile.showCalories
       this[KEY_TCA_FRIENDLY] = profile.tcaFriendlyMode
       this[KEY_NOTIFICATIONS] = profile.notificationsEnabled
       this[KEY_ONBOARDING_COMPLETED] = profile.onboardingCompleted
@@ -38,9 +36,6 @@ class DataStoreUserProfileRepository @Inject constructor(
 
   override suspend fun updateCycleLength(days: Int) =
     dataStore.update { this[KEY_CYCLE_LENGTH] = days }
-
-  override suspend fun updateShowCalories(show: Boolean) =
-    dataStore.update { this[KEY_SHOW_CALORIES] = show }
 
   override suspend fun updateTcaFriendlyMode(enabled: Boolean) =
     dataStore.update { this[KEY_TCA_FRIENDLY] = enabled }

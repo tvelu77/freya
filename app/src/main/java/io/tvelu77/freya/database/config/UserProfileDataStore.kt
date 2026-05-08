@@ -28,7 +28,6 @@ class UserProfileDataStore @Inject constructor(
     val KEY_FIRST_NAME  = stringPreferencesKey("first_name")
     val KEY_BASE_CALORIES = intPreferencesKey("base_calories")
     val KEY_CYCLE_LENGTH = intPreferencesKey("cycle_length")
-    val KEY_SHOW_CALORIES = booleanPreferencesKey("show_calories")
     val KEY_TCA_FRIENDLY = booleanPreferencesKey("tca_friendly")
     val KEY_NOTIFICATIONS = booleanPreferencesKey("notifications")
     val KEY_ONBOARDING_COMPLETED = booleanPreferencesKey("onboarding_completed")
@@ -41,7 +40,6 @@ class UserProfileDataStore @Inject constructor(
         firstName            = prefs[KEY_FIRST_NAME] ?: "",
         baseCalories         = prefs[KEY_BASE_CALORIES] ?: 2000,
         cycleLengthDays      = prefs[KEY_CYCLE_LENGTH] ?: 28,
-        showCalories         = prefs[KEY_SHOW_CALORIES] ?: true,
         tcaFriendlyMode      = prefs[KEY_TCA_FRIENDLY] ?: false,
         notificationsEnabled = prefs[KEY_NOTIFICATIONS] ?: true,
         onboardingCompleted  = prefs[KEY_ONBOARDING_COMPLETED] ?: false
