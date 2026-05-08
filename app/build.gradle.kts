@@ -22,6 +22,14 @@ android {
         jvmToolchain(17)
     }
     buildFeatures { compose = true }
+    buildTypes {
+        debug {
+            isDebuggable = false
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"))
+        }
+    }
 }
 
 dependencies {
