@@ -61,8 +61,9 @@ class FoodViewModel @Inject constructor(
             fats = entries.sumOf { e -> e.fats.toDouble() }.toFloat(),
             advice = advice,
             caloriesTarget = getNutritionAdviceUseCase
-              .getCalorieTarget(profile.baseCalories, phase!!),
-            showCalories = !profile.tcaFriendlyMode
+              .getCalorieTarget(profile.baseCalories, phase),
+            showCalories = !profile.tcaFriendlyMode,
+            hasActiveCycle = phase != null
           )
         }
       }.launchIn(viewModelScope)

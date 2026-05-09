@@ -25,7 +25,9 @@ class GetNutritionAdviceUseCaseAdapter @Inject constructor(
 
   override fun getCalorieTarget(
     baseCalories: Int,
-    phaseInfo: PhaseInfo
+    phaseInfo: PhaseInfo?
   ): Int =
-    (baseCalories + phaseInfo.nutritionAdvice.calorieSurplus).coerceAtLeast(1200)
+    phaseInfo?.let {
+      (baseCalories + it.nutritionAdvice.calorieSurplus).coerceAtLeast(1200)
+    } ?: baseCalories
 }

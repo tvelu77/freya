@@ -19,5 +19,6 @@ data class FoodUiState(
   val searchQuery: String = "",
   val searchResults: List<QuickFood> = emptyList(),
   val showCalories: Boolean = true,
-  val error: String? = null
+  val error: String? = null,
+  val hasActiveCycle: Boolean = false
 )

@@ -51,6 +51,14 @@ fun FoodScreen(
       )
     }
   ) { padding ->
+    if (!uiState.hasActiveCycle) {
+      NoCycleOnFoodScreen(
+        modifier = Modifier
+          .fillMaxSize()
+          .padding(padding)
+      )
+      return@Scaffold
+    }
     LazyColumn(
       modifier = Modifier
         .fillMaxSize()

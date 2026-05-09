@@ -9,6 +9,6 @@ interface GetNutritionAdviceUseCase {
 
   fun getAdviceForToday(today: LocalDate = LocalDate.now()): Flow<NutritionAdvice?>
 
-  fun getCalorieTarget(baseCalories: Int, phaseInfo: PhaseInfo): Int
+  fun getCalorieTarget(baseCalories: Int, phaseInfo: PhaseInfo?): Int
 
 }
