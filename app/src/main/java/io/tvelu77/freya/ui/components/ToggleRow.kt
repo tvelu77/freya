@@ -1,4 +1,4 @@
-package io.tvelu77.freya.presentation.profile
+package io.tvelu77.freya.ui.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -15,15 +15,16 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun ProfileToggleRow(
+fun ToggleRow(
   title: String,
   subtitle: String,
   checked: Boolean,
   onCheckedChange: (Boolean) -> Unit,
-  icon: androidx.compose.ui.graphics.vector.ImageVector
+  icon: ImageVector
 ) {
   Row(
     modifier = Modifier
@@ -40,7 +41,11 @@ fun ProfileToggleRow(
       modifier = Modifier.size(20.dp)
     )
     Column(modifier = Modifier.weight(1f)) {
-      Text(title, style = MaterialTheme.typography.bodyMedium)
+      Text(
+        title,
+        style = MaterialTheme.typography.bodyMedium,
+        color = MaterialTheme.colorScheme.onSurfaceVariant
+      )
       Text(
         subtitle,
         style = MaterialTheme.typography.labelSmall,

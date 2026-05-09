@@ -47,6 +47,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import io.tvelu77.freya.ui.components.ToggleRow
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -119,7 +120,7 @@ fun ProfileScreen(
 
       ProfileSection(title = "Affichage & confidentialité") {
 
-        ProfileToggleRow(
+        ToggleRow(
           title = "Mode bienveillant",
           subtitle = "Masque les kcals — focus sur le ressenti",
           checked = uiState.profile.tcaFriendlyMode,
@@ -129,7 +130,7 @@ fun ProfileScreen(
       }
 
       ProfileSection(title = "Notifications") {
-        ProfileToggleRow(
+        ToggleRow(
           title = "Rappels & conseils",
           subtitle = "Changements de phase, hydratation, conseils doux",
           checked = uiState.profile.notificationsEnabled,
