@@ -10,6 +10,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -21,12 +22,18 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import io.tvelu77.freya.domain.models.PhaseType
+import io.tvelu77.freya.presentation.cycle.dialogs.EndPeriodDialog
+import io.tvelu77.freya.presentation.cycle.dialogs.StartCycleDialog
+import java.time.LocalDate
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -34,6 +41,13 @@ fun CycleScreen(
   viewModel: CycleViewModel = hiltViewModel()
 ) {
   val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+  val getPhaseForDate: (LocalDate) -> PhaseType? by remember(uiState.cycleHistory) {
+    derivedStateOf {
+      { date: LocalDate ->
+        viewModel.getPhaseForDate(date)
+      }
+    }
+  }
 
   Scaffold(
     topBar = {
@@ -42,8 +56,25 @@ fun CycleScreen(
           Text("Mon cycle", style = MaterialTheme.typography.titleLarge)
         },
         actions = {
-          IconButton(onClick = viewModel::onStartCycleClicked) {
-            Icon(Icons.Rounded.Add, contentDescription = "Nouveau cycle")
+          IconButton(
+            onClick = {
+              if (uiState.currentPhase?.phase == PhaseType.MENSTRUAL) {
+                viewModel.onEndPeriodClicked()
+              } else {
+                viewModel.onStartCycleClicked()
+              }
+            }
+          ) {
+            Icon(
+              imageVector = if (uiState.currentPhase?.phase == PhaseType.MENSTRUAL)
+                Icons.Rounded.Check
+              else
+                Icons.Rounded.Add,
+              contentDescription = if (uiState.currentPhase?.phase == PhaseType.MENSTRUAL)
+                "Fin des règles"
+              else
+                "Nouveau cycle"
+            )
           }
         },
         colors = TopAppBarDefaults.topAppBarColors(
@@ -71,7 +102,7 @@ fun CycleScreen(
         selectedDate = uiState.selectedDate,
         onDateSelected = viewModel::onDateSelected,
         onMonthChanged = viewModel::onMonthChanged,
-        getPhaseForDate = viewModel::getPhaseForDate,
+        getPhaseForDate = getPhaseForDate,
         isPredictedStart = viewModel::isPredictedCycleStart
       )
 
@@ -102,6 +133,13 @@ fun CycleScreen(
     StartCycleDialog(
       onConfirm = viewModel::onStartCycleConfirmed,
       onDismiss = viewModel::onDismissDialog
+    )
+  }
+
+  if (uiState.showEndPeriodDialog) {
+    EndPeriodDialog(
+      onConfirm = viewModel::onEndPeriodConfirmed,
+      onDismiss = viewModel::onDismissEndPeriodDialog
     )
   }
 }

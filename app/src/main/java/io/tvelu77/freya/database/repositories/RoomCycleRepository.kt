@@ -18,6 +18,9 @@ class RoomCycleRepository @Inject constructor(
   override fun getLatestCycle(): Flow<CycleEntry?> =
     dao.getLatestCycle().map { it?.toDomain() }
 
+  override suspend fun getAllCyclesOnce(): List<CycleEntry> =
+    dao.getAllCyclesOnce().map { it.toDomain() }
+
   override suspend fun saveCycle(entry: CycleEntry): Long =
     dao.insert(CycleEntryEntity.fromDomain(entry))
 

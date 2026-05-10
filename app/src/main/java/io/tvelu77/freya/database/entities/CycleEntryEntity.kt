@@ -7,7 +7,7 @@ import java.time.LocalDate
 
 @Entity(tableName = "cycle_entries")
 data class CycleEntryEntity(
-  @PrimaryKey val id: Long = 0,
+  @PrimaryKey val id: Long,
   val startDate: LocalDate,
   val endDate: LocalDate?,
   val cycleLengthDays: Int,

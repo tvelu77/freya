@@ -1,4 +1,4 @@
-package io.tvelu77.freya.presentation.cycle
+package io.tvelu77.freya.presentation.cycle.dialogs
 
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.dp
 import java.time.LocalDate
 
 @Composable
-fun StartCycleDialog(
+fun EndPeriodDialog(
   onConfirm: (LocalDate) -> Unit,
   onDismiss: () -> Unit
 ) {
@@ -33,10 +33,10 @@ fun StartCycleDialog(
 
   AlertDialog(
     onDismissRequest = onDismiss,
-    icon = { Text("🌸", style = MaterialTheme.typography.headlineMedium) },
+    icon = { Text("🌿", style = MaterialTheme.typography.headlineMedium) },
     title = {
       Text(
-        "Nouveau cycle",
+        "Fin des règles",
         style = MaterialTheme.typography.titleLarge,
         textAlign = TextAlign.Center
       )
@@ -44,17 +44,16 @@ fun StartCycleDialog(
     text = {
       Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Text(
-          text = "Quand ont commencé tes règles ?",
+          text = "Quand tes règles se sont-elles arrêtées ?",
           style = MaterialTheme.typography.bodyMedium,
           textAlign = TextAlign.Center
         )
         Spacer(Modifier.height(16.dp))
-
         Row(
           horizontalArrangement = Arrangement.spacedBy(8.dp),
           modifier = Modifier.horizontalScroll(rememberScrollState())
         ) {
-          (0..5).forEach { daysAgo ->
+          (0..6).forEach { daysAgo ->
             val date = LocalDate.now().minusDays(daysAgo.toLong())
             val label = when (daysAgo) {
               0 -> "Aujourd'hui"
@@ -64,7 +63,9 @@ fun StartCycleDialog(
             FilterChip(
               selected = selectedDate == date,
               onClick = { selectedDate = date },
-              label = { Text(label, style = MaterialTheme.typography.labelSmall) }
+              label = {
+                Text(label, style = MaterialTheme.typography.labelSmall)
+              }
             )
           }
         }
@@ -82,4 +83,3 @@ fun StartCycleDialog(
     }
   )
 }
-

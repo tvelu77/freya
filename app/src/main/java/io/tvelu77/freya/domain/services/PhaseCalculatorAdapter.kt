@@ -16,9 +16,16 @@ class PhaseCalculatorAdapter @Inject constructor(): PhaseCalculator  {
     today: LocalDate
   ): PhaseInfo {
     val dayInCycle = dayInCycle(cycleEntry.startDate, today)
-    val phase = phaseForDay(dayInCycle, cycleEntry.cycleLengthDays)
+    val phase = if (
+      cycleEntry.endDate != null &&
+      today.isAfter(cycleEntry.endDate) &&
+      phaseForDay(dayInCycle, cycleEntry.cycleLengthDays) == PhaseType.MENSTRUAL
+    ) {
+      PhaseType.FOLLICULAR
+    } else {
+      phaseForDay(dayInCycle, cycleEntry.cycleLengthDays)
+    }
     val (start, end) = phaseRange(cycleEntry.startDate, phase, cycleEntry.cycleLengthDays)
-
     return PhaseInfo(
       phase,
       start,

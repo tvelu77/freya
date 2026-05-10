@@ -27,6 +27,7 @@ data class CycleUiState(
   val selectedMonth: YearMonth = YearMonth.now(),
   val selectedDate: LocalDate? = null,
   val showStartCycleDialog: Boolean = false,
+  val showEndPeriodDialog: Boolean = false,
   val error: String? = null
 )
 
@@ -87,6 +88,22 @@ class CycleViewModel @Inject constructor(
 
   fun onDismissDialog() {
     _uiState.update { it.copy(showStartCycleDialog = false) }
+  }
+
+  fun onEndPeriodClicked() {
+    _uiState.update { it.copy(showEndPeriodDialog = true) }
+  }
+
+  fun onEndPeriodConfirmed(endDate: LocalDate) {
+    viewModelScope.launch {
+      val latestCycle = _uiState.value.cycleHistory.firstOrNull() ?: return@launch
+      trackCycleUseCase.endPeriod(latestCycle, endDate)
+      _uiState.update { it.copy(showEndPeriodDialog = false) }
+    }
+  }
+
+  fun onDismissEndPeriodDialog() {
+    _uiState.update { it.copy(showEndPeriodDialog = false) }
   }
 
   fun getPhaseForDate(date: LocalDate): PhaseType? {

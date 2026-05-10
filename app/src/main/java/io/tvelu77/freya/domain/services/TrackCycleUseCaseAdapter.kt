@@ -9,6 +9,7 @@ import jakarta.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.time.LocalDate
+import java.time.temporal.ChronoUnit
 
 class TrackCycleUseCaseAdapter @Inject constructor(
   private val repository: CycleRepository,
@@ -24,6 +25,26 @@ class TrackCycleUseCaseAdapter @Inject constructor(
       repository.updateCycle(current.copy(endDate = startDate.minusDays(1)))
     }
     return repository.saveCycle(CycleEntry(startDate = startDate, endDate = null, cycleLengthDays = cycleLengthDays))
+  }
+
+  override suspend fun endPeriod(
+    cycleEntry: CycleEntry,
+    endDate: LocalDate
+  ) {
+    val previousCycle = repository.getAllCyclesOnce()
+      .sortedByDescending { it.startDate }
+      .getOrNull(1)
+
+    val realCycleLength = previousCycle?.let {
+      ChronoUnit.DAYS.between(it.startDate, cycleEntry.startDate).toInt()
+    } ?: cycleEntry.cycleLengthDays
+
+    repository.updateCycle(
+      cycleEntry.copy(
+        endDate = endDate,
+        cycleLengthDays = realCycleLength.coerceIn(21, 45)
+      )
+    )
   }
 
   override fun getCurrentPhase(today: LocalDate): Flow<PhaseInfo?> =

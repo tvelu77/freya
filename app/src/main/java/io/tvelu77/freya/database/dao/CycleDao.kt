@@ -18,10 +18,13 @@ interface CycleDao {
   @Query("SELECT * FROM cycle_entries ORDER BY startDate DESC LIMIT 1")
   fun getLatestCycle(): Flow<CycleEntryEntity?>
 
+  @Query("SELECT * FROM cycle_entries ORDER BY startDate DESC")
+  suspend fun getAllCyclesOnce(): List<CycleEntryEntity>
+
   @Query("SELECT * FROM cycle_entries WHERE startDate <= :date AND (endDate IS NULL OR endDate >= :date) LIMIT 1")
   suspend fun getCycleByDate(date: LocalDate): CycleEntryEntity?
 
-  @Insert(onConflict = OnConflictStrategy.REPLACE)
+  @Insert(onConflict = OnConflictStrategy.IGNORE)
   suspend fun insert(entry: CycleEntryEntity): Long
 
   @Update

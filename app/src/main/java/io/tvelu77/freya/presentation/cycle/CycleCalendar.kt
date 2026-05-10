@@ -33,7 +33,7 @@ fun CycleCalendar(
   onDateSelected: (LocalDate) -> Unit,
   onMonthChanged: (YearMonth) -> Unit,
   getPhaseForDate: (LocalDate) -> PhaseType?,
-  isPredictedStart: (LocalDate) -> Boolean
+  isPredictedStart: (LocalDate) -> Boolean,
 ) {
   Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)) {
 
