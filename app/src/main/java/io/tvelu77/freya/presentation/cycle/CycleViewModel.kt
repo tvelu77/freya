@@ -57,6 +57,7 @@ class CycleViewModel @Inject constructor(
 
   init {
     loadCycleData()
+    viewModelScope.launch { trackCycleUseCase.rescheduleNotifications() }
   }
 
   private fun loadCycleData() {

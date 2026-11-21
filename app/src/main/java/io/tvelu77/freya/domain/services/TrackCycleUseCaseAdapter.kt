@@ -4,17 +4,24 @@ import io.tvelu77.freya.domain.models.CycleEntry
 import io.tvelu77.freya.domain.models.CycleEntryResult
 import io.tvelu77.freya.domain.models.PhaseInfo
 import io.tvelu77.freya.domain.ports.api.PhaseCalculator
+import io.tvelu77.freya.domain.ports.api.PhaseNotificationPlanner
 import io.tvelu77.freya.domain.ports.api.TrackCycleUseCase
 import io.tvelu77.freya.domain.ports.spi.CycleRepository
+import io.tvelu77.freya.domain.ports.spi.NotificationScheduler
+import io.tvelu77.freya.domain.ports.spi.UserProfileRepository
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
 
 class TrackCycleUseCaseAdapter @Inject constructor(
   private val repository: CycleRepository,
-  private val calculator: PhaseCalculator
+  private val calculator: PhaseCalculator,
+  private val profileRepository: UserProfileRepository,
+  private val notificationPlanner: PhaseNotificationPlanner,
+  private val notificationScheduler: NotificationScheduler
 ): TrackCycleUseCase {
 
   override suspend fun startCycle(
@@ -32,6 +39,7 @@ class TrackCycleUseCaseAdapter @Inject constructor(
     val id = repository.saveCycle(
       CycleEntry(startDate = startDate, endDate = null, cycleLengthDays = cycleLengthDays)
     )
+    rescheduleNotifications()
     return CycleEntryResult.Success(id)
   }
 
@@ -55,6 +63,7 @@ class TrackCycleUseCaseAdapter @Inject constructor(
       cycleLengthDays = realCycleLength.coerceIn(21, 45)
     )
     repository.updateCycle(updated)
+    rescheduleNotifications()
     return CycleEntryResult.Success(updated.id)
   }
 
@@ -68,11 +77,27 @@ class TrackCycleUseCaseAdapter @Inject constructor(
       return CycleEntryResult.Error("This cycle overlaps an already recorded period.")
     }
     repository.updateCycle(entry)
+    rescheduleNotifications()
     return CycleEntryResult.Success(entry.id)
   }
 
   override suspend fun deleteCycle(id: Long) {
     repository.deleteCycle(id)
+    rescheduleNotifications()
+  }
+
+  override suspend fun rescheduleNotifications() {
+    val enabled = profileRepository.getProfile().first().notificationsEnabled
+    val cycles = repository.getAllCyclesOnce()
+    val latest = cycles.maxByOrNull { it.startDate }
+    if (!enabled || latest == null) {
+      notificationScheduler.cancelAll()
+      return
+    }
+    val averaged = latest.withAverageLength(cycles)
+    val phaseInfo = calculator.getCurrentPhase(averaged)
+    val nextPeriod = calculator.predictNextCycles(averaged, count = 1).firstOrNull()
+    notificationScheduler.schedule(notificationPlanner.plan(phaseInfo, nextPeriod))
   }
 
   private fun overlapsRecordedPeriod(

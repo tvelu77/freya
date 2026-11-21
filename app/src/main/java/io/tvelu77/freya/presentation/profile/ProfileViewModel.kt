@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.tvelu77.freya.domain.ports.api.GetUserProfileUseCase
+import io.tvelu77.freya.domain.ports.api.TrackCycleUseCase
 import io.tvelu77.freya.domain.ports.api.UpdateUserProfileUseCase
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,7 +16,8 @@ import kotlinx.coroutines.launch
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
   private val getProfile: GetUserProfileUseCase,
-  private val updateProfile: UpdateUserProfileUseCase
+  private val updateProfile: UpdateUserProfileUseCase,
+  private val trackCycleUseCase: TrackCycleUseCase
 ) : ViewModel() {
 
   private val _uiState = MutableStateFlow(ProfileUiState())
@@ -51,7 +53,10 @@ class ProfileViewModel @Inject constructor(
   }
 
   fun onNotificationsToggled(enabled: Boolean) {
-    viewModelScope.launch { updateProfile.updateNotifications(enabled) }
+    viewModelScope.launch {
+      updateProfile.updateNotifications(enabled)
+      trackCycleUseCase.rescheduleNotifications()
+    }
   }
 
   fun onSaveProfile() {

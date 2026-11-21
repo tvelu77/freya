@@ -9,6 +9,8 @@ import io.tvelu77.freya.domain.models.CycleEntryResult
 import io.tvelu77.freya.domain.models.PhaseType
 import io.tvelu77.freya.domain.ports.api.TrackCycleUseCase
 import io.tvelu77.freya.domain.ports.spi.CycleRepository
+import io.tvelu77.freya.domain.ports.spi.FakeNotificationScheduler
+import io.tvelu77.freya.domain.ports.spi.FakeUserProfileRepository
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
@@ -24,7 +26,13 @@ class TrackCycleUseCaseAdapterTest {
   @Before
   fun setup() {
     repository = mockk()
-    useCase = TrackCycleUseCaseAdapter(repository, PhaseCalculatorAdapter())
+    useCase = TrackCycleUseCaseAdapter(
+      repository,
+      PhaseCalculatorAdapter(),
+      FakeUserProfileRepository(),
+      PhaseNotificationPlannerAdapter(),
+      FakeNotificationScheduler()
+    )
   }
 
   @Test

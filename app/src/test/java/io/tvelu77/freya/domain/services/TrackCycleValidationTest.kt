@@ -3,7 +3,10 @@ package io.tvelu77.freya.domain.services
 import io.tvelu77.freya.domain.models.CycleEntry
 import io.tvelu77.freya.domain.models.CycleEntryResult
 import io.tvelu77.freya.domain.models.PhaseType
+import io.tvelu77.freya.domain.models.UserProfile
 import io.tvelu77.freya.domain.ports.spi.FakeCycleRepository
+import io.tvelu77.freya.domain.ports.spi.FakeNotificationScheduler
+import io.tvelu77.freya.domain.ports.spi.FakeUserProfileRepository
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
@@ -15,12 +18,22 @@ import java.time.LocalDate
 class TrackCycleValidationTest {
 
   private lateinit var repository: FakeCycleRepository
+  private lateinit var profileRepository: FakeUserProfileRepository
+  private lateinit var scheduler: FakeNotificationScheduler
   private lateinit var useCase: TrackCycleUseCaseAdapter
 
   @Before
   fun setup() {
     repository = FakeCycleRepository()
-    useCase = TrackCycleUseCaseAdapter(repository, PhaseCalculatorAdapter())
+    profileRepository = FakeUserProfileRepository()
+    scheduler = FakeNotificationScheduler()
+    useCase = TrackCycleUseCaseAdapter(
+      repository,
+      PhaseCalculatorAdapter(),
+      profileRepository,
+      PhaseNotificationPlannerAdapter(),
+      scheduler
+    )
   }
 
   @Test
@@ -164,5 +177,35 @@ class TrackCycleValidationTest {
 
     assertEquals(LocalDate.of(2024, 3, 31), predictions[0])
     assertEquals(LocalDate.of(2024, 4, 30), predictions[1])
+  }
+
+  @Test
+  fun `reschedule schedules notifications when they are enabled`() = runTest {
+    repository.cycles.add(
+      CycleEntry(id = 1, startDate = LocalDate.now().minusDays(2), endDate = null, cycleLengthDays = 28)
+    )
+
+    useCase.rescheduleNotifications()
+
+    assertEquals(1, scheduler.scheduled.size)
+    assertTrue(scheduler.scheduled[0].isNotEmpty())
+  }
+
+  @Test
+  fun `reschedule cancels notifications when disabled in the profile`() = runTest {
+    profileRepository.profile = UserProfile(notificationsEnabled = false)
+
+    useCase.rescheduleNotifications()
+
+    assertEquals(1, scheduler.cancelCount)
+    assertTrue(scheduler.scheduled.isEmpty())
+  }
+
+  @Test
+  fun `reschedule cancels notifications when there is no cycle`() = runTest {
+    useCase.rescheduleNotifications()
+
+    assertEquals(1, scheduler.cancelCount)
+    assertTrue(scheduler.scheduled.isEmpty())
   }
 }
