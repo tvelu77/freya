@@ -1,48 +1,24 @@
 package io.tvelu77.freya.domain.services
 
-import io.mockk.every
-import io.mockk.mockk
-import io.tvelu77.freya.domain.models.FoodEntry
-import io.tvelu77.freya.domain.models.MealType
+import io.tvelu77.freya.domain.models.FoodEntryFactory
 import io.tvelu77.freya.domain.models.ScoreLevel
-import io.tvelu77.freya.domain.ports.spi.FoodRepository
+import io.tvelu77.freya.domain.ports.spi.FakeFoodRepository
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
-import org.junit.Before
 import org.junit.Test
 import java.time.LocalDate
-import java.time.LocalTime
 
 class GetHealthScoreUseCaseAdapterTest {
 
-  private lateinit var repository: FoodRepository
-  private lateinit var adapter: GetHealthScoreUseCaseAdapter
+  private val repository = FakeFoodRepository()
+  private val adapter = GetHealthScoreUseCaseAdapter(repository)
 
   private val date = LocalDate.of(2024, 6, 10)
 
-  @Before
-  fun setup() {
-    repository = mockk()
-    adapter = GetHealthScoreUseCaseAdapter(repository)
-  }
-
-  private fun foodEntry(calories: Int) = FoodEntry(
-    date = date,
-    time = LocalTime.of(12, 0),
-    foodName = "Test",
-    quantity = 100f,
-    calories = calories,
-    proteins = 10f,
-    carbs = 20f,
-    fats = 5f,
-    mealType = MealType.LUNCH
-  )
-
   @Test
   fun `score is GOOD when nutrition, hydration and activity are on target`() = runTest {
-    every { repository.getFoodEntriesForDate(date) } returns flowOf(listOf(foodEntry(2000)))
+    repository.saveFoodEntry(FoodEntryFactory.foodEntry(date = date, calories = 2000))
 
     val score = adapter.getScoreForDay(
       date = date,
@@ -59,7 +35,7 @@ class GetHealthScoreUseCaseAdapterTest {
 
   @Test
   fun `score is MEDIUM for a partially complete day`() = runTest {
-    every { repository.getFoodEntriesForDate(date) } returns flowOf(listOf(foodEntry(1100)))
+    repository.saveFoodEntry(FoodEntryFactory.foodEntry(date = date, calories = 1100))
 
     val score = adapter.getScoreForDay(
       date = date,
@@ -75,7 +51,7 @@ class GetHealthScoreUseCaseAdapterTest {
 
   @Test
   fun `score is LOW when intake and activity are very low`() = runTest {
-    every { repository.getFoodEntriesForDate(date) } returns flowOf(listOf(foodEntry(400)))
+    repository.saveFoodEntry(FoodEntryFactory.foodEntry(date = date, calories = 400))
 
     val score = adapter.getScoreForDay(
       date = date,
@@ -91,8 +67,8 @@ class GetHealthScoreUseCaseAdapterTest {
 
   @Test
   fun `score sums calories of all entries of the day`() = runTest {
-    every { repository.getFoodEntriesForDate(date) } returns
-      flowOf(listOf(foodEntry(1000), foodEntry(1000)))
+    repository.saveFoodEntry(FoodEntryFactory.foodEntry(date = date, calories = 1000))
+    repository.saveFoodEntry(FoodEntryFactory.foodEntry(date = date, calories = 1000))
 
     val score = adapter.getScoreForDay(
       date = date,

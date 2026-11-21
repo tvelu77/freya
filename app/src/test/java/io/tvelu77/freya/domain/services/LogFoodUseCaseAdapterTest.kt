@@ -1,39 +1,26 @@
 package io.tvelu77.freya.domain.services
 
-import io.mockk.coEvery
-import io.mockk.coVerify
-import io.mockk.every
-import io.mockk.mockk
-import io.tvelu77.freya.domain.models.FoodEntry
+import io.tvelu77.freya.domain.models.FoodEntryFactory
 import io.tvelu77.freya.domain.models.MealType
-import io.tvelu77.freya.domain.ports.spi.FoodRepository
+import io.tvelu77.freya.domain.ports.spi.FakeFoodRepository
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
-import org.junit.Before
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.time.LocalDate
 import java.time.LocalTime
 
 class LogFoodUseCaseAdapterTest {
 
-  private lateinit var repository: FoodRepository
-  private lateinit var adapter: LogFoodUseCaseAdapter
+  private val repository = FakeFoodRepository()
+  private val adapter = LogFoodUseCaseAdapter(repository)
 
   private val date = LocalDate.of(2024, 6, 10)
   private val time = LocalTime.of(12, 30)
 
-  @Before
-  fun setup() {
-    repository = mockk()
-    adapter = LogFoodUseCaseAdapter(repository)
-  }
-
   @Test
   fun `logFood saves a mapped entry and returns its id`() = runTest {
-    coEvery { repository.saveFoodEntry(any()) } returns 42L
-
     val id = adapter.logFood(
       foodName = "Riz blanc cuit",
       quantity = 150f,
@@ -46,43 +33,45 @@ class LogFoodUseCaseAdapterTest {
       time = time
     )
 
-    assertEquals(42L, id)
-    coVerify {
-      repository.saveFoodEntry(match {
-        it.foodName == "Riz blanc cuit" &&
-          it.quantity == 150f &&
-          it.calories == 195 &&
-          it.mealType == MealType.LUNCH &&
-          it.date == date &&
-          it.time == time
-      })
-    }
+    assertEquals(1L, id)
+    val saved = repository.entries.single()
+    assertEquals("Riz blanc cuit", saved.foodName)
+    assertEquals(150f, saved.quantity)
+    assertEquals(195, saved.calories)
+    assertEquals(MealType.LUNCH, saved.mealType)
+    assertEquals(date, saved.date)
+    assertEquals(time, saved.time)
   }
 
   @Test
-  fun `getFoodForDay delegates to the repository`() = runTest {
-    val entries = listOf(
-      FoodEntry(date = date, time = time, foodName = "Poulet", quantity = 100f,
-        calories = 165, proteins = 31f, carbs = 0f, fats = 3.6f, mealType = MealType.DINNER)
+  fun `getFoodForDay returns the entries of that day only`() = runTest {
+    repository.saveFoodEntry(
+      FoodEntryFactory.foodEntry(date = date, calories = 500, foodName = "Poulet")
     )
-    every { repository.getFoodEntriesForDate(date) } returns flowOf(entries)
+    repository.saveFoodEntry(
+      FoodEntryFactory.foodEntry(date = date.plusDays(1), calories = 999, foodName = "Autre jour")
+    )
 
-    assertEquals(entries, adapter.getFoodForDay(date).first())
+    val entries = adapter.getFoodForDay(date).first()
+
+    assertEquals(1, entries.size)
+    assertEquals("Poulet", entries.single().foodName)
   }
 
   @Test
-  fun `getTotalCalories delegates to the repository`() = runTest {
-    coEvery { repository.getTotalCaloriesForDate(date) } returns 1450
+  fun `getTotalCalories sums the entries of the day`() = runTest {
+    repository.saveFoodEntry(FoodEntryFactory.foodEntry(date = date, calories = 1000))
+    repository.saveFoodEntry(FoodEntryFactory.foodEntry(date = date, calories = 450))
 
     assertEquals(1450, adapter.getTotalCalories(date))
   }
 
   @Test
-  fun `deleteFood delegates to the repository`() = runTest {
-    coEvery { repository.deleteFoodEntry(7L) } returns Unit
+  fun `deleteFood removes the entry`() = runTest {
+    val id = repository.saveFoodEntry(FoodEntryFactory.foodEntry(date = date, calories = 300))
 
-    adapter.deleteFood(7L)
+    adapter.deleteFood(id)
 
-    coVerify { repository.deleteFoodEntry(7L) }
+    assertTrue(repository.entries.isEmpty())
   }
 }

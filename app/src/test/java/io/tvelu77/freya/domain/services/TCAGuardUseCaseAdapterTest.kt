@@ -1,34 +1,30 @@
 package io.tvelu77.freya.domain.services
 
-import io.mockk.coEvery
-import io.mockk.mockk
-import io.tvelu77.freya.domain.ports.spi.FoodRepository
+import io.tvelu77.freya.domain.models.FoodEntryFactory
+import io.tvelu77.freya.domain.ports.spi.FakeFoodRepository
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
-import org.junit.Before
 import org.junit.Test
 import java.time.LocalDate
 
 class TCAGuardUseCaseAdapterTest {
 
-  private lateinit var repository: FoodRepository
-  private lateinit var adapter: TCAGuardUseCaseAdapter
+  private val repository = FakeFoodRepository()
+  private val adapter = TCAGuardUseCaseAdapter(repository)
 
   private val today = LocalDate.of(2024, 6, 10)
 
-  @Before
-  fun setup() {
-    repository = mockk()
-    adapter = TCAGuardUseCaseAdapter(repository)
+  private suspend fun logCalories(date: LocalDate, calories: Int) {
+    repository.saveFoodEntry(FoodEntryFactory.foodEntry(date = date, calories = calories))
   }
 
   @Test
   fun `alert triggers after 2 consecutive low-intake days`() = runTest {
-    coEvery { repository.getTotalCaloriesForDate(today) } returns 800
-    coEvery { repository.getTotalCaloriesForDate(today.minusDays(1)) } returns 900
-    coEvery { repository.getTotalCaloriesForDate(today.minusDays(2)) } returns 2000
+    logCalories(today, 800)
+    logCalories(today.minusDays(1), 900)
+    logCalories(today.minusDays(2), 2000)
 
     val alert = adapter.checkLastDays(days = 3, today = today)
 
@@ -39,9 +35,9 @@ class TCAGuardUseCaseAdapterTest {
 
   @Test
   fun `no alert when only one day is low`() = runTest {
-    coEvery { repository.getTotalCaloriesForDate(today) } returns 800
-    coEvery { repository.getTotalCaloriesForDate(today.minusDays(1)) } returns 2000
-    coEvery { repository.getTotalCaloriesForDate(today.minusDays(2)) } returns 2000
+    logCalories(today, 800)
+    logCalories(today.minusDays(1), 2000)
+    logCalories(today.minusDays(2), 2000)
 
     val alert = adapter.checkLastDays(days = 3, today = today)
 
@@ -51,9 +47,8 @@ class TCAGuardUseCaseAdapterTest {
 
   @Test
   fun `a day with zero logged calories breaks the streak`() = runTest {
-    coEvery { repository.getTotalCaloriesForDate(today) } returns 0
-    coEvery { repository.getTotalCaloriesForDate(today.minusDays(1)) } returns 800
-    coEvery { repository.getTotalCaloriesForDate(today.minusDays(2)) } returns 800
+    logCalories(today.minusDays(1), 800)
+    logCalories(today.minusDays(2), 800)
 
     val alert = adapter.checkLastDays(days = 3, today = today)
 
@@ -63,7 +58,9 @@ class TCAGuardUseCaseAdapterTest {
 
   @Test
   fun `alert triggers when all checked days are low`() = runTest {
-    coEvery { repository.getTotalCaloriesForDate(any()) } returns 500
+    logCalories(today, 500)
+    logCalories(today.minusDays(1), 500)
+    logCalories(today.minusDays(2), 500)
 
     val alert = adapter.checkLastDays(days = 3, today = today)
 

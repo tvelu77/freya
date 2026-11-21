@@ -1,46 +1,35 @@
 package io.tvelu77.freya.domain.services
 
-import io.mockk.every
-import io.mockk.mockk
 import io.tvelu77.freya.domain.models.CycleEntry
 import io.tvelu77.freya.domain.models.NutritionAdvice
 import io.tvelu77.freya.domain.models.PhaseInfo
 import io.tvelu77.freya.domain.models.PhaseType
-import io.tvelu77.freya.domain.ports.spi.CycleRepository
+import io.tvelu77.freya.domain.ports.spi.FakeCycleRepository
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
-import org.junit.Before
 import org.junit.Test
 import java.time.LocalDate
 
 class GetNutritionAdviceUseCaseAdapterTest {
 
-  private lateinit var repository: CycleRepository
-  private lateinit var adapter: GetNutritionAdviceUseCaseAdapter
+  private val repository = FakeCycleRepository()
+  private val adapter = GetNutritionAdviceUseCaseAdapter(repository, PhaseCalculatorAdapter())
 
   private val today = LocalDate.of(2024, 6, 10)
 
-  @Before
-  fun setup() {
-    repository = mockk()
-    adapter = GetNutritionAdviceUseCaseAdapter(repository, PhaseCalculatorAdapter())
-  }
-
   @Test
   fun `advice is null when there is no cycle`() = runTest {
-    every { repository.getLatestCycle() } returns flowOf(null)
-
     assertNull(adapter.getAdviceForToday(today).first())
   }
 
   @Test
   fun `advice matches the current phase`() = runTest {
-    val cycle = CycleEntry(startDate = today.minusDays(2), endDate = null, cycleLengthDays = 28)
-    every { repository.getLatestCycle() } returns flowOf(cycle)
+    repository.cycles.add(
+      CycleEntry(startDate = today.minusDays(2), endDate = null, cycleLengthDays = 28)
+    )
 
     val advice = adapter.getAdviceForToday(today).first()
 
@@ -50,8 +39,9 @@ class GetNutritionAdviceUseCaseAdapterTest {
 
   @Test
   fun `luteal phase advice focuses on complex carbs`() = runTest {
-    val cycle = CycleEntry(startDate = today.minusDays(25), endDate = null, cycleLengthDays = 28)
-    every { repository.getLatestCycle() } returns flowOf(cycle)
+    repository.cycles.add(
+      CycleEntry(startDate = today.minusDays(25), endDate = null, cycleLengthDays = 28)
+    )
 
     val advice = adapter.getAdviceForToday(today).first()
 
