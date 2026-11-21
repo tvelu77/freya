@@ -1,6 +1,6 @@
 package io.tvelu77.freya.domain.services
 
-import io.tvelu77.freya.domain.models.CycleEntry
+import io.tvelu77.freya.domain.models.CycleEntryFactory
 import io.tvelu77.freya.domain.ports.spi.FakeCycleRepository
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
@@ -21,9 +21,6 @@ class GetCycleStatsUseCaseAdapterTest {
     useCase = GetCycleStatsUseCaseAdapter(repository)
   }
 
-  private fun cycle(id: Long, start: LocalDate, end: LocalDate? = null, length: Int = 28) =
-    CycleEntry(id = id, startDate = start, endDate = end, cycleLengthDays = length)
-
   @Test
   fun `stats are null without history`() = runTest {
     assertNull(useCase.execute().first())
@@ -31,9 +28,15 @@ class GetCycleStatsUseCaseAdapterTest {
 
   @Test
   fun `stats average cycle gaps, period lengths and variability`() = runTest {
-    repository.cycles.add(cycle(1, LocalDate.of(2024, 1, 1), LocalDate.of(2024, 1, 5)))
-    repository.cycles.add(cycle(2, LocalDate.of(2024, 1, 29), LocalDate.of(2024, 2, 4)))
-    repository.cycles.add(cycle(3, LocalDate.of(2024, 2, 28), null))
+    repository.cycles.add(
+      CycleEntryFactory.cycleEntry(id = 1, startDate = LocalDate.of(2024, 1, 1), endDate = LocalDate.of(2024, 1, 5))
+    )
+    repository.cycles.add(
+      CycleEntryFactory.cycleEntry(id = 2, startDate = LocalDate.of(2024, 1, 29), endDate = LocalDate.of(2024, 2, 4))
+    )
+    repository.cycles.add(
+      CycleEntryFactory.cycleEntry(id = 3, startDate = LocalDate.of(2024, 2, 28))
+    )
 
     val stats = useCase.execute().first()
 
@@ -45,7 +48,9 @@ class GetCycleStatsUseCaseAdapterTest {
 
   @Test
   fun `stats fall back to the entry length with a single cycle`() = runTest {
-    repository.cycles.add(cycle(1, LocalDate.of(2024, 1, 1), null, length = 32))
+    repository.cycles.add(
+      CycleEntryFactory.cycleEntry(id = 1, startDate = LocalDate.of(2024, 1, 1), cycleLengthDays = 32)
+    )
 
     val stats = useCase.execute().first()
 
@@ -58,7 +63,10 @@ class GetCycleStatsUseCaseAdapterTest {
   fun `stats only count the last N cycles`() = runTest {
     (1..8).forEach { i ->
       repository.cycles.add(
-        cycle(i.toLong(), LocalDate.of(2024, 1, 1).plusDays(28L * i), null)
+        CycleEntryFactory.cycleEntry(
+          id = i.toLong(),
+          startDate = LocalDate.of(2024, 1, 1).plusDays(28L * i)
+        )
       )
     }
 
@@ -70,9 +78,9 @@ class GetCycleStatsUseCaseAdapterTest {
 
   @Test
   fun `stats handle irregular cycles without crashing`() = runTest {
-    repository.cycles.add(cycle(1, LocalDate.of(2024, 1, 1), null))
-    repository.cycles.add(cycle(2, LocalDate.of(2024, 1, 20), null))
-    repository.cycles.add(cycle(3, LocalDate.of(2024, 3, 15), null))
+    repository.cycles.add(CycleEntryFactory.cycleEntry(id = 1, startDate = LocalDate.of(2024, 1, 1)))
+    repository.cycles.add(CycleEntryFactory.cycleEntry(id = 2, startDate = LocalDate.of(2024, 1, 20)))
+    repository.cycles.add(CycleEntryFactory.cycleEntry(id = 3, startDate = LocalDate.of(2024, 3, 15)))
 
     val stats = useCase.execute().first()
 

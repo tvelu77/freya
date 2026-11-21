@@ -21,28 +21,35 @@ class GetCycleStatsUseCaseAdapter @Inject constructor(
 
   private fun compute(cycles: List<CycleEntry>): CycleStats? {
     if (cycles.isEmpty()) return null
-    val gaps = cycles.zipWithNext().map { pair ->
+    val gaps = cycleGaps(cycles)
+    val periods = periodLengths(cycles)
+    return CycleStats(
+      averageCycleLengthDays = gaps.meanOrFallback(cycles.last().cycleLengthDays),
+      averagePeriodLengthDays = periods.meanOrNull()?.toInt() ?: 0,
+      variabilityDays = gaps.standardDeviation(),
+      cyclesCounted = cycles.size
+    )
+  }
+
+  private fun cycleGaps(cycles: List<CycleEntry>): List<Int> =
+    cycles.zipWithNext().map { pair ->
       ChronoUnit.DAYS.between(pair.first.startDate, pair.second.startDate).toInt()
     }
-    val averageCycle = if (gaps.isNotEmpty()) {
-      (gaps.sum().toDouble() / gaps.size).toInt()
-    } else {
-      cycles.last().cycleLengthDays
+
+  private fun periodLengths(cycles: List<CycleEntry>): List<Int> =
+    cycles.mapNotNull { cycle ->
+      cycle.endDate?.let { end -> ChronoUnit.DAYS.between(cycle.startDate, end).toInt() + 1 }
     }
-    val periodLengths = cycles.mapNotNull { cycle ->
-      cycle.endDate?.let { ChronoUnit.DAYS.between(cycle.startDate, it).toInt() + 1 }
-    }
-    val averagePeriod = if (periodLengths.isNotEmpty()) {
-      (periodLengths.sum().toDouble() / periodLengths.size).toInt()
-    } else {
-      0
-    }
-    val variability = if (gaps.size >= 2) {
-      val mean = gaps.sum().toDouble() / gaps.size
-      sqrt(gaps.sumOf { (it - mean) * (it - mean) } / gaps.size)
-    } else {
-      0.0
-    }
-    return CycleStats(averageCycle, averagePeriod, variability, cycles.size)
+
+  private fun List<Int>.meanOrFallback(fallback: Int): Int =
+    meanOrNull()?.toInt() ?: fallback
+
+  private fun List<Int>.meanOrNull(): Double? =
+    if (isEmpty()) null else sum().toDouble() / size
+
+  private fun List<Int>.standardDeviation(): Double {
+    val mean = meanOrNull() ?: return 0.0
+    if (size < 2) return 0.0
+    return sqrt(sumOf { (it - mean) * (it - mean) } / size)
   }
 }
