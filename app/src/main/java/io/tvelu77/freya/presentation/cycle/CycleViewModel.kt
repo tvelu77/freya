@@ -5,8 +5,10 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.tvelu77.freya.domain.models.CycleEntry
 import io.tvelu77.freya.domain.models.CycleEntryResult
+import io.tvelu77.freya.domain.models.CycleStats
 import io.tvelu77.freya.domain.models.PhaseInfo
 import io.tvelu77.freya.domain.models.PhaseType
+import io.tvelu77.freya.domain.ports.api.GetCycleStatsUseCase
 import io.tvelu77.freya.domain.ports.api.PhaseCalculator
 import io.tvelu77.freya.domain.ports.api.TrackCycleUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,6 +26,7 @@ data class CycleUiState(
   val isLoading: Boolean = true,
   val currentPhase: PhaseInfo? = null,
   val cycleHistory: List<CycleEntry> = emptyList(),
+  val cycleStats: CycleStats? = null,
   val nextCycles: List<LocalDate> = emptyList(),
   val selectedMonth: YearMonth = YearMonth.now(),
   val selectedDate: LocalDate? = null,
@@ -35,10 +38,18 @@ data class CycleUiState(
   val error: String? = null
 )
 
+private data class CycleScreenData(
+  val phase: PhaseInfo?,
+  val history: List<CycleEntry>,
+  val predictions: List<LocalDate>,
+  val stats: CycleStats?
+)
+
 @HiltViewModel
 class CycleViewModel @Inject constructor(
   private val trackCycleUseCase: TrackCycleUseCase,
-  private val phaseCalculator: PhaseCalculator
+  private val phaseCalculator: PhaseCalculator,
+  private val getCycleStatsUseCase: GetCycleStatsUseCase
 ) : ViewModel() {
 
   private val _uiState = MutableStateFlow(CycleUiState())
@@ -53,18 +64,20 @@ class CycleViewModel @Inject constructor(
       combine(
         trackCycleUseCase.getCurrentPhase(),
         trackCycleUseCase.getCycleHistory(),
-        trackCycleUseCase.getNextCyclePredictions()
-      ) { phase, history, predictions ->
-        Triple(phase, history, predictions)
+        trackCycleUseCase.getNextCyclePredictions(),
+        getCycleStatsUseCase.execute()
+      ) { phase, history, predictions, stats ->
+        CycleScreenData(phase, history, predictions, stats)
       }.catch { e ->
         _uiState.update { it.copy(isLoading = false, error = e.message) }
-      }.collect { (phase, history, predictions) ->
+      }.collect { data ->
         _uiState.update {
           it.copy(
             isLoading = false,
-            currentPhase = phase,
-            cycleHistory = history,
-            nextCycles = predictions
+            currentPhase = data.phase,
+            cycleHistory = data.history,
+            nextCycles = data.predictions,
+            cycleStats = data.stats
           )
         }
       }

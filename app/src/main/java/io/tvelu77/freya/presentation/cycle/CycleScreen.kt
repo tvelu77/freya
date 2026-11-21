@@ -129,7 +129,8 @@ fun CycleScreen(
         CycleHistorySection(
           cycles = uiState.cycleHistory,
           onEdit = viewModel::onEditCycleClicked,
-          onDelete = viewModel::onDeleteCycleClicked
+          onDelete = viewModel::onDeleteCycleClicked,
+          stats = uiState.cycleStats
         )
       }
 
