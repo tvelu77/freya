@@ -5,6 +5,7 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import io.tvelu77.freya.domain.models.CycleEntry
+import io.tvelu77.freya.domain.models.CycleEntryResult
 import io.tvelu77.freya.domain.models.PhaseType
 import io.tvelu77.freya.domain.ports.api.TrackCycleUseCase
 import io.tvelu77.freya.domain.ports.spi.CycleRepository
@@ -30,11 +31,12 @@ class TrackCycleUseCaseAdapterTest {
   fun `startCycle saves a new cycle`() = runTest {
     val date = LocalDate.of(2024, 3, 1)
     coEvery { repository.getCycleByDate(date) } returns null
+    coEvery { repository.getAllCyclesOnce() } returns emptyList()
     coEvery { repository.saveCycle(any()) } returns 1L
 
-    val id = useCase.startCycle(date)
+    val result = useCase.startCycle(date)
 
-    assertEquals(1L, id)
+    assertEquals(CycleEntryResult.Success(1L), result)
     coVerify { repository.saveCycle(match { it.startDate == date }) }
   }
 
