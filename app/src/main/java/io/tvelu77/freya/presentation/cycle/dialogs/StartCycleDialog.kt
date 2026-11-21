@@ -22,12 +22,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import io.tvelu77.freya.ui.theme.Amber300
 import java.time.LocalDate
 
 @Composable
 fun StartCycleDialog(
   onConfirm: (LocalDate) -> Unit,
-  onDismiss: () -> Unit
+  onDismiss: () -> Unit,
+  errorMessage: String? = null
 ) {
   var selectedDate by remember { mutableStateOf(LocalDate.now()) }
 
@@ -67,6 +69,15 @@ fun StartCycleDialog(
               label = { Text(label, style = MaterialTheme.typography.labelSmall) }
             )
           }
+        }
+        errorMessage?.let {
+          Spacer(Modifier.height(10.dp))
+          Text(
+            text = it,
+            color = Amber300,
+            style = MaterialTheme.typography.bodySmall,
+            textAlign = TextAlign.Center
+          )
         }
       }
     },

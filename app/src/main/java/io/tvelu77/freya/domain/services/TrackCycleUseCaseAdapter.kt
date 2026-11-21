@@ -1,6 +1,7 @@
 package io.tvelu77.freya.domain.services
 
 import io.tvelu77.freya.domain.models.CycleEntry
+import io.tvelu77.freya.domain.models.CycleEntryResult
 import io.tvelu77.freya.domain.models.PhaseInfo
 import io.tvelu77.freya.domain.ports.api.PhaseCalculator
 import io.tvelu77.freya.domain.ports.api.TrackCycleUseCase
@@ -19,18 +20,28 @@ class TrackCycleUseCaseAdapter @Inject constructor(
   override suspend fun startCycle(
     startDate: LocalDate,
     cycleLengthDays: Int
-  ): Long {
+  ): CycleEntryResult {
+    val allCycles = repository.getAllCyclesOnce()
+    if (overlapsRecordedPeriod(startDate, excludeId = -1L, allCycles)) {
+      return CycleEntryResult.Error("Cette date se trouve déjà dans une période enregistrée.")
+    }
     val current = repository.getCycleByDate(startDate)
     if (current != null && current.isOngoing) {
       repository.updateCycle(current.copy(endDate = startDate.minusDays(1)))
     }
-    return repository.saveCycle(CycleEntry(startDate = startDate, endDate = null, cycleLengthDays = cycleLengthDays))
+    val id = repository.saveCycle(
+      CycleEntry(startDate = startDate, endDate = null, cycleLengthDays = cycleLengthDays)
+    )
+    return CycleEntryResult.Success(id)
   }
 
   override suspend fun endPeriod(
     cycleEntry: CycleEntry,
     endDate: LocalDate
-  ) {
+  ): CycleEntryResult {
+    if (endDate.isBefore(cycleEntry.startDate)) {
+      return CycleEntryResult.Error("La fin des règles doit être après le début.")
+    }
     val previousCycle = repository.getAllCyclesOnce()
       .sortedByDescending { it.startDate }
       .getOrNull(1)
@@ -39,13 +50,37 @@ class TrackCycleUseCaseAdapter @Inject constructor(
       ChronoUnit.DAYS.between(it.startDate, cycleEntry.startDate).toInt()
     } ?: cycleEntry.cycleLengthDays
 
-    repository.updateCycle(
-      cycleEntry.copy(
-        endDate = endDate,
-        cycleLengthDays = realCycleLength.coerceIn(21, 45)
-      )
+    val updated = cycleEntry.copy(
+      endDate = endDate,
+      cycleLengthDays = realCycleLength.coerceIn(21, 45)
     )
+    repository.updateCycle(updated)
+    return CycleEntryResult.Success(updated.id)
   }
+
+  override suspend fun updateCycle(entry: CycleEntry): CycleEntryResult {
+    if (entry.endDate != null && entry.endDate.isBefore(entry.startDate)) {
+      return CycleEntryResult.Error("La fin des règles doit être après le début.")
+    }
+    val allCycles = repository.getAllCyclesOnce()
+    val datesToCheck = listOfNotNull(entry.startDate, entry.endDate)
+    if (datesToCheck.any { overlapsRecordedPeriod(it, entry.id, allCycles) }) {
+      return CycleEntryResult.Error("Ce cycle chevauche une période déjà enregistrée.")
+    }
+    repository.updateCycle(entry)
+    return CycleEntryResult.Success(entry.id)
+  }
+
+  override suspend fun deleteCycle(id: Long) {
+    repository.deleteCycle(id)
+  }
+
+  private fun overlapsRecordedPeriod(
+    date: LocalDate,
+    excludeId: Long,
+    cycles: List<CycleEntry>
+  ): Boolean =
+    cycles.any { it.id != excludeId && it.endDate != null && date in it.startDate..it.endDate }
 
   override fun getCurrentPhase(today: LocalDate): Flow<PhaseInfo?> =
     repository.getLatestCycle().map { cycleEntry -> cycleEntry?.let { calculator.getCurrentPhase(it, today) }  }

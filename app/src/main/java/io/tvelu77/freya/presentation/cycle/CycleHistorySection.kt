@@ -10,8 +10,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Circle
+import androidx.compose.material.icons.rounded.DeleteOutline
+import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,7 +28,9 @@ import java.util.Locale
 
 @Composable
 fun CycleHistorySection(
-  cycles: List<CycleEntry>
+  cycles: List<CycleEntry>,
+  onEdit: (CycleEntry) -> Unit,
+  onDelete: (CycleEntry) -> Unit
 ) {
   Column(modifier = Modifier.padding(horizontal = 16.dp)) {
     Text("Historique", style = MaterialTheme.typography.titleMedium)
@@ -65,11 +70,36 @@ fun CycleHistorySection(
             }
           }
         }
-        Text(
-          text = "${cycle.cycleLengthDays}j",
-          style = MaterialTheme.typography.labelSmall,
-          color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
+        Row(
+          verticalAlignment = Alignment.CenterVertically,
+          horizontalArrangement = Arrangement.spacedBy(2.dp)
+        ) {
+          Text(
+            text = "${cycle.cycleLengthDays}j",
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+          )
+          IconButton(
+            onClick = { onEdit(cycle) },
+            modifier = Modifier.size(32.dp)
+          ) {
+            Icon(
+              imageVector = Icons.Rounded.Edit,
+              contentDescription = "Modifier ce cycle",
+              modifier = Modifier.size(18.dp)
+            )
+          }
+          IconButton(
+            onClick = { onDelete(cycle) },
+            modifier = Modifier.size(32.dp)
+          ) {
+            Icon(
+              imageVector = Icons.Rounded.DeleteOutline,
+              contentDescription = "Supprimer ce cycle",
+              modifier = Modifier.size(18.dp)
+            )
+          }
+        }
       }
       if (index < minOf(cycles.size, 6) - 1) {
         HorizontalDivider(
