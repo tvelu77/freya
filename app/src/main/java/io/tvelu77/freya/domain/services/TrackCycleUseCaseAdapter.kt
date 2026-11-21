@@ -83,10 +83,23 @@ class TrackCycleUseCaseAdapter @Inject constructor(
     cycles.any { it.id != excludeId && it.endDate != null && date in it.startDate..it.endDate }
 
   override fun getCurrentPhase(today: LocalDate): Flow<PhaseInfo?> =
-    repository.getLatestCycle().map { cycleEntry -> cycleEntry?.let { calculator.getCurrentPhase(it, today) }  }
+    repository.getAllCycles().map { cycles ->
+      val latest = cycles.maxByOrNull { it.startDate }
+      latest?.let { calculator.getCurrentPhase(it.withAverageLength(cycles), today) }
+    }
 
   override fun getNextCyclePredictions(count: Int): Flow<List<LocalDate>> =
-    repository.getLatestCycle().map { cycleEntry -> cycleEntry?.let { calculator.predictNextCycles(it, count) } ?: emptyList() }
+    repository.getAllCycles().map { cycles ->
+      val latest = cycles.maxByOrNull { it.startDate }
+      if (latest == null) {
+        emptyList()
+      } else {
+        calculator.predictNextCycles(latest.withAverageLength(cycles), count)
+      }
+    }
 
   override fun getCycleHistory(): Flow<List<CycleEntry>> = repository.getAllCycles()
+
+  private fun CycleEntry.withAverageLength(cycles: List<CycleEntry>): CycleEntry =
+    copy(cycleLengthDays = calculator.averageCycleLength(cycles, fallback = cycleLengthDays))
 }

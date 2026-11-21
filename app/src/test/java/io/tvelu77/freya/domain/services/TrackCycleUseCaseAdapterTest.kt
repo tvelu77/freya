@@ -44,7 +44,7 @@ class TrackCycleUseCaseAdapterTest {
   fun `getCurrentPhase returns menstrual on day 2`() = runTest {
     val start = LocalDate.now().minusDays(1)
     val cycle = CycleEntry(startDate = start, endDate = null)
-    every { repository.getLatestCycle() } returns flowOf(cycle)
+    every { repository.getAllCycles() } returns flowOf(listOf(cycle))
 
     val phase = useCase.getCurrentPhase().first()
 
@@ -53,7 +53,7 @@ class TrackCycleUseCaseAdapterTest {
 
   @Test
   fun `getCurrentPhase returns null when no cycle exists`() = runTest {
-    every { repository.getLatestCycle() } returns flowOf(null)
+    every { repository.getAllCycles() } returns flowOf(emptyList())
 
     val phase = useCase.getCurrentPhase().first()
 
