@@ -2,7 +2,9 @@ package io.tvelu77.freya.domain.services
 
 import io.tvelu77.freya.domain.models.CycleEntry
 import io.tvelu77.freya.domain.models.CycleEntryResult
+import io.tvelu77.freya.domain.models.PhaseType
 import io.tvelu77.freya.domain.ports.spi.FakeCycleRepository
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -132,5 +134,35 @@ class TrackCycleValidationTest {
     useCase.deleteCycle(7L)
 
     assertTrue(repository.cycles.isEmpty())
+  }
+
+  @Test
+  fun `getCurrentPhase wraps the day count with the personalized length`() = runTest {
+    repository.cycles.add(
+      CycleEntry(id = 1, startDate = LocalDate.of(2024, 1, 1), endDate = null, cycleLengthDays = 35)
+    )
+
+    val phase = useCase.getCurrentPhase(LocalDate.of(2024, 2, 5)).first()
+
+    assertEquals(1, phase?.daysInCycle)
+    assertEquals(PhaseType.MENSTRUAL, phase?.phase)
+  }
+
+  @Test
+  fun `getNextCyclePredictions uses the average length of past cycles`() = runTest {
+    repository.cycles.add(
+      CycleEntry(id = 1, startDate = LocalDate.of(2024, 1, 1), endDate = LocalDate.of(2024, 1, 5), cycleLengthDays = 28)
+    )
+    repository.cycles.add(
+      CycleEntry(id = 2, startDate = LocalDate.of(2024, 1, 30), endDate = LocalDate.of(2024, 2, 3), cycleLengthDays = 28)
+    )
+    repository.cycles.add(
+      CycleEntry(id = 3, startDate = LocalDate.of(2024, 3, 1), endDate = null, cycleLengthDays = 28)
+    )
+
+    val predictions = useCase.getNextCyclePredictions(2).first()
+
+    assertEquals(LocalDate.of(2024, 3, 31), predictions[0])
+    assertEquals(LocalDate.of(2024, 4, 30), predictions[1])
   }
 }
