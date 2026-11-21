@@ -8,6 +8,7 @@ import jakarta.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.time.temporal.ChronoUnit
+import kotlin.math.sqrt
 
 class GetCycleStatsUseCaseAdapter @Inject constructor(
   private val repository: CycleRepository
@@ -43,6 +44,9 @@ class GetCycleStatsUseCaseAdapter @Inject constructor(
   private fun List<Int>.meanOrFallback(fallback: Int): Int =
     if (isEmpty()) fallback else average().toInt()
 
-  private fun List<Int>.standardDeviation(): Double =
-    if (size < 2) 0.0 else map { it.toDouble() }.stdDev()
+  private fun List<Int>.standardDeviation(): Double {
+    if (size < 2) return 0.0
+    val mean = average()
+    return sqrt(map { (it - mean) * (it - mean) }.average())
+  }
 }
