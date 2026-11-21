@@ -13,7 +13,7 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import io.tvelu77.freya.R
 
-const val NOTIFICATION_CHANNEL_ID = "freya_rappels_doux"
+const val NOTIFICATION_CHANNEL_ID = "freya_gentle_reminders"
 const val NOTIFICATION_TAG = "freya_phase_notifications"
 
 class PhaseNotificationWorker(
