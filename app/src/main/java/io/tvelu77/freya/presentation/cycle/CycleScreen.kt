@@ -11,6 +11,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Check
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -19,6 +21,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -31,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.tvelu77.freya.domain.models.PhaseType
+import io.tvelu77.freya.presentation.cycle.dialogs.EditCycleDialog
 import io.tvelu77.freya.presentation.cycle.dialogs.EndPeriodDialog
 import io.tvelu77.freya.presentation.cycle.dialogs.StartCycleDialog
 import java.time.LocalDate
@@ -122,7 +126,11 @@ fun CycleScreen(
       PhaseLegendSection()
 
       if (uiState.cycleHistory.isNotEmpty()) {
-        CycleHistorySection(cycles = uiState.cycleHistory)
+        CycleHistorySection(
+          cycles = uiState.cycleHistory,
+          onEdit = viewModel::onEditCycleClicked,
+          onDelete = viewModel::onDeleteCycleClicked
+        )
       }
 
       Spacer(Modifier.height(24.dp))
@@ -132,14 +140,43 @@ fun CycleScreen(
   if (uiState.showStartCycleDialog) {
     StartCycleDialog(
       onConfirm = viewModel::onStartCycleConfirmed,
-      onDismiss = viewModel::onDismissDialog
+      onDismiss = viewModel::onDismissDialog,
+      errorMessage = uiState.dialogError
     )
   }
 
   if (uiState.showEndPeriodDialog) {
     EndPeriodDialog(
       onConfirm = viewModel::onEndPeriodConfirmed,
-      onDismiss = viewModel::onDismissEndPeriodDialog
+      onDismiss = viewModel::onDismissEndPeriodDialog,
+      errorMessage = uiState.dialogError
+    )
+  }
+
+  uiState.editingCycle?.let { cycle ->
+    EditCycleDialog(
+      cycle = cycle,
+      onConfirm = viewModel::onEditCycleConfirmed,
+      onDismiss = viewModel::onDismissEditDialog,
+      errorMessage = uiState.dialogError
+    )
+  }
+
+  uiState.cycleToDelete?.let {
+    AlertDialog(
+      onDismissRequest = viewModel::onDismissDeleteDialog,
+      title = { Text("Supprimer ce cycle ?") },
+      text = { Text("Tu pourras toujours le recréer plus tard si besoin.") },
+      confirmButton = {
+        Button(onClick = viewModel::onDeleteCycleConfirmed) {
+          Text("Supprimer")
+        }
+      },
+      dismissButton = {
+        TextButton(onClick = viewModel::onDismissDeleteDialog) {
+          Text("Annuler")
+        }
+      }
     )
   }
 }

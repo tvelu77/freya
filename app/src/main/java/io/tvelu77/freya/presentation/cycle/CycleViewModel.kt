@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.tvelu77.freya.domain.models.CycleEntry
+import io.tvelu77.freya.domain.models.CycleEntryResult
 import io.tvelu77.freya.domain.models.PhaseInfo
 import io.tvelu77.freya.domain.models.PhaseType
 import io.tvelu77.freya.domain.ports.api.PhaseCalculator
@@ -28,6 +29,9 @@ data class CycleUiState(
   val selectedDate: LocalDate? = null,
   val showStartCycleDialog: Boolean = false,
   val showEndPeriodDialog: Boolean = false,
+  val dialogError: String? = null,
+  val editingCycle: CycleEntry? = null,
+  val cycleToDelete: CycleEntry? = null,
   val error: String? = null
 )
 
@@ -81,13 +85,17 @@ class CycleViewModel @Inject constructor(
 
   fun onStartCycleConfirmed(date: LocalDate) {
     viewModelScope.launch {
-      trackCycleUseCase.startCycle(date)
-      _uiState.update { it.copy(showStartCycleDialog = false) }
+      when (val result = trackCycleUseCase.startCycle(date)) {
+        is CycleEntryResult.Success ->
+          _uiState.update { it.copy(showStartCycleDialog = false, dialogError = null) }
+        is CycleEntryResult.Error ->
+          _uiState.update { it.copy(dialogError = result.message) }
+      }
     }
   }
 
   fun onDismissDialog() {
-    _uiState.update { it.copy(showStartCycleDialog = false) }
+    _uiState.update { it.copy(showStartCycleDialog = false, dialogError = null) }
   }
 
   fun onEndPeriodClicked() {
@@ -97,13 +105,54 @@ class CycleViewModel @Inject constructor(
   fun onEndPeriodConfirmed(endDate: LocalDate) {
     viewModelScope.launch {
       val latestCycle = _uiState.value.cycleHistory.firstOrNull() ?: return@launch
-      trackCycleUseCase.endPeriod(latestCycle, endDate)
-      _uiState.update { it.copy(showEndPeriodDialog = false) }
+      when (val result = trackCycleUseCase.endPeriod(latestCycle, endDate)) {
+        is CycleEntryResult.Success ->
+          _uiState.update { it.copy(showEndPeriodDialog = false, dialogError = null) }
+        is CycleEntryResult.Error ->
+          _uiState.update { it.copy(dialogError = result.message) }
+      }
     }
   }
 
   fun onDismissEndPeriodDialog() {
-    _uiState.update { it.copy(showEndPeriodDialog = false) }
+    _uiState.update { it.copy(showEndPeriodDialog = false, dialogError = null) }
+  }
+
+  fun onEditCycleClicked(cycle: CycleEntry) {
+    _uiState.update { it.copy(editingCycle = cycle, dialogError = null) }
+  }
+
+  fun onDismissEditDialog() {
+    _uiState.update { it.copy(editingCycle = null, dialogError = null) }
+  }
+
+  fun onEditCycleConfirmed(startDate: LocalDate, endDate: LocalDate?) {
+    val cycle = _uiState.value.editingCycle ?: return
+    viewModelScope.launch {
+      val updated = cycle.copy(startDate = startDate, endDate = endDate)
+      when (val result = trackCycleUseCase.updateCycle(updated)) {
+        is CycleEntryResult.Success ->
+          _uiState.update { it.copy(editingCycle = null, dialogError = null) }
+        is CycleEntryResult.Error ->
+          _uiState.update { it.copy(dialogError = result.message) }
+      }
+    }
+  }
+
+  fun onDeleteCycleClicked(cycle: CycleEntry) {
+    _uiState.update { it.copy(cycleToDelete = cycle) }
+  }
+
+  fun onDismissDeleteDialog() {
+    _uiState.update { it.copy(cycleToDelete = null) }
+  }
+
+  fun onDeleteCycleConfirmed() {
+    val cycle = _uiState.value.cycleToDelete ?: return
+    viewModelScope.launch {
+      trackCycleUseCase.deleteCycle(cycle.id)
+      _uiState.update { it.copy(cycleToDelete = null) }
+    }
   }
 
   fun getPhaseForDate(date: LocalDate): PhaseType? {
