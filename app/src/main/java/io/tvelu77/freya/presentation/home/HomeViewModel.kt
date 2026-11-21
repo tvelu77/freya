@@ -3,13 +3,17 @@ package io.tvelu77.freya.presentation.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.tvelu77.freya.domain.models.CycleEntry
 import io.tvelu77.freya.domain.models.HealthScore
 import io.tvelu77.freya.domain.models.NutritionAdvice
 import io.tvelu77.freya.domain.models.PhaseInfo
+import io.tvelu77.freya.domain.models.PhaseType
 import io.tvelu77.freya.domain.models.TCAAlert
 import io.tvelu77.freya.domain.ports.api.GetHealthScoreUseCase
 import io.tvelu77.freya.domain.ports.api.GetNutritionAdviceUseCase
 import io.tvelu77.freya.domain.ports.api.GetUserProfileUseCase
+import io.tvelu77.freya.domain.ports.api.LogFoodUseCase
+import io.tvelu77.freya.domain.ports.api.PhaseCalculator
 import io.tvelu77.freya.domain.ports.api.TCAGuardUseCase
 import io.tvelu77.freya.domain.ports.api.TrackCycleUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,10 +21,12 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 import javax.inject.Inject
@@ -34,7 +40,14 @@ data class HomeUiState(
   val healthScore: HealthScore? = null,
   val tcaAlert: TCAAlert? = null,
   val hasActiveCycle: Boolean = false,
-  val error: String? = null
+  val error: String? = null,
+  val selectedMonth: YearMonth = YearMonth.now(),
+  val selectedDate: LocalDate = LocalDate.now(),
+  val cycles: List<CycleEntry> = emptyList(),
+  val nextCycles: List<LocalDate> = emptyList(),
+  val selectedPhase: PhaseInfo? = null,
+  val selectedDayCalories: Int = 0,
+  val showCalories: Boolean = true
 )
 
 @HiltViewModel
@@ -43,36 +56,49 @@ class HomeViewModel @Inject constructor(
   private val getNutritionAdviceUseCase: GetNutritionAdviceUseCase,
   private val getHealthScoreUseCase: GetHealthScoreUseCase,
   private val tcaGuardUseCase: TCAGuardUseCase,
-  private val getUserProfileUseCase: GetUserProfileUseCase
+  private val getUserProfileUseCase: GetUserProfileUseCase,
+  private val logFoodUseCase: LogFoodUseCase,
+  private val phaseCalculator: PhaseCalculator
 ) : ViewModel() {
 
   private val _uiState = MutableStateFlow(HomeUiState())
   val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
 
   private val today = LocalDate.now()
+  private val selectedDate = MutableStateFlow(LocalDate.now())
 
   init {
     loadHomeData()
+    observeSelectedDay()
   }
 
   private fun loadHomeData() {
     combine(
       trackCycleUseCase.getCurrentPhase(today),
+      trackCycleUseCase.getCycleHistory(),
       getNutritionAdviceUseCase.getAdviceForToday(today),
       getHealthScoreUseCase.getScoreForDay(today),
       getUserProfileUseCase.execute()
-    ) { phase, advice, score, profile ->
+    ) { phase, history, advice, score, profile ->
       _uiState.update {
         it.copy(
           isLoading       = false,
           phaseInfo       = phase,
+          cycles          = history,
           nutritionAdvice = advice,
           healthScore     = score,
           hasActiveCycle  = phase != null,
-          greetingName    = profile.firstName
+          greetingName    = profile.firstName,
+          showCalories    = !profile.tcaFriendlyMode
         )
       }
     }.launchIn(viewModelScope)
+
+    viewModelScope.launch {
+      trackCycleUseCase.getNextCyclePredictions().collect { next ->
+        _uiState.update { it.copy(nextCycles = next) }
+      }
+    }
 
     viewModelScope.launch {
       val alert = tcaGuardUseCase.checkLastDays()
@@ -91,6 +117,42 @@ class HomeViewModel @Inject constructor(
       trackCycleUseCase.startCycle(today)
     }
   }
+
+  private fun observeSelectedDay() {
+    viewModelScope.launch {
+      selectedDate
+        .flatMapLatest { trackCycleUseCase.getPhaseForDate(it) }
+        .collect { phase -> _uiState.update { it.copy(selectedPhase = phase) } }
+    }
+    viewModelScope.launch {
+      selectedDate
+        .flatMapLatest { logFoodUseCase.getFoodForDay(it) }
+        .collect { entries ->
+          _uiState.update { it.copy(selectedDayCalories = entries.sumOf { e -> e.calories }) }
+        }
+    }
+  }
+
+  fun onDateSelected(date: LocalDate) {
+    selectedDate.value = date
+    _uiState.update { it.copy(selectedDate = date) }
+  }
+
+  fun onMonthChanged(month: YearMonth) {
+    _uiState.update { it.copy(selectedMonth = month) }
+  }
+
+  fun phaseForDate(date: LocalDate): PhaseType? {
+    val latest = _uiState.value.cycles.maxByOrNull { it.startDate } ?: return null
+    return try {
+      phaseCalculator.getCurrentPhase(latest, date).phase
+    } catch (e: Exception) {
+      null
+    }
+  }
+
+  fun isPredictedCycleStart(date: LocalDate): Boolean =
+    _uiState.value.nextCycles.any { it == date }
 
   fun refresh() {
     _uiState.update { it.copy(isLoading = true, error = null) }
