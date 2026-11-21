@@ -81,7 +81,8 @@ fun EditCycleDialog(
               selected = startDate == date,
               onClick = {
                 startDate = date
-                if (endDate != null && endDate.isBefore(date)) endDate = null
+                val currentEnd = endDate
+                if (currentEnd != null && currentEnd.isBefore(date)) endDate = null
               },
               label = {
                 Text(

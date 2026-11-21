@@ -23,7 +23,7 @@ class TrackCycleUseCaseAdapter @Inject constructor(
   ): CycleEntryResult {
     val allCycles = repository.getAllCyclesOnce()
     if (overlapsRecordedPeriod(startDate, excludeId = -1L, allCycles)) {
-      return CycleEntryResult.Error("Cette date se trouve déjà dans une période enregistrée.")
+      return CycleEntryResult.Error("This date falls inside an already recorded period.")
     }
     val current = repository.getCycleByDate(startDate)
     if (current != null && current.isOngoing) {
@@ -40,7 +40,7 @@ class TrackCycleUseCaseAdapter @Inject constructor(
     endDate: LocalDate
   ): CycleEntryResult {
     if (endDate.isBefore(cycleEntry.startDate)) {
-      return CycleEntryResult.Error("La fin des règles doit être après le début.")
+      return CycleEntryResult.Error("The end of the period must be after its start.")
     }
     val previousCycle = repository.getAllCyclesOnce()
       .sortedByDescending { it.startDate }
@@ -60,12 +60,12 @@ class TrackCycleUseCaseAdapter @Inject constructor(
 
   override suspend fun updateCycle(entry: CycleEntry): CycleEntryResult {
     if (entry.endDate != null && entry.endDate.isBefore(entry.startDate)) {
-      return CycleEntryResult.Error("La fin des règles doit être après le début.")
+      return CycleEntryResult.Error("The end of the period must be after its start.")
     }
     val allCycles = repository.getAllCyclesOnce()
     val datesToCheck = listOfNotNull(entry.startDate, entry.endDate)
     if (datesToCheck.any { overlapsRecordedPeriod(it, entry.id, allCycles) }) {
-      return CycleEntryResult.Error("Ce cycle chevauche une période déjà enregistrée.")
+      return CycleEntryResult.Error("This cycle overlaps an already recorded period.")
     }
     repository.updateCycle(entry)
     return CycleEntryResult.Success(entry.id)
