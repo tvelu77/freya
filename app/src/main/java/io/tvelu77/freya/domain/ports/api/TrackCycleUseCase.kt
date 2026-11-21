@@ -14,6 +14,7 @@ interface TrackCycleUseCase {
   suspend fun deleteCycle(id: Long)
   suspend fun rescheduleNotifications()
   fun getCurrentPhase(today: LocalDate = LocalDate.now()): Flow<PhaseInfo?>
+  fun getPhaseForDate(date: LocalDate): Flow<PhaseInfo?>
   fun getNextCyclePredictions(count: Int = 3): Flow<List<LocalDate>>
   fun getCycleHistory(): Flow<List<CycleEntry>>
 

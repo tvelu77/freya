@@ -40,12 +40,18 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.tvelu77.freya.domain.models.PhaseInfo
+import io.tvelu77.freya.domain.models.PhaseType
 import io.tvelu77.freya.domain.models.TCAAlert
+import io.tvelu77.freya.presentation.cycle.CycleCalendar
 import io.tvelu77.freya.ui.components.HealthScoreCard
 import io.tvelu77.freya.ui.components.NutritionAdviceCard
 import io.tvelu77.freya.ui.components.PhaseChip
 import io.tvelu77.freya.ui.theme.Amber100
 import io.tvelu77.freya.ui.theme.phaseGradientColors
+import java.time.LocalDate
+import java.time.YearMonth
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 @Composable
 fun HomeScreen(
@@ -74,7 +80,11 @@ fun HomeScreen(
           onStartCycle = viewModel::startNewCycle,
           onDismissTcaAlert = viewModel::dismissTcaAlert,
           onNavigateToCycle = onNavigateToCycle,
-          onNavigateToFood = onNavigateToFood
+          onNavigateToFood = onNavigateToFood,
+          onDateSelected = viewModel::onDateSelected,
+          onMonthChanged = viewModel::onMonthChanged,
+          phaseForDate = viewModel::phaseForDate,
+          isPredictedStart = viewModel::isPredictedCycleStart
         )
       }
     }
@@ -87,7 +97,11 @@ private fun HomeContent(
   onStartCycle: () -> Unit,
   onDismissTcaAlert: () -> Unit,
   onNavigateToCycle: () -> Unit,
-  onNavigateToFood: () -> Unit
+  onNavigateToFood: () -> Unit,
+  onDateSelected: (LocalDate) -> Unit,
+  onMonthChanged: (YearMonth) -> Unit,
+  phaseForDate: (LocalDate) -> PhaseType?,
+  isPredictedStart: (LocalDate) -> Boolean
 ) {
   Column(
     modifier = Modifier
@@ -105,6 +119,23 @@ private fun HomeContent(
       modifier = Modifier.padding(horizontal = 16.dp),
       verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
+
+      if (uiState.hasActiveCycle) {
+        CycleCalendar(
+          selectedMonth = uiState.selectedMonth,
+          selectedDate = uiState.selectedDate,
+          onDateSelected = onDateSelected,
+          onMonthChanged = onMonthChanged,
+          getPhaseForDate = phaseForDate,
+          isPredictedStart = isPredictedStart
+        )
+        SelectedDayKpis(
+          date = uiState.selectedDate,
+          phase = uiState.selectedPhase?.phase,
+          calories = uiState.selectedDayCalories,
+          showCalories = uiState.showCalories
+        )
+      }
 
       AnimatedVisibility(
         visible = uiState.tcaAlert?.triggered == true,
@@ -133,6 +164,49 @@ private fun HomeContent(
       }
 
       Spacer(Modifier.height(24.dp))
+    }
+  }
+}
+
+@Composable
+private fun SelectedDayKpis(
+  date: LocalDate,
+  phase: PhaseType?,
+  calories: Int,
+  showCalories: Boolean
+) {
+  Card(
+    modifier = Modifier.fillMaxWidth(),
+    colors = CardDefaults.cardColors(
+      containerColor = MaterialTheme.colorScheme.surfaceVariant
+    ),
+    shape = MaterialTheme.shapes.large
+  ) {
+    Row(
+      modifier = Modifier
+        .fillMaxWidth()
+        .padding(horizontal = 16.dp, vertical = 12.dp),
+      horizontalArrangement = Arrangement.SpaceBetween,
+      verticalAlignment = Alignment.CenterVertically
+    ) {
+      Text(
+        text = date.format(DateTimeFormatter.ofPattern("d MMMM", Locale.FRENCH))
+          .replaceFirstChar { it.uppercase() },
+        style = MaterialTheme.typography.titleSmall
+      )
+      Row(
+        horizontalArrangement = Arrangement.spacedBy(10.dp),
+        verticalAlignment = Alignment.CenterVertically
+      ) {
+        phase?.let { PhaseChip(phase = it) }
+        if (showCalories) {
+          Text(
+            text = "$calories kcal",
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+          )
+        }
+      }
     }
   }
 }

@@ -10,6 +10,7 @@ import io.tvelu77.freya.domain.ports.spi.FakeUserProfileRepository
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -207,5 +208,20 @@ class TrackCycleValidationTest {
 
     assertEquals(1, scheduler.cancelCount)
     assertTrue(scheduler.scheduled.isEmpty())
+  }
+
+  @Test
+  fun `getPhaseForDate returns the phase of any date from the latest cycle`() = runTest {
+    repository.cycles.add(
+      CycleEntry(id = 1, startDate = LocalDate.of(2024, 1, 1), endDate = LocalDate.of(2024, 1, 5), cycleLengthDays = 28)
+    )
+
+    assertEquals(PhaseType.MENSTRUAL, useCase.getPhaseForDate(LocalDate.of(2024, 1, 3)).first()?.phase)
+    assertEquals(PhaseType.LUTEAL, useCase.getPhaseForDate(LocalDate.of(2024, 1, 20)).first()?.phase)
+  }
+
+  @Test
+  fun `getPhaseForDate returns null without history`() = runTest {
+    assertNull(useCase.getPhaseForDate(LocalDate.of(2024, 1, 3)).first())
   }
 }
