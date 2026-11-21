@@ -22,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import io.tvelu77.freya.domain.models.CycleEntry
+import io.tvelu77.freya.domain.models.CycleStats
 import io.tvelu77.freya.ui.theme.ColorMenstrual
 import java.time.format.DateTimeFormatter
 import java.util.Locale
@@ -30,10 +31,22 @@ import java.util.Locale
 fun CycleHistorySection(
   cycles: List<CycleEntry>,
   onEdit: (CycleEntry) -> Unit,
-  onDelete: (CycleEntry) -> Unit
+  onDelete: (CycleEntry) -> Unit,
+  stats: CycleStats? = null
 ) {
   Column(modifier = Modifier.padding(horizontal = 16.dp)) {
     Text("Historique", style = MaterialTheme.typography.titleMedium)
+    stats?.let {
+      Spacer(Modifier.height(4.dp))
+      Text(
+        text = "Sur ${it.cyclesCounted} cycles : moyen ${it.averageCycleLengthDays}j · " +
+          "règles ${it.averagePeriodLengthDays}j · variabilité ±${
+            String.format(Locale.FRENCH, "%.1f", it.variabilityDays)
+          }j",
+        style = MaterialTheme.typography.labelSmall,
+        color = MaterialTheme.colorScheme.onSurfaceVariant
+      )
+    }
     Spacer(Modifier.height(10.dp))
 
     cycles.take(6).forEachIndexed { index, cycle ->

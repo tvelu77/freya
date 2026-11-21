@@ -22,6 +22,10 @@ android {
         jvmToolchain(17)
     }
     buildFeatures { compose = true }
+
+    ksp {
+        arg("room.schemaLocation", "$projectDir/schemas")
+    }
     buildTypes {
         debug {
             isDebuggable = false
