@@ -14,7 +14,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import io.tvelu77.freya.R
 import io.tvelu77.freya.presentation.onboarding.components.ContentCard
 import io.tvelu77.freya.presentation.onboarding.components.OnboardingFooter
 import io.tvelu77.freya.presentation.onboarding.components.WelcomeCard
@@ -32,18 +34,17 @@ fun PreferencesPage(
   Column(modifier = Modifier.fillMaxSize()) {
     WelcomeCard(
       emoji = "💚",
-      title = "Ton confort avant tout",
+      title = stringResource(R.string.onboarding_prefs_welcome),
       backgroundColor = Color(0xFFE8F5E9),
       subtitleColor = Color(0xFF1B5E20)
     )
     ContentCard(
-      title = "Mode bienveillant",
-      subtitle = "Tu peux masquer tous les chiffres et te concentrer " +
-              "uniquement sur le ressenti. Modifiable à tout moment."
+      title = stringResource(R.string.onboarding_prefs_title),
+      subtitle = stringResource(R.string.onboarding_prefs_sub)
     ) {
       ToggleRow(
-        title = "Masquer les calories",
-        subtitle = "Focus sur le ressenti",
+        title = stringResource(R.string.onboarding_hide_calories),
+        subtitle = stringResource(R.string.onboarding_focus),
         checked = friendlyModeEnabled,
         onCheckedChange = onFriendlyModeToggled,
         icon = Icons.Rounded.VisibilityOff
@@ -53,8 +54,8 @@ fun PreferencesPage(
         color = MaterialTheme.colorScheme.outlineVariant
       )
       ToggleRow(
-        title = "Notifications douces",
-        subtitle = "Rappels et conseils bienveillants",
+        title = stringResource(R.string.onboarding_notif),
+        subtitle = stringResource(R.string.onboarding_notif_sub),
         checked = notificationsEnabled,
         onCheckedChange = onNotificationsToggled,
         icon = Icons.Rounded.Notifications
@@ -66,7 +67,7 @@ fun PreferencesPage(
         .windowInsetsPadding(WindowInsets.navigationBars),
       totalSteps = 4,
       currentStep = currentStep,
-      buttonLabel = "C'est parti 🌸",
+      buttonLabel = stringResource(R.string.onboarding_finish),
       onNext = onNext
     )
   }

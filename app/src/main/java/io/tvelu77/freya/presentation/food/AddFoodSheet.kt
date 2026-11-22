@@ -7,7 +7,6 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -46,11 +45,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import io.tvelu77.freya.R
 import io.tvelu77.freya.domain.models.MealType
 import io.tvelu77.freya.domain.models.QuickFood
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -77,7 +79,10 @@ fun AddFoodSheet(
         .padding(bottom = 32.dp)
     ) {
       Text(
-        text = "Ajouter à ${mealType.displayName.lowercase()}",
+        text = stringResource(
+          R.string.food_add_to_meal,
+          mealType.displayName.lowercase(Locale.FRENCH)
+        ),
         style = MaterialTheme.typography.titleLarge
       )
 
@@ -88,8 +93,10 @@ fun AddFoodSheet(
         onValueChange = onQueryChanged,
         modifier = Modifier.fillMaxWidth(),
         placeholder = {
-          Text("Rechercher un aliment...",
-            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f))
+          Text(
+            text = stringResource(R.string.food_search_placeholder),
+            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
+          )
         },
         leadingIcon = {
           Icon(Icons.Rounded.Search, contentDescription = null)
@@ -97,7 +104,10 @@ fun AddFoodSheet(
         trailingIcon = {
           if (searchQuery.isNotEmpty()) {
             IconButton(onClick = { onQueryChanged("") }) {
-              Icon(Icons.Rounded.Clear, contentDescription = "Effacer")
+              Icon(
+                Icons.Rounded.Clear,
+                contentDescription = stringResource(R.string.food_clear_cd)
+              )
             }
           }
         },
@@ -137,7 +147,7 @@ fun AddFoodSheet(
                 ) {
                   Icon(
                     Icons.Rounded.Close,
-                    contentDescription = "Désélectionner",
+                    contentDescription = stringResource(R.string.food_deselect_cd),
                     modifier = Modifier.size(16.dp)
                   )
                 }
@@ -153,7 +163,7 @@ fun AddFoodSheet(
                   value = quantity,
                   onValueChange = { quantity = it.filter { c -> c.isDigit() } },
                   modifier = Modifier.width(100.dp),
-                  label = { Text("Quantité (g)") },
+                  label = { Text(stringResource(R.string.food_quantity_label)) },
                   keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                   singleLine = true,
                   shape = RoundedCornerShape(12.dp)
@@ -163,14 +173,20 @@ fun AddFoodSheet(
                 val ratio = q / food.defaultQuantity
                 Column {
                   Text(
-                    "${(food.calories * ratio).toInt()} kcal",
+                    text = stringResource(
+                      R.string.food_kcal,
+                      (food.calories * ratio).toInt()
+                    ),
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.onPrimaryContainer
                   )
                   Text(
-                    "P: ${(food.proteins * ratio).toInt()}g " +
-                            "G: ${(food.carbs * ratio).toInt()}g " +
-                            "L: ${(food.fats * ratio).toInt()}g",
+                    text = stringResource(
+                      R.string.food_macros_short,
+                      (food.proteins * ratio).toInt(),
+                      (food.carbs * ratio).toInt(),
+                      (food.fats * ratio).toInt()
+                    ),
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f)
                   )
@@ -185,11 +201,11 @@ fun AddFoodSheet(
                   onFoodSelected(food, q)
                 },
                 modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(12.dp)
+                shape = RoundedCornerShape(16.dp)
               ) {
                 Icon(Icons.Rounded.Add, contentDescription = null)
                 Spacer(Modifier.width(6.dp))
-                Text("Ajouter")
+                Text(stringResource(R.string.food_add_button))
               }
             }
           }
@@ -216,14 +232,16 @@ fun AddFoodSheet(
           }
         }
       } else if (searchQuery.length >= 2) {
-        Box(
+        Column(
           modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 24.dp),
-          contentAlignment = Alignment.Center
+          horizontalAlignment = Alignment.CenterHorizontally,
+          verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
+          Text("🌱", style = MaterialTheme.typography.headlineMedium)
           Text(
-            text = "Aucun résultat pour \"$searchQuery\"",
+            text = stringResource(R.string.food_no_results, searchQuery),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center
@@ -231,7 +249,7 @@ fun AddFoodSheet(
         }
       } else if (searchQuery.isEmpty()) {
         Text(
-          text = "Suggestions rapides",
+          text = stringResource(R.string.food_quick_suggestions),
           style = MaterialTheme.typography.labelSmall,
           color = MaterialTheme.colorScheme.onSurfaceVariant
         )

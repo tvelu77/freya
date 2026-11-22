@@ -16,8 +16,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import io.tvelu77.freya.R
 import io.tvelu77.freya.domain.models.PhaseType
 import io.tvelu77.freya.ui.theme.ColorFollicular
 import io.tvelu77.freya.ui.theme.ColorLuteal
@@ -27,21 +29,24 @@ import io.tvelu77.freya.ui.theme.ColorOvulatory
 @Composable
 fun PhaseLegendSection() {
   Column(modifier = Modifier.padding(16.dp)) {
-    Text("Légende", style = MaterialTheme.typography.titleMedium)
+    Text(
+      text = stringResource(R.string.cycle_legend),
+      style = MaterialTheme.typography.titleMedium
+    )
     Spacer(Modifier.height(10.dp))
 
     val phases = listOf(
-      Triple(PhaseType.MENSTRUAL, ColorMenstrual,  "Menstruelle  • J1–J5"),
-      Triple(PhaseType.FOLLICULAR, ColorFollicular, "Folliculaire • J6–J13"),
-      Triple(PhaseType.OVULATORY, ColorOvulatory,  "Ovulatoire   • J14–J16"),
-      Triple(PhaseType.LUTEAL, ColorLuteal,     "Lutéale      • J17–J28")
+      Triple(PhaseType.MENSTRUAL, ColorMenstrual,  R.string.cycle_legend_menstrual),
+      Triple(PhaseType.FOLLICULAR, ColorFollicular, R.string.cycle_legend_follicular),
+      Triple(PhaseType.OVULATORY, ColorOvulatory,  R.string.cycle_legend_ovulatory),
+      Triple(PhaseType.LUTEAL, ColorLuteal,     R.string.cycle_legend_luteal)
     )
 
     Row(
       modifier = Modifier.fillMaxWidth(),
       horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-      phases.forEach { (_, color, label) ->
+      phases.forEach { (_, color, labelRes) ->
         Column(
           modifier = Modifier.weight(1f),
           horizontalAlignment = Alignment.CenterHorizontally
@@ -55,7 +60,7 @@ fun PhaseLegendSection() {
           )
           Spacer(Modifier.height(4.dp))
           Text(
-            text = label.substringBefore("•").trim(),
+            text = stringResource(labelRes),
             style = MaterialTheme.typography.labelSmall,
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.onSurfaceVariant

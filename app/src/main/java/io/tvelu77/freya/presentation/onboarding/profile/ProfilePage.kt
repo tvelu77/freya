@@ -11,6 +11,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import io.tvelu77.freya.R
 import io.tvelu77.freya.presentation.onboarding.components.ContentCard
 import io.tvelu77.freya.presentation.onboarding.components.OnboardingFooter
 import io.tvelu77.freya.presentation.onboarding.components.WelcomeCard
@@ -25,21 +27,20 @@ fun ProfilePage(
   Column(modifier = Modifier.fillMaxSize()) {
     WelcomeCard(
       emoji = "👋",
-      title = "Faisons connaissance",
+      title = stringResource(R.string.onboarding_profile_welcome),
       backgroundColor = Color(0xFFF3E5F5),
       subtitleColor = Color(0xFF4A148C)
     )
     ContentCard(
-      title = "Comment tu t'appelles ?",
-      subtitle = "Juste ton prénom pour personnaliser ton expérience. " +
-              "Tu pourras le changer à tout moment."
+      title = stringResource(R.string.onboarding_profile_title),
+      subtitle = stringResource(R.string.onboarding_profile_sub)
     ) {
       NameInput(
         value = name,
         onValueChange = onNameChanged
       )
       Text(
-        text = "Optionnel — tu peux laisser vide",
+        text = stringResource(R.string.onboarding_optional),
         style = MaterialTheme.typography.labelSmall,
         color = MaterialTheme.colorScheme.onSurfaceVariant
       )
@@ -50,7 +51,7 @@ fun ProfilePage(
         .windowInsetsPadding(WindowInsets.navigationBars),
       totalSteps = 4,
       currentStep = currentStep,
-      buttonLabel = "Continuer →",
+      buttonLabel = stringResource(R.string.onboarding_continue),
       onNext = onNext
     )
   }

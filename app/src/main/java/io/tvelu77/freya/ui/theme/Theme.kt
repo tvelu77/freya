@@ -33,11 +33,23 @@ private val DarkColorScheme = darkColorScheme(
   primary          = Rose300,
   onPrimary        = Neutral900,
   primaryContainer = Color(0xFF4A1530),
+  onPrimaryContainer = Neutral100,
   secondary        = Lavender300,
+  onSecondary      = Neutral900,
+  secondaryContainer = Color(0xFF2E1A47),
+  onSecondaryContainer = Neutral100,
+  tertiary         = Sage300,
+  onTertiary       = Neutral900,
+  tertiaryContainer = Color(0xFF1A3A2A),
+  onTertiaryContainer = Neutral100,
   background       = Color(0xFF1A1A2E),
-  surface          = Color(0xFF16213E),
   onBackground     = Neutral100,
-  onSurface        = Neutral100
+  surface          = Color(0xFF16213E),
+  onSurface        = Neutral100,
+  surfaceVariant   = Color(0xFF232338),
+  onSurfaceVariant = Neutral300,
+  outline          = Color(0xFF3A3A4E),
+  outlineVariant   = Color(0xFF2E2E42)
 )
 
 @Composable

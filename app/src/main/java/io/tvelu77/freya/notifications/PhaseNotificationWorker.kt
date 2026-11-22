@@ -48,10 +48,10 @@ class PhaseNotificationWorker(
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
       val channel = NotificationChannel(
         NOTIFICATION_CHANNEL_ID,
-        "Rappels doux",
+        applicationContext.getString(R.string.notif_channel_name),
         NotificationManager.IMPORTANCE_DEFAULT
       )
-      channel.description = "Changements de phase et rappels bienveillants"
+      channel.description = applicationContext.getString(R.string.notif_channel_description)
       val manager = applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
       manager.createNotificationChannel(channel)
     }

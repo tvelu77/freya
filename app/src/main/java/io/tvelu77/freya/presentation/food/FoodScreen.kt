@@ -18,9 +18,11 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import io.tvelu77.freya.R
 import io.tvelu77.freya.domain.models.MealType
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -33,14 +35,21 @@ fun FoodScreen(
   Scaffold(
     topBar = {
       TopAppBar(
-        title = { Text("Mes repas", style = MaterialTheme.typography.titleLarge) },
+        title = {
+          Text(
+            text = stringResource(R.string.food_title),
+            style = MaterialTheme.typography.titleLarge
+          )
+        },
         actions = {
           IconButton(onClick = viewModel::onToggleCaloriesVisibility) {
             Icon(
               imageVector = if (uiState.showCalories)
                 Icons.Rounded.Visibility else Icons.Rounded.VisibilityOff,
               contentDescription = if (uiState.showCalories)
-                "Masquer les calories" else "Afficher les calories",
+                stringResource(R.string.food_hide_calories_cd)
+              else
+                stringResource(R.string.food_show_calories_cd),
               tint = MaterialTheme.colorScheme.onSurfaceVariant
             )
           }

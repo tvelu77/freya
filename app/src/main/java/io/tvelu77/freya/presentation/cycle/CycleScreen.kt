@@ -30,9 +30,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import io.tvelu77.freya.R
 import io.tvelu77.freya.domain.models.PhaseType
 import io.tvelu77.freya.presentation.cycle.dialogs.EditCycleDialog
 import io.tvelu77.freya.presentation.cycle.dialogs.EndPeriodDialog
@@ -57,7 +59,10 @@ fun CycleScreen(
     topBar = {
       TopAppBar(
         title = {
-          Text("Mon cycle", style = MaterialTheme.typography.titleLarge)
+          Text(
+            text = stringResource(R.string.cycle_title),
+            style = MaterialTheme.typography.titleLarge
+          )
         },
         actions = {
           IconButton(
@@ -75,9 +80,9 @@ fun CycleScreen(
               else
                 Icons.Rounded.Add,
               contentDescription = if (uiState.currentPhase?.phase == PhaseType.MENSTRUAL)
-                "Fin des règles"
+                stringResource(R.string.cycle_end_period_cd)
               else
-                "Nouveau cycle"
+                stringResource(R.string.cycle_new_cycle_cd)
             )
           }
         },
@@ -114,6 +119,10 @@ fun CycleScreen(
         thickness = 0.5.dp,
         color = MaterialTheme.colorScheme.outlineVariant
       )
+
+      if (uiState.cycleHistory.isEmpty()) {
+        CycleEmptyState(onStartCycle = viewModel::onStartCycleClicked)
+      }
 
       uiState.currentPhase?.let { phase ->
         CurrentPhaseSection(phase = phase)
@@ -166,16 +175,16 @@ fun CycleScreen(
   uiState.cycleToDelete?.let {
     AlertDialog(
       onDismissRequest = viewModel::onDismissDeleteDialog,
-      title = { Text("Supprimer ce cycle ?") },
-      text = { Text("Tu pourras toujours le recréer plus tard si besoin.") },
+      title = { Text(stringResource(R.string.cycle_delete_title)) },
+      text = { Text(stringResource(R.string.cycle_delete_body)) },
       confirmButton = {
         Button(onClick = viewModel::onDeleteCycleConfirmed) {
-          Text("Supprimer")
+          Text(stringResource(R.string.action_delete))
         }
       },
       dismissButton = {
         TextButton(onClick = viewModel::onDismissDeleteDialog) {
-          Text("Annuler")
+          Text(stringResource(R.string.action_cancel))
         }
       }
     )

@@ -20,8 +20,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import io.tvelu77.freya.R
 import io.tvelu77.freya.ui.theme.Amber300
 import java.time.LocalDate
 
@@ -38,7 +40,7 @@ fun StartCycleDialog(
     icon = { Text("🌸", style = MaterialTheme.typography.headlineMedium) },
     title = {
       Text(
-        "Nouveau cycle",
+        text = stringResource(R.string.dialog_new_cycle_title),
         style = MaterialTheme.typography.titleLarge,
         textAlign = TextAlign.Center
       )
@@ -46,7 +48,7 @@ fun StartCycleDialog(
     text = {
       Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Text(
-          text = "Quand ont commencé tes règles ?",
+          text = stringResource(R.string.dialog_period_start_question),
           style = MaterialTheme.typography.bodyMedium,
           textAlign = TextAlign.Center
         )
@@ -59,9 +61,9 @@ fun StartCycleDialog(
           (0..5).forEach { daysAgo ->
             val date = LocalDate.now().minusDays(daysAgo.toLong())
             val label = when (daysAgo) {
-              0 -> "Aujourd'hui"
-              1 -> "Hier"
-              else -> "Il y a ${daysAgo}j"
+              0 -> stringResource(R.string.dialog_today)
+              1 -> stringResource(R.string.dialog_yesterday)
+              else -> stringResource(R.string.dialog_days_ago, daysAgo)
             }
             FilterChip(
               selected = selectedDate == date,
@@ -83,12 +85,12 @@ fun StartCycleDialog(
     },
     confirmButton = {
       Button(onClick = { onConfirm(selectedDate) }) {
-        Text("Confirmer")
+        Text(stringResource(R.string.dialog_confirm))
       }
     },
     dismissButton = {
       TextButton(onClick = onDismiss) {
-        Text("Annuler")
+        Text(stringResource(R.string.action_cancel))
       }
     }
   )

@@ -20,7 +20,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import io.tvelu77.freya.R
 import io.tvelu77.freya.ui.theme.ScoreGood
 import io.tvelu77.freya.ui.theme.ScoreLow
 import io.tvelu77.freya.ui.theme.ScoreMedium
@@ -53,19 +55,28 @@ fun NutritionSummaryCard(
       ) {
         Column {
           Text(
-            text = if (showCalories) "$totalCalories kcal" else "— kcal",
+            text = if (showCalories)
+              stringResource(R.string.food_kcal, totalCalories)
+            else
+              stringResource(R.string.food_kcal_hidden),
             style = MaterialTheme.typography.headlineMedium,
             color = MaterialTheme.colorScheme.onPrimaryContainer
           )
           Text(
-            text = if (showCalories) "sur $caloriesTarget kcal" else "Mode discret activé",
+            text = if (showCalories)
+              stringResource(R.string.food_of_target, caloriesTarget)
+            else
+              stringResource(R.string.food_discreet_mode),
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f)
           )
         }
         if (showCalories) {
           Text(
-            text = "${((totalCalories.toFloat() / caloriesTarget) * 100).toInt()}%",
+            text = stringResource(
+              R.string.food_percent,
+              ((totalCalories.toFloat() / caloriesTarget) * 100).toInt()
+            ),
             style = MaterialTheme.typography.titleLarge,
             color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.6f)
           )
@@ -92,14 +103,13 @@ fun NutritionSummaryCard(
 
       Spacer(Modifier.height(14.dp))
 
-      // Macros
       Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceEvenly
       ) {
-        MacroItem("Protéines", proteins, Color(0xFF7986CB), showCalories)
-        MacroItem("Glucides",  carbs,    Color(0xFF4DB6AC), showCalories)
-        MacroItem("Lipides",   fats,     Color(0xFFFFB74D), showCalories)
+        MacroItem(stringResource(R.string.food_macro_proteins), proteins, Color(0xFF7986CB), showCalories)
+        MacroItem(stringResource(R.string.food_macro_carbs), carbs, Color(0xFF4DB6AC), showCalories)
+        MacroItem(stringResource(R.string.food_macro_fats), fats, Color(0xFFFFB74D), showCalories)
       }
 
       adviceMessage?.let {
@@ -110,7 +120,7 @@ fun NutritionSummaryCard(
         )
         Spacer(Modifier.height(10.dp))
         Text(
-          text = "💡 $it",
+          text = stringResource(R.string.advice_tip, it),
           style = MaterialTheme.typography.bodyMedium,
           color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.85f)
         )

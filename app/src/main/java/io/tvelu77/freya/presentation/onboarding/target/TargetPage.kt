@@ -16,7 +16,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import io.tvelu77.freya.R
 import io.tvelu77.freya.presentation.onboarding.components.ContentCard
 import io.tvelu77.freya.presentation.onboarding.components.OnboardingFooter
 import io.tvelu77.freya.presentation.onboarding.components.WelcomeCard
@@ -31,17 +33,16 @@ fun TargetPage(
   Column(modifier = Modifier.fillMaxSize()) {
     WelcomeCard(
       emoji = "🍽️",
-      title = "Ton énergie quotidienne",
+      title = stringResource(R.string.onboarding_target_welcome),
       backgroundColor = Color(0xFFFFF8E1),
       subtitleColor = Color(0xFFE65100)
     )
     ContentCard(
-      title = "Objectif calorique",
-      subtitle = "Pas d'inquiétude si tu ne sais pas exactement — " +
-              "2000 kcal est une bonne base pour commencer."
+      title = stringResource(R.string.onboarding_target_title),
+      subtitle = stringResource(R.string.onboarding_target_sub)
     ) {
       Text(
-        text = "$calories kcal",
+        text = stringResource(R.string.onboarding_target_value, calories),
         style = MaterialTheme.typography.headlineMedium,
         color = MaterialTheme.colorScheme.primary,
         modifier = Modifier.fillMaxWidth(),
@@ -75,7 +76,7 @@ fun TargetPage(
         )
       }
       Text(
-        text = "Minimum recommandé : 1 200 kcal",
+        text = stringResource(R.string.min_calories_hint),
         style = MaterialTheme.typography.labelSmall,
         color = MaterialTheme.colorScheme.onSurfaceVariant
       )
@@ -86,7 +87,7 @@ fun TargetPage(
         .windowInsetsPadding(WindowInsets.navigationBars),
       totalSteps = 4,
       currentStep = currentStep,
-      buttonLabel = "Continuer →",
+      buttonLabel = stringResource(R.string.onboarding_continue),
       onNext = onNext
     )
   }

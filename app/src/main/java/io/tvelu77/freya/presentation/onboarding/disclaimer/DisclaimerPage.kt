@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import io.tvelu77.freya.R
 import io.tvelu77.freya.presentation.onboarding.components.ContentCard
 import io.tvelu77.freya.presentation.onboarding.components.OnboardingFooter
 import io.tvelu77.freya.presentation.onboarding.components.WelcomeCard
@@ -18,13 +20,13 @@ fun DisclaimerPage(currentStep: Int, onNext: () -> Unit) {
   Column(modifier = Modifier.fillMaxSize()) {
     WelcomeCard(
       emoji = "🌸",
-      title = "Bienvenue",
+      title = stringResource(R.string.onboarding_disclaimer_welcome),
       backgroundColor = Color(0xFFFCE4EC),
       subtitleColor = Color(0xFF880E4F)
     )
     ContentCard(
-      title = "Freya, ton espace à toi",
-      subtitle = "Une appli bienveillante, sans jugement."
+      title = stringResource(R.string.onboarding_app_tagline),
+      subtitle = stringResource(R.string.onboarding_app_sub)
     ) {
       DisclaimerBox()
     }
@@ -34,7 +36,7 @@ fun DisclaimerPage(currentStep: Int, onNext: () -> Unit) {
         .windowInsetsPadding(WindowInsets.navigationBars),
       totalSteps = 4,
       currentStep = currentStep,
-      buttonLabel = "Commencer →",
+      buttonLabel = stringResource(R.string.onboarding_start),
       onNext = onNext
     )
   }

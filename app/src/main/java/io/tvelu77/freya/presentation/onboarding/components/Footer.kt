@@ -38,7 +38,7 @@ fun OnboardingFooter(
 
     Button(
       onClick = onNext,
-      shape = RoundedCornerShape(12.dp),
+      shape = RoundedCornerShape(16.dp),
       colors = ButtonDefaults.buttonColors(
         containerColor = Rose300,
         contentColor = Color.White

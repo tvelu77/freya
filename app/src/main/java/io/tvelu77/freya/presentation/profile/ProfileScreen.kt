@@ -41,12 +41,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import io.tvelu77.freya.R
 import io.tvelu77.freya.ui.components.ToggleRow
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -60,7 +62,12 @@ fun ProfileScreen(
   Scaffold(
     topBar = {
       TopAppBar(
-        title = { Text("Mon profil", style = MaterialTheme.typography.titleLarge) },
+        title = {
+          Text(
+            text = stringResource(R.string.profile_title),
+            style = MaterialTheme.typography.titleLarge
+          )
+        },
         colors = TopAppBarDefaults.topAppBarColors(
           containerColor = MaterialTheme.colorScheme.surface
         )
@@ -78,12 +85,12 @@ fun ProfileScreen(
 
       ProfileAvatarSection(firstName = uiState.firstNameInput)
 
-      ProfileSection(title = "Informations personnelles") {
+      ProfileSection(title = stringResource(R.string.profile_section_info)) {
         ProfileTextField(
-          label = "Prénom",
+          label = stringResource(R.string.profile_firstname_label),
           value = uiState.firstNameInput,
           onValueChange = viewModel::onFirstNameChanged,
-          placeholder = "Comment tu t'appelles ?",
+          placeholder = stringResource(R.string.profile_firstname_placeholder),
           keyboardOptions = KeyboardOptions(
             capitalization = KeyboardCapitalization.Words,
             imeAction = ImeAction.Next
@@ -91,48 +98,48 @@ fun ProfileScreen(
         )
 
         ProfileTextField(
-          label = "Objectif calorique quotidien (kcal)",
+          label = stringResource(R.string.profile_calories_label),
           value = uiState.caloriesInput,
           onValueChange = viewModel::onCaloriesChanged,
-          placeholder = "2000",
+          placeholder = stringResource(R.string.profile_calories_placeholder),
           keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Number,
             imeAction = ImeAction.Next
           ),
-          supportingText = "Minimum recommandé : 1200 kcal"
+          supportingText = stringResource(R.string.min_calories_hint)
         )
 
         ProfileTextField(
-          label = "Durée habituelle de mon cycle (jours)",
+          label = stringResource(R.string.profile_cycle_length_label),
           value = uiState.cycleLengthInput,
           onValueChange = viewModel::onCycleLengthChanged,
-          placeholder = "28",
+          placeholder = stringResource(R.string.profile_cycle_length_placeholder),
           keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Number,
             imeAction = ImeAction.Done
           ),
-          supportingText = "Entre 21 et 45 jours",
+          supportingText = stringResource(R.string.profile_cycle_length_hint),
           keyboardActions = KeyboardActions(
             onDone = { focusManager.clearFocus() }
           )
         )
       }
 
-      ProfileSection(title = "Affichage & confidentialité") {
+      ProfileSection(title = stringResource(R.string.profile_section_display)) {
 
         ToggleRow(
-          title = "Mode bienveillant",
-          subtitle = "Masque les kcals — focus sur le ressenti",
+          title = stringResource(R.string.profile_friendly_mode),
+          subtitle = stringResource(R.string.profile_friendly_mode_sub),
           checked = uiState.profile.tcaFriendlyMode,
           onCheckedChange = viewModel::onTcaFriendlyToggled,
           icon = Icons.Rounded.Favorite
         )
       }
 
-      ProfileSection(title = "Notifications") {
+      ProfileSection(title = stringResource(R.string.profile_section_notifications)) {
         ToggleRow(
-          title = "Rappels & conseils",
-          subtitle = "Changements de phase, hydratation, conseils doux",
+          title = stringResource(R.string.profile_notifications),
+          subtitle = stringResource(R.string.profile_notifications_sub),
           checked = uiState.profile.notificationsEnabled,
           onCheckedChange = viewModel::onNotificationsToggled,
           icon = Icons.Rounded.Notifications
@@ -164,7 +171,7 @@ fun ProfileScreen(
               tint = MaterialTheme.colorScheme.tertiary
             )
             Text(
-              "Profil sauvegardé !",
+              text = stringResource(R.string.profile_saved),
               style = MaterialTheme.typography.bodyMedium,
               color = MaterialTheme.colorScheme.onTertiaryContainer
             )
@@ -192,7 +199,10 @@ fun ProfileScreen(
         } else {
           Icon(Icons.Rounded.Save, contentDescription = null)
           Spacer(Modifier.width(8.dp))
-          Text("Sauvegarder", style = MaterialTheme.typography.titleMedium)
+          Text(
+            text = stringResource(R.string.profile_save),
+            style = MaterialTheme.typography.titleMedium
+          )
         }
       }
 

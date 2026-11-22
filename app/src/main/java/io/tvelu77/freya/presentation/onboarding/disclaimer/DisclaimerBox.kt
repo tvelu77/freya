@@ -13,7 +13,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import io.tvelu77.freya.R
 import io.tvelu77.freya.ui.theme.Amber100
 import io.tvelu77.freya.ui.theme.Amber300
 
@@ -33,15 +35,15 @@ fun DisclaimerBox(modifier: Modifier = Modifier) {
     ) {
       DisclaimerRow(
         emoji = "🔒",
-        text = "Aucun traqueur, aucune publicité. Tes données restent sur ton téléphone."
+        text = stringResource(R.string.onboarding_disclaimer_privacy)
       )
       DisclaimerRow(
         emoji = "💛",
-        text = "Cet outil n'est pas un substitut à un avis médical professionnel."
+        text = stringResource(R.string.onboarding_disclaimer_medical)
       )
       DisclaimerRow(
         emoji = "✨",
-        text = "Conçu pour aider, jamais pour juger."
+        text = stringResource(R.string.onboarding_disclaimer_judgment)
       )
     }
   }
