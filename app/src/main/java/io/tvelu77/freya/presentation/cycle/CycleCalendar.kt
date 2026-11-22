@@ -18,8 +18,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringArrayResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import io.tvelu77.freya.R
 import io.tvelu77.freya.domain.models.PhaseType
 import java.time.LocalDate
 import java.time.YearMonth
@@ -43,7 +46,10 @@ fun CycleCalendar(
       verticalAlignment = Alignment.CenterVertically
     ) {
       IconButton(onClick = { onMonthChanged(selectedMonth.minusMonths(1)) }) {
-        Icon(Icons.Rounded.ChevronLeft, contentDescription = "Mois précédent")
+        Icon(
+          Icons.Rounded.ChevronLeft,
+          contentDescription = stringResource(R.string.cycle_prev_month_cd)
+        )
       }
       Text(
         text = selectedMonth.format(
@@ -52,15 +58,17 @@ fun CycleCalendar(
         style = MaterialTheme.typography.titleMedium
       )
       IconButton(onClick = { onMonthChanged(selectedMonth.plusMonths(1)) }) {
-        Icon(Icons.Rounded.ChevronRight, contentDescription = "Mois suivant")
+        Icon(
+          Icons.Rounded.ChevronRight,
+          contentDescription = stringResource(R.string.cycle_next_month_cd)
+        )
       }
     }
 
     Spacer(Modifier.height(8.dp))
 
-    // En-têtes jours
     Row(modifier = Modifier.fillMaxWidth()) {
-      listOf("L", "M", "M", "J", "V", "S", "D").forEach { day ->
+      stringArrayResource(R.array.week_days).forEach { day ->
         Text(
           text = day,
           modifier = Modifier.weight(1f),

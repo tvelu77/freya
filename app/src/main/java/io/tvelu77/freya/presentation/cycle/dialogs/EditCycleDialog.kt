@@ -21,8 +21,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import io.tvelu77.freya.R
 import io.tvelu77.freya.domain.models.CycleEntry
 import io.tvelu77.freya.ui.theme.Amber300
 import java.time.LocalDate
@@ -58,7 +60,7 @@ fun EditCycleDialog(
     icon = { Text("✏️", style = MaterialTheme.typography.headlineMedium) },
     title = {
       Text(
-        "Modifier le cycle",
+        text = stringResource(R.string.dialog_edit_cycle_title),
         style = MaterialTheme.typography.titleLarge,
         textAlign = TextAlign.Center
       )
@@ -66,7 +68,7 @@ fun EditCycleDialog(
     text = {
       Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Text(
-          text = "Début des règles",
+          text = stringResource(R.string.dialog_period_start_label),
           style = MaterialTheme.typography.labelMedium,
           color = MaterialTheme.colorScheme.onSurfaceVariant
         )
@@ -94,7 +96,7 @@ fun EditCycleDialog(
           }
         }
         Text(
-          text = "Fin des règles",
+          text = stringResource(R.string.dialog_period_end_label),
           style = MaterialTheme.typography.labelMedium,
           color = MaterialTheme.colorScheme.onSurfaceVariant
         )
@@ -107,7 +109,12 @@ fun EditCycleDialog(
           FilterChip(
             selected = endDate == null,
             onClick = { endDate = null },
-            label = { Text("En cours", style = MaterialTheme.typography.labelSmall) }
+            label = {
+              Text(
+                text = stringResource(R.string.dialog_ongoing),
+                style = MaterialTheme.typography.labelSmall
+              )
+            }
           )
           endChoices.forEach { date ->
             FilterChip(
@@ -135,12 +142,12 @@ fun EditCycleDialog(
     },
     confirmButton = {
       Button(onClick = { onConfirm(startDate, endDate) }) {
-        Text("Enregistrer")
+        Text(stringResource(R.string.dialog_save))
       }
     },
     dismissButton = {
       TextButton(onClick = onDismiss) {
-        Text("Annuler")
+        Text(stringResource(R.string.action_cancel))
       }
     }
   )

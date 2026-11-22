@@ -35,15 +35,18 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import io.tvelu77.freya.R
 import io.tvelu77.freya.domain.models.PhaseInfo
 import io.tvelu77.freya.domain.models.PhaseType
 import io.tvelu77.freya.domain.models.TCAAlert
 import io.tvelu77.freya.presentation.cycle.CycleCalendar
 import io.tvelu77.freya.ui.components.HealthScoreCard
+import io.tvelu77.freya.ui.components.IllustrationPlaceholder
 import io.tvelu77.freya.ui.components.NutritionAdviceCard
 import io.tvelu77.freya.ui.components.PhaseChip
 import io.tvelu77.freya.ui.theme.Amber100
@@ -201,7 +204,7 @@ private fun SelectedDayKpis(
         phase?.let { PhaseChip(phase = it) }
         if (showCalories) {
           Text(
-            text = "$calories kcal",
+            text = stringResource(R.string.home_kcal, calories),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant
           )
@@ -232,9 +235,9 @@ private fun HomeHeader(uiState: HomeUiState, date: String, phaseInfo: PhaseInfo?
       Spacer(Modifier.height(4.dp))
       Text(
         text = if (uiState.greetingName.isNotBlank())
-          "Bonjour ${uiState.greetingName} 🌸"
+          stringResource(R.string.home_greeting_named, uiState.greetingName)
         else
-          "Bonjour 🌸",
+          stringResource(R.string.home_greeting),
         style = MaterialTheme.typography.headlineLarge,
         color = textPrimary
       )
@@ -269,7 +272,7 @@ private fun PhaseCard(
     ) {
       Column {
         Text(
-          text = "Jour ${phaseInfo.daysInCycle} de ton cycle",
+          text = stringResource(R.string.home_day_of_cycle, phaseInfo.daysInCycle),
           style = MaterialTheme.typography.labelSmall,
           color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f)
         )
@@ -283,7 +286,7 @@ private fun PhaseCard(
       }
       Icon(
         imageVector = Icons.Rounded.ChevronRight,
-        contentDescription = "Voir le détail",
+        contentDescription = stringResource(R.string.home_phase_detail_cd),
         tint = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.5f)
       )
     }
@@ -303,23 +306,23 @@ private fun NoCycleCard(onStartCycle: () -> Unit) {
       modifier = Modifier.padding(20.dp),
       horizontalAlignment = Alignment.CenterHorizontally
     ) {
-      Text("🌸", style = MaterialTheme.typography.headlineLarge)
+      IllustrationPlaceholder(emoji = "🌸")
       Spacer(Modifier.height(8.dp))
       Text(
-        text = "Commence ton suivi",
+        text = stringResource(R.string.home_no_cycle_title),
         style = MaterialTheme.typography.titleMedium,
         textAlign = TextAlign.Center
       )
       Spacer(Modifier.height(4.dp))
       Text(
-        text = "Indique le début de ton cycle pour des conseils personnalisés",
+        text = stringResource(R.string.home_no_cycle_body),
         style = MaterialTheme.typography.bodyMedium,
         color = MaterialTheme.colorScheme.onTertiaryContainer.copy(alpha = 0.8f),
         textAlign = TextAlign.Center
       )
       Spacer(Modifier.height(16.dp))
       Button(onClick = onStartCycle) {
-        Text("Mes règles ont commencé aujourd'hui")
+        Text(stringResource(R.string.home_no_cycle_cta))
       }
     }
   }
@@ -343,7 +346,7 @@ private fun TCAAlertBanner(
       Text("💛", style = MaterialTheme.typography.titleMedium)
       Column(modifier = Modifier.weight(1f)) {
         Text(
-          text = "Un petit rappel doux",
+          text = stringResource(R.string.home_tca_reminder_title),
           style = MaterialTheme.typography.titleMedium
         )
         Spacer(Modifier.height(4.dp))
@@ -355,7 +358,7 @@ private fun TCAAlertBanner(
       IconButton(onClick = onDismiss, modifier = Modifier.size(24.dp)) {
         Icon(
           imageVector = Icons.Rounded.Close,
-          contentDescription = "Fermer",
+          contentDescription = stringResource(R.string.home_close_cd),
           modifier = Modifier.size(16.dp)
         )
       }
@@ -369,7 +372,10 @@ private fun HomeLoadingState() {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
       CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
       Spacer(Modifier.height(16.dp))
-      Text("Chargement...", style = MaterialTheme.typography.bodyMedium)
+      Text(
+        text = stringResource(R.string.home_loading),
+        style = MaterialTheme.typography.bodyMedium
+      )
     }
   }
 }
@@ -384,7 +390,7 @@ private fun HomeErrorState(message: String, onRetry: () -> Unit) {
       Text("😔", style = MaterialTheme.typography.headlineLarge)
       Spacer(Modifier.height(8.dp))
       Text(
-        text = "Quelque chose s'est mal passé",
+        text = stringResource(R.string.home_error_title),
         style = MaterialTheme.typography.titleMedium,
         textAlign = TextAlign.Center
       )
@@ -396,7 +402,7 @@ private fun HomeErrorState(message: String, onRetry: () -> Unit) {
         textAlign = TextAlign.Center
       )
       Spacer(Modifier.height(16.dp))
-      Button(onClick = onRetry) { Text("Réessayer") }
+      Button(onClick = onRetry) { Text(stringResource(R.string.home_error_retry)) }
     }
   }
 }

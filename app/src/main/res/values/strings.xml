@@ -1,3 +1,167 @@
 <resources>
     <string name="app_name">freya</string>
+
+    <!-- Navigation -->
+    <string name="nav_home">Accueil</string>
+    <string name="nav_cycle">Cycle</string>
+    <string name="nav_food">Repas</string>
+    <string name="nav_profile">Profil</string>
+
+    <!-- Home -->
+    <string name="home_greeting">Bonjour 🌸</string>
+    <string name="home_greeting_named">Bonjour %1$s 🌸</string>
+    <string name="home_loading">Chargement…</string>
+    <string name="home_error_title">Quelque chose s\'est mal passé</string>
+    <string name="home_error_retry">Réessayer</string>
+    <string name="home_kcal">%1$d kcal</string>
+    <string name="home_day_of_cycle">Jour %1$d de ton cycle</string>
+    <string name="home_phase_detail_cd">Voir le détail</string>
+    <string name="home_no_cycle_title">Commence ton suivi</string>
+    <string name="home_no_cycle_body">Indique le début de ton cycle pour des conseils personnalisés</string>
+    <string name="home_no_cycle_cta">Mes règles ont commencé aujourd\'hui</string>
+    <string name="home_tca_reminder_title">Un petit rappel doux</string>
+    <string name="home_close_cd">Fermer</string>
+
+    <!-- Cycle -->
+    <string name="cycle_title">Mon cycle</string>
+    <string name="cycle_new_cycle_cd">Nouveau cycle</string>
+    <string name="cycle_end_period_cd">Fin des règles</string>
+    <string name="cycle_delete_title">Supprimer ce cycle ?</string>
+    <string name="cycle_delete_body">Tu pourras toujours le recréer plus tard si besoin.</string>
+    <string name="cycle_empty_title">Pas encore de cycle suivi</string>
+    <string name="cycle_empty_body">Ajoute tes règles quand elles commencent — Freya s\'occupe du reste 🌸</string>
+    <string name="cycle_empty_cta">Mes règles ont commencé aujourd\'hui</string>
+    <string name="cycle_current_phase">Phase actuelle</string>
+    <string name="cycle_day_label">Jour %1$d</string>
+    <string name="cycle_recommended_foods">Aliments recommandés</string>
+    <string name="cycle_legend">Légende</string>
+    <string name="cycle_legend_menstrual">Menstruelle • J1–J5</string>
+    <string name="cycle_legend_follicular">Folliculaire • J6–J13</string>
+    <string name="cycle_legend_ovulatory">Ovulatoire • J14–J16</string>
+    <string name="cycle_legend_luteal">Lutéale • J17–J28</string>
+    <string name="cycle_next_cycles">Prochains cycles prévus</string>
+    <string name="cycle_estimation">Estimation</string>
+    <string name="cycle_history">Historique</string>
+    <string name="cycle_history_stats">Sur %1$d cycles : moyen %2$dj · règles %3$dj · variabilité ±%4$sj</string>
+    <string name="cycle_edit_cd">Modifier ce cycle</string>
+    <string name="cycle_delete_cycle_cd">Supprimer ce cycle</string>
+    <string name="cycle_prev_month_cd">Mois précédent</string>
+    <string name="cycle_next_month_cd">Mois suivant</string>
+    <string-array name="week_days">
+        <item>L</item>
+        <item>M</item>
+        <item>M</item>
+        <item>J</item>
+        <item>V</item>
+        <item>S</item>
+        <item>D</item>
+    </string-array>
+
+    <!-- Cycle dialogs -->
+    <string name="dialog_new_cycle_title">Nouveau cycle</string>
+    <string name="dialog_end_period_title">Fin des règles</string>
+    <string name="dialog_period_start_question">Quand ont commencé tes règles ?</string>
+    <string name="dialog_period_end_question">Quand tes règles se sont-elles arrêtées ?</string>
+    <string name="dialog_today">Aujourd\'hui</string>
+    <string name="dialog_yesterday">Hier</string>
+    <string name="dialog_days_ago">Il y a %1$dj</string>
+    <string name="dialog_confirm">Confirmer</string>
+    <string name="dialog_save">Enregistrer</string>
+    <string name="dialog_edit_cycle_title">Modifier le cycle</string>
+    <string name="dialog_period_start_label">Début des règles</string>
+    <string name="dialog_period_end_label">Fin des règles</string>
+    <string name="dialog_ongoing">En cours</string>
+
+    <!-- Shared actions -->
+    <string name="action_delete">Supprimer</string>
+    <string name="action_cancel">Annuler</string>
+
+    <!-- Food -->
+    <string name="food_title">Mes repas</string>
+    <string name="food_hide_calories_cd">Masquer les calories</string>
+    <string name="food_show_calories_cd">Afficher les calories</string>
+    <string name="food_add_to_meal">Ajouter à %1$s</string>
+    <string name="food_add_food_cd">Ajouter un aliment</string>
+    <string name="food_kcal">%1$d kcal</string>
+    <string name="food_kcal_hidden">— kcal</string>
+    <string name="food_of_target">sur %1$d kcal</string>
+    <string name="food_percent">%1$d %%</string>
+    <string name="food_discreet_mode">Mode discret activé</string>
+    <string name="food_macro_proteins">Protéines</string>
+    <string name="food_macro_carbs">Glucides</string>
+    <string name="food_macro_fats">Lipides</string>
+    <string name="food_macros_short">P %1$d g · G %2$d g · L %3$d g</string>
+    <string name="food_quantity_g">%1$d g</string>
+    <string name="meal_empty_title">Encore vide</string>
+    <string name="meal_empty_subtitle">Ajoute ce qui te fait envie, quand tu veux 🌿</string>
+    <string name="food_no_cycle_title">Commence par ton cycle</string>
+    <string name="food_no_cycle_body">Les conseils nutritionnels sont adaptés à ta phase du cycle. Renseigne tes règles dans l\'onglet Cycle pour commencer !</string>
+    <string name="food_search_placeholder">Rechercher un aliment…</string>
+    <string name="food_clear_cd">Effacer</string>
+    <string name="food_deselect_cd">Désélectionner</string>
+    <string name="food_quantity_label">Quantité (g)</string>
+    <string name="food_add_button">Ajouter</string>
+    <string name="food_no_results">Aucun résultat pour « %1$s » — essaie un autre aliment 🌱</string>
+    <string name="food_quick_suggestions">Suggestions rapides</string>
+    <string name="food_delete_title">Supprimer cet aliment ?</string>
+
+    <!-- Profile -->
+    <string name="profile_title">Mon profil</string>
+    <string name="profile_section_info">Informations personnelles</string>
+    <string name="profile_firstname_label">Prénom</string>
+    <string name="profile_firstname_placeholder">Comment tu t\'appelles ?</string>
+    <string name="profile_calories_label">Objectif calorique quotidien (kcal)</string>
+    <string name="profile_calories_placeholder">2000</string>
+    <string name="min_calories_hint">En dessous de 1 200 kcal sur plusieurs jours, pense à consulter un professionnel de santé 💙</string>
+    <string name="profile_cycle_length_label">Durée habituelle de mon cycle (jours)</string>
+    <string name="profile_cycle_length_placeholder">28</string>
+    <string name="profile_cycle_length_hint">Entre 21 et 45 jours</string>
+    <string name="profile_section_display">Affichage &amp; confidentialité</string>
+    <string name="profile_friendly_mode">Mode bienveillant</string>
+    <string name="profile_friendly_mode_sub">Masque les kcals — focus sur le ressenti</string>
+    <string name="profile_section_notifications">Notifications</string>
+    <string name="profile_notifications">Rappels &amp; conseils</string>
+    <string name="profile_notifications_sub">Changements de phase, hydratation, conseils doux</string>
+    <string name="profile_saved">Profil sauvegardé !</string>
+    <string name="profile_save">Sauvegarder</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding_disclaimer_welcome">Bienvenue</string>
+    <string name="onboarding_app_tagline">Freya, ton espace à toi</string>
+    <string name="onboarding_app_sub">Une appli bienveillante, sans jugement.</string>
+    <string name="onboarding_disclaimer_privacy">Aucun traqueur, aucune publicité. Tes données restent sur ton téléphone.</string>
+    <string name="onboarding_disclaimer_medical">Cet outil n\'est pas un substitut à un avis médical professionnel.</string>
+    <string name="onboarding_disclaimer_judgment">Conçu pour aider, jamais pour juger.</string>
+    <string name="onboarding_start">Commencer →</string>
+    <string name="onboarding_profile_welcome">Faisons connaissance</string>
+    <string name="onboarding_profile_title">Comment tu t\'appelles ?</string>
+    <string name="onboarding_profile_sub">Juste ton prénom pour personnaliser ton expérience. Tu pourras le changer à tout moment.</string>
+    <string name="onboarding_name_placeholder">Ton prénom…</string>
+    <string name="onboarding_optional">Optionnel — tu peux laisser vide</string>
+    <string name="onboarding_continue">Continuer →</string>
+    <string name="onboarding_target_welcome">Ton énergie quotidienne</string>
+    <string name="onboarding_target_title">Objectif calorique</string>
+    <string name="onboarding_target_sub">Pas d\'inquiétude si tu ne sais pas exactement — 2 000 kcal est une bonne base pour commencer.</string>
+    <string name="onboarding_target_value">%1$d kcal</string>
+    <string name="onboarding_prefs_welcome">Ton confort avant tout</string>
+    <string name="onboarding_prefs_title">Mode bienveillant</string>
+    <string name="onboarding_prefs_sub">Tu peux masquer tous les chiffres et te concentrer uniquement sur le ressenti. Modifiable à tout moment.</string>
+    <string name="onboarding_hide_calories">Masquer les calories</string>
+    <string name="onboarding_focus">Focus sur le ressenti</string>
+    <string name="onboarding_notif">Notifications douces</string>
+    <string name="onboarding_notif_sub">Rappels et conseils bienveillants</string>
+    <string name="onboarding_finish">C\'est parti 🌸</string>
+
+    <!-- Shared components -->
+    <string name="health_score_title">Ton score du jour</string>
+    <string name="health_score_nutrition">Nutrition</string>
+    <string name="health_score_hydration">Hydratation</string>
+    <string name="health_score_activity">Activité</string>
+    <string name="advice_title">Conseil du moment</string>
+    <string name="advice_nutrients">Nutriments clés</string>
+    <string name="advice_tip">💡 %1$s</string>
+
+    <!-- Notifications -->
+    <string name="notif_channel_name">Rappels doux</string>
+    <string name="notif_channel_description">Changements de phase et rappels bienveillants</string>
 </resources>

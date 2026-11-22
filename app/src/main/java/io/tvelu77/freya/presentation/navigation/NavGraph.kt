@@ -11,6 +11,7 @@ import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -20,13 +21,14 @@ import androidx.navigation.navOptions
 import io.tvelu77.freya.presentation.cycle.CycleScreen
 import io.tvelu77.freya.presentation.food.FoodScreen
 import io.tvelu77.freya.presentation.home.HomeScreen
+import io.tvelu77.freya.R
 import io.tvelu77.freya.presentation.profile.ProfileScreen
 
-sealed class Screen(val route: String, val label: String, val icon: ImageVector) {
-  object Home  : Screen("home", "Accueil", Icons.Rounded.Home)
-  object Cycle : Screen("cycle", "Cycle", Icons.Rounded.CalendarMonth)
-  object Food  : Screen("food", "Repas", Icons.Rounded.SetMeal)
-  object Profile : Screen("profile", "Profil", Icons.Rounded.AccountCircle)
+sealed class Screen(val route: String, val labelRes: Int, val icon: ImageVector) {
+  object Home  : Screen("home", R.string.nav_home, Icons.Rounded.Home)
+  object Cycle : Screen("cycle", R.string.nav_cycle, Icons.Rounded.CalendarMonth)
+  object Food  : Screen("food", R.string.nav_food, Icons.Rounded.SetMeal)
+  object Profile : Screen("profile", R.string.nav_profile, Icons.Rounded.AccountCircle)
 }
 
 @Composable
@@ -43,10 +45,10 @@ fun NavGraph(
           icon = {
             Icon(
               imageVector = it.icon,
-              contentDescription = it.label
+              contentDescription = stringResource(it.labelRes)
             )
           },
-          label = { Text(it.label) },
+          label = { Text(stringResource(it.labelRes)) },
           selected = it.route == currentRoute,
           onClick = { navController.navigate(it.route, navOptions {
               popUpTo(navController.graph.startDestinationId) { saveState = true }

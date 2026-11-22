@@ -13,7 +13,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import io.tvelu77.freya.R
 import io.tvelu77.freya.domain.models.QuickFood
 
 @Composable
@@ -30,13 +32,18 @@ fun FoodResultRow(food: QuickFood, onClick: () -> Unit) {
     Column(modifier = Modifier.weight(1f)) {
       Text(food.name, style = MaterialTheme.typography.bodyMedium)
       Text(
-        text = "P ${food.proteins.toInt()}g · G ${food.carbs.toInt()}g · L ${food.fats.toInt()}g",
+        text = stringResource(
+          R.string.food_macros_short,
+          food.proteins.toInt(),
+          food.carbs.toInt(),
+          food.fats.toInt()
+        ),
         style = MaterialTheme.typography.labelSmall,
         color = MaterialTheme.colorScheme.onSurfaceVariant
       )
     }
     Text(
-      text = "${food.calories} kcal",
+      text = stringResource(R.string.food_kcal, food.calories),
       style = MaterialTheme.typography.labelSmall,
       color = MaterialTheme.colorScheme.onSurfaceVariant
     )

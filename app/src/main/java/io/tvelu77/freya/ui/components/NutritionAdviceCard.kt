@@ -14,7 +14,9 @@ import androidx.compose.material3.SuggestionChip
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import io.tvelu77.freya.R
 import io.tvelu77.freya.domain.models.NutritionAdvice
 
 @Composable
@@ -28,7 +30,7 @@ fun NutritionAdviceCard(advice: NutritionAdvice, modifier: Modifier = Modifier) 
   ) {
     Column(modifier = Modifier.padding(16.dp)) {
       Text(
-        text = "Conseil du moment",
+        text = stringResource(R.string.advice_title),
         style = MaterialTheme.typography.titleMedium
       )
       Spacer(Modifier.height(8.dp))
@@ -38,7 +40,7 @@ fun NutritionAdviceCard(advice: NutritionAdvice, modifier: Modifier = Modifier) 
       )
       Spacer(Modifier.height(12.dp))
       Text(
-        text = "Nutriments clés",
+        text = stringResource(R.string.advice_nutrients),
         style = MaterialTheme.typography.labelSmall,
         color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.7f)
       )

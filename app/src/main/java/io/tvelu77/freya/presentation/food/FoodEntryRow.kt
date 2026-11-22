@@ -21,7 +21,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import io.tvelu77.freya.R
 import io.tvelu77.freya.domain.models.FoodEntry
 
 @Composable
@@ -42,7 +44,7 @@ fun FoodEntryRow(
     Column(modifier = Modifier.weight(1f)) {
       Text(entry.foodName, style = MaterialTheme.typography.bodyMedium)
       Text(
-        text = "${entry.quantity.toInt()}g",
+        text = stringResource(R.string.food_quantity_g, entry.quantity.toInt()),
         style = MaterialTheme.typography.labelSmall,
         color = MaterialTheme.colorScheme.onSurfaceVariant
       )
@@ -53,7 +55,7 @@ fun FoodEntryRow(
     ) {
       if (showCalories) {
         Text(
-          text = "${entry.calories} kcal",
+          text = stringResource(R.string.food_kcal, entry.calories),
           style = MaterialTheme.typography.labelSmall,
           color = MaterialTheme.colorScheme.onSurfaceVariant
         )
@@ -64,7 +66,7 @@ fun FoodEntryRow(
       ) {
         Icon(
           Icons.Rounded.Delete,
-          contentDescription = "Supprimer",
+          contentDescription = stringResource(R.string.action_delete),
           modifier = Modifier.size(16.dp),
           tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
         )
@@ -74,14 +76,19 @@ fun FoodEntryRow(
     if (showDeleteConfirm) {
       AlertDialog(
         onDismissRequest = { showDeleteConfirm = false },
-        title = { Text("Supprimer cet aliment ?") },
+        title = { Text(stringResource(R.string.food_delete_title)) },
         confirmButton = {
           TextButton(onClick = { onDelete(); showDeleteConfirm = false }) {
-            Text("Supprimer", color = MaterialTheme.colorScheme.error)
+            Text(
+              text = stringResource(R.string.action_delete),
+              color = MaterialTheme.colorScheme.error
+            )
           }
         },
         dismissButton = {
-          TextButton(onClick = { showDeleteConfirm = false }) { Text("Annuler") }
+          TextButton(onClick = { showDeleteConfirm = false }) {
+            Text(stringResource(R.string.action_cancel))
+          }
         }
       )
     }

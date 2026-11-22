@@ -18,7 +18,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import io.tvelu77.freya.R
 import io.tvelu77.freya.ui.theme.ColorMenstrual
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -27,7 +29,10 @@ import java.util.Locale
 @Composable
 fun NextCyclesSection(nextCycles: List<LocalDate>) {
   Column(modifier = Modifier.padding(horizontal = 16.dp)) {
-    Text("Prochains cycles prévus", style = MaterialTheme.typography.titleMedium)
+    Text(
+      text = stringResource(R.string.cycle_next_cycles),
+      style = MaterialTheme.typography.titleMedium
+    )
     Spacer(Modifier.height(10.dp))
 
     nextCycles.forEachIndexed { index, date ->
@@ -59,7 +64,7 @@ fun NextCyclesSection(nextCycles: List<LocalDate>) {
             style = MaterialTheme.typography.bodyMedium
           )
           Text(
-            text = "Estimation",
+            text = stringResource(R.string.cycle_estimation),
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant
           )

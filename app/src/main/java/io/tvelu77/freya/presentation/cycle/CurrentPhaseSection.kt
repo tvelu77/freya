@@ -17,7 +17,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import io.tvelu77.freya.R
 import io.tvelu77.freya.domain.models.PhaseInfo
 import io.tvelu77.freya.ui.components.PhaseChip
 
@@ -25,7 +27,7 @@ import io.tvelu77.freya.ui.components.PhaseChip
 fun CurrentPhaseSection(phase: PhaseInfo) {
   Column(modifier = Modifier.padding(16.dp)) {
     Text(
-      text = "Phase actuelle",
+      text = stringResource(R.string.cycle_current_phase),
       style = MaterialTheme.typography.titleMedium
     )
     Spacer(Modifier.height(12.dp))
@@ -45,7 +47,7 @@ fun CurrentPhaseSection(phase: PhaseInfo) {
         ) {
           PhaseChip(phase = phase.phase)
           Text(
-            text = "Jour ${phase.daysInCycle}",
+            text = stringResource(R.string.cycle_day_label, phase.daysInCycle),
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f)
           )
@@ -62,7 +64,7 @@ fun CurrentPhaseSection(phase: PhaseInfo) {
         Spacer(Modifier.height(10.dp))
 
         Text(
-          text = "Aliments recommandés",
+          text = stringResource(R.string.cycle_recommended_foods),
           style = MaterialTheme.typography.labelSmall,
           color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f)
         )

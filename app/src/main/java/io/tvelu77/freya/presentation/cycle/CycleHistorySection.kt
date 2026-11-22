@@ -20,7 +20,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import io.tvelu77.freya.R
 import io.tvelu77.freya.domain.models.CycleEntry
 import io.tvelu77.freya.domain.models.CycleStats
 import io.tvelu77.freya.ui.theme.ColorMenstrual
@@ -35,14 +37,20 @@ fun CycleHistorySection(
   stats: CycleStats? = null
 ) {
   Column(modifier = Modifier.padding(horizontal = 16.dp)) {
-    Text("Historique", style = MaterialTheme.typography.titleMedium)
+    Text(
+      text = stringResource(R.string.cycle_history),
+      style = MaterialTheme.typography.titleMedium
+    )
     stats?.let {
       Spacer(Modifier.height(4.dp))
       Text(
-        text = "Sur ${it.cyclesCounted} cycles : moyen ${it.averageCycleLengthDays}j · " +
-          "règles ${it.averagePeriodLengthDays}j · variabilité ±${
-            String.format(Locale.FRENCH, "%.1f", it.variabilityDays)
-          }j",
+        text = stringResource(
+          R.string.cycle_history_stats,
+          it.cyclesCounted,
+          it.averageCycleLengthDays,
+          it.averagePeriodLengthDays,
+          String.format(Locale.FRENCH, "%.1f", it.variabilityDays)
+        ),
         style = MaterialTheme.typography.labelSmall,
         color = MaterialTheme.colorScheme.onSurfaceVariant
       )
@@ -98,7 +106,7 @@ fun CycleHistorySection(
           ) {
             Icon(
               imageVector = Icons.Rounded.Edit,
-              contentDescription = "Modifier ce cycle",
+              contentDescription = stringResource(R.string.cycle_edit_cd),
               modifier = Modifier.size(18.dp)
             )
           }
@@ -108,7 +116,7 @@ fun CycleHistorySection(
           ) {
             Icon(
               imageVector = Icons.Rounded.DeleteOutline,
-              contentDescription = "Supprimer ce cycle",
+              contentDescription = stringResource(R.string.cycle_delete_cycle_cd),
               modifier = Modifier.size(18.dp)
             )
           }

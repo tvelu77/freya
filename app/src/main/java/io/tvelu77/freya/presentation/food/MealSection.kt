@@ -3,7 +3,6 @@ package io.tvelu77.freya.presentation.food
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -12,7 +11,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.Card
@@ -26,9 +24,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import io.tvelu77.freya.R
 import io.tvelu77.freya.domain.models.FoodEntry
 import io.tvelu77.freya.domain.models.MealType
+import io.tvelu77.freya.ui.components.SoftEmptyState
 
 @Composable
 fun MealSection(
@@ -59,7 +60,7 @@ fun MealSection(
         Text(mealType.displayName, style = MaterialTheme.typography.titleMedium)
         if (entries.isNotEmpty() && showCalories) {
           Text(
-            text = "${entries.sumOf { it.calories }} kcal",
+            text = stringResource(R.string.food_kcal, entries.sumOf { it.calories }),
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant
           )
@@ -74,7 +75,7 @@ fun MealSection(
       ) {
         Icon(
           Icons.Rounded.Add,
-          contentDescription = "Ajouter un aliment",
+          contentDescription = stringResource(R.string.food_add_food_cd),
           modifier = Modifier.size(16.dp),
           tint = MaterialTheme.colorScheme.onPrimaryContainer
         )
@@ -84,20 +85,11 @@ fun MealSection(
     Spacer(Modifier.height(6.dp))
 
     if (entries.isEmpty()) {
-      Box(
-        modifier = Modifier
-          .fillMaxWidth()
-          .clip(RoundedCornerShape(12.dp))
-          .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
-          .padding(vertical = 14.dp),
-        contentAlignment = Alignment.Center
-      ) {
-        Text(
-          text = "Rien d'enregistré",
-          style = MaterialTheme.typography.bodyMedium,
-          color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-      }
+      SoftEmptyState(
+        emoji = "🌿",
+        title = stringResource(R.string.meal_empty_title),
+        subtitle = stringResource(R.string.meal_empty_subtitle)
+      )
     } else {
       Card(
         shape = MaterialTheme.shapes.large,

@@ -23,7 +23,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import io.tvelu77.freya.R
 import io.tvelu77.freya.domain.models.HealthScore
 import io.tvelu77.freya.domain.models.ScoreLevel
 import io.tvelu77.freya.ui.theme.ScoreGood
@@ -55,7 +57,10 @@ fun HealthScoreCard(score: HealthScore, modifier: Modifier = Modifier, onClick: 
       modifier = Modifier.padding(20.dp),
       horizontalAlignment = Alignment.CenterHorizontally
     ) {
-      Text("Ton score du jour", style = MaterialTheme.typography.titleMedium)
+      Text(
+        text = stringResource(R.string.health_score_title),
+        style = MaterialTheme.typography.titleMedium
+      )
 
       Spacer(Modifier.height(16.dp))
 
@@ -99,9 +104,21 @@ fun HealthScoreCard(score: HealthScore, modifier: Modifier = Modifier, onClick: 
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceEvenly
       ) {
-        ScoreDetail("🍽️", "Nutrition", score.nutritionScore)
-        ScoreDetail("💧", "Hydratation", score.hydrationScore)
-        ScoreDetail("🚶", "Activité", score.activityScore)
+        ScoreDetail(
+          "🍽️",
+          stringResource(R.string.health_score_nutrition),
+          score.nutritionScore
+        )
+        ScoreDetail(
+          "💧",
+          stringResource(R.string.health_score_hydration),
+          score.hydrationScore
+        )
+        ScoreDetail(
+          "🚶",
+          stringResource(R.string.health_score_activity),
+          score.activityScore
+        )
       }
     }
   }
