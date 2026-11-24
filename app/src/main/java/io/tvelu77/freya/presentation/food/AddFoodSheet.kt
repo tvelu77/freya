@@ -62,6 +62,7 @@ fun AddFoodSheet(
   searchQuery: String,
   searchResults: List<FoodItem>,
   quickFoods: List<FoodItem>,
+  showCalories: Boolean,
   onQueryChanged: (String) -> Unit,
   onFoodSelected: (FoodItem, Float) -> Unit,
   onDismiss: () -> Unit
@@ -172,22 +173,24 @@ fun AddFoodSheet(
                 )
 
                 val q = quantity.toFloatOrNull() ?: FoodItem.DEFAULT_SERVING_G
-                Column {
-                  Text(
-                    text = stringResource(R.string.food_kcal, food.caloriesFor(q)),
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer
-                  )
-                  Text(
-                    text = stringResource(
-                      R.string.food_macros_short,
-                      food.proteinsFor(q).toInt(),
-                      food.carbsFor(q).toInt(),
-                      food.fatsFor(q).toInt()
-                    ),
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f)
-                  )
+                if (showCalories) {
+                  Column {
+                    Text(
+                      text = stringResource(R.string.food_kcal, food.caloriesFor(q)),
+                      style = MaterialTheme.typography.titleMedium,
+                      color = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                    Text(
+                      text = stringResource(
+                        R.string.food_macros_short,
+                        food.proteinsFor(q).toInt(),
+                        food.carbsFor(q).toInt(),
+                        food.fatsFor(q).toInt()
+                      ),
+                      style = MaterialTheme.typography.labelSmall,
+                      color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f)
+                    )
+                  }
                 }
               }
 
@@ -246,6 +249,7 @@ fun AddFoodSheet(
           items(searchResults, key = { it.id }) { food ->
             FoodResultRow(
               food = food,
+              showCalories = showCalories,
               onClick = {
                 selectedFood = food
                 quantity = food.defaultServingG.toInt().toString()
