@@ -53,6 +53,21 @@ fun NutritionAdviceCard(advice: NutritionAdvice, modifier: Modifier = Modifier) 
           )
         }
       }
+      Spacer(Modifier.height(12.dp))
+      Text(
+        text = stringResource(R.string.cycle_recommended_foods),
+        style = MaterialTheme.typography.labelSmall,
+        color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.7f)
+      )
+      Spacer(Modifier.height(4.dp))
+      Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+        advice.recommendedFoods.forEach { food ->
+          SuggestionChip(
+            onClick = {},
+            label = { Text(food, style = MaterialTheme.typography.labelSmall) }
+          )
+        }
+      }
     }
   }
 }

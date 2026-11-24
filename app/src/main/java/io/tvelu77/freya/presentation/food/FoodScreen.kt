@@ -80,7 +80,7 @@ fun FoodScreen(
           nutrition = uiState.nutrition,
           energyTarget = uiState.energyTarget,
           showCalories = uiState.showCalories,
-          adviceMessage = uiState.advice?.tipMessage
+          advice = uiState.advice
         )
       }
 
