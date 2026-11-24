@@ -106,6 +106,7 @@ fun FoodScreen(
       mealType = uiState.selectedMealType,
       searchQuery = uiState.searchQuery,
       searchResults = uiState.searchResults,
+      quickFoods = uiState.quickFoods,
       onQueryChanged = viewModel::onSearchQueryChanged,
       onFoodSelected = { food, quantity ->
         viewModel.logFood(food, quantity, uiState.selectedMealType)
