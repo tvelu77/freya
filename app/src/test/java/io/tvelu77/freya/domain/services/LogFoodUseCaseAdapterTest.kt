@@ -100,4 +100,37 @@ class LogFoodUseCaseAdapterTest {
 
     assertTrue(repository.entries.isEmpty())
   }
+
+  @Test
+  fun `updateFoodEntry re-saves the entry under the same id`() = runTest {
+    val id = adapter.logFood(rice, quantityG = 100f, mealType = MealType.LUNCH, date = date, time = time)
+    val original = repository.entries.single()
+
+    adapter.updateFoodEntry(original.copy(quantity = 250f))
+
+    assertEquals(1, repository.entries.size)
+    assertEquals(id, repository.entries.single().id)
+    assertEquals(250f, repository.entries.single().quantity)
+  }
+
+  @Test
+  fun `updateFoodQuantity rescales kcal and macros proportionally`() = runTest {
+    val id = adapter.logFood(rice, quantityG = 100f, mealType = MealType.LUNCH, date = date, time = time)
+
+    adapter.updateFoodQuantity(id, 200f)
+
+    val saved = repository.entries.single()
+    assertEquals(200f, saved.quantity)
+    assertEquals(260, saved.calories)
+    assertEquals(56.0, saved.carbs.toDouble(), 0.01)
+    assertEquals(5.4, saved.proteins.toDouble(), 0.01)
+    assertEquals(0.6, saved.fats.toDouble(), 0.01)
+  }
+
+  @Test
+  fun `updateFoodQuantity with a missing id does nothing`() = runTest {
+    adapter.updateFoodQuantity(999L, 100f)
+
+    assertTrue(repository.entries.isEmpty())
+  }
 }

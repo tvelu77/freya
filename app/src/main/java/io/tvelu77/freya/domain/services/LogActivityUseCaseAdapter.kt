@@ -32,6 +32,10 @@ class LogActivityUseCaseAdapter @Inject constructor(
   override suspend fun deleteActivity(id: Long) =
     repository.deleteActivity(id)
 
+  override suspend fun updateActivity(entry: ActivityEntry) {
+    repository.saveActivity(entry)
+  }
+
   override suspend fun getTotalKcalBurned(date: LocalDate): Int =
     repository.getTotalKcalBurned(date)
 }

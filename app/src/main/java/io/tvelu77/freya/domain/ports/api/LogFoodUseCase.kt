@@ -21,6 +21,10 @@ interface LogFoodUseCase {
 
   suspend fun deleteFood(id: Long)
 
+  suspend fun updateFoodEntry(entry: FoodEntry)
+
+  suspend fun updateFoodQuantity(id: Long, quantityG: Float)
+
   suspend fun getTotalCalories(date: LocalDate = LocalDate.now()): Int
 
 }

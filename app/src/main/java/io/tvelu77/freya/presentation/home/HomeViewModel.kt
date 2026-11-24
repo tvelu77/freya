@@ -51,6 +51,7 @@ data class HomeUiState(
   val nextCycles: List<LocalDate> = emptyList(),
   val selectedPhase: PhaseInfo? = null,
   val selectedDayCalories: Int = 0,
+  val todayCalories: Int = 0,
   val energyTarget: EnergyTarget = EnergyTarget.compute(2000, Goal.MAINTENANCE, 0),
   val energyNeed: DailyEnergyNeed? = null,
   val showCalories: Boolean = true,
@@ -147,6 +148,11 @@ class HomeViewModel @Inject constructor(
         .collect { entries ->
           _uiState.update { it.copy(selectedDayCalories = entries.sumOf { e -> e.calories }) }
         }
+    }
+    viewModelScope.launch {
+      logFoodUseCase.getFoodForDay(today).collect { entries ->
+        _uiState.update { it.copy(todayCalories = entries.sumOf { e -> e.calories }) }
+      }
     }
   }
 

@@ -12,16 +12,23 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import kotlinx.coroutines.launch
 import io.tvelu77.freya.R
 import io.tvelu77.freya.domain.models.MealType
 
@@ -31,8 +38,12 @@ fun FoodScreen(
   viewModel: FoodViewModel = hiltViewModel()
 ) {
   val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+  val snackbarHostState = remember { SnackbarHostState() }
+  val scope = rememberCoroutineScope()
+  val context = LocalContext.current
 
   Scaffold(
+    snackbarHost = { SnackbarHost(snackbarHostState) },
     topBar = {
       TopAppBar(
         title = {
@@ -92,7 +103,19 @@ fun FoodScreen(
             mealNutrition = uiState.nutrition.meals[mealType],
             showCalories = uiState.showCalories,
             onAddFood = { viewModel.onShowAddSheet(mealType) },
-            onDeleteFood = viewModel::deleteFood
+            onDeleteFood = { id ->
+              viewModel.deleteFood(id)
+              scope.launch {
+                val result = snackbarHostState.showSnackbar(
+                  message = context.getString(R.string.food_deleted),
+                  actionLabel = context.getString(R.string.action_cancel)
+                )
+                if (result == SnackbarResult.ActionPerformed) {
+                  viewModel.undoDeleteFood()
+                }
+              }
+            },
+            onEditFood = viewModel::updateFoodQuantity
           )
         }
       }

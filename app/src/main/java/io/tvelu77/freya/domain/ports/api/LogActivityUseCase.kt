@@ -18,5 +18,7 @@ interface LogActivityUseCase {
 
   suspend fun deleteActivity(id: Long)
 
+  suspend fun updateActivity(entry: ActivityEntry)
+
   suspend fun getTotalKcalBurned(date: LocalDate = LocalDate.now()): Int
 }
