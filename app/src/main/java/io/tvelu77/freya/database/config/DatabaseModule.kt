@@ -7,6 +7,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import io.tvelu77.freya.database.dao.ActivityDao
 import io.tvelu77.freya.database.dao.CycleDao
 import io.tvelu77.freya.database.dao.FoodDao
 import io.tvelu77.freya.database.dao.FoodItemDao
@@ -26,6 +27,7 @@ object DatabaseModule {
   @Provides fun provideCycleDao(db: FreyaDatabase): CycleDao = db.cycleDao()
   @Provides fun provideFoodDao(db: FreyaDatabase): FoodDao = db.foodDao()
   @Provides fun provideFoodItemDao(db: FreyaDatabase): FoodItemDao = db.foodItemDao()
+  @Provides fun provideActivityDao(db: FreyaDatabase): ActivityDao = db.activityDao()
 
   @Provides @Singleton
   fun provideUserProfileDataStore(

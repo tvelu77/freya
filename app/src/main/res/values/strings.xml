@@ -5,6 +5,7 @@
     <string name="nav_home">Accueil</string>
     <string name="nav_cycle">Cycle</string>
     <string name="nav_food">Repas</string>
+    <string name="nav_activity">Activité</string>
     <string name="nav_profile">Profil</string>
 
     <!-- Home -->
@@ -72,6 +73,20 @@
     <string name="dialog_period_end_label">Fin des règles</string>
     <string name="dialog_ongoing">En cours</string>
 
+    <!-- Activity -->
+    <string name="activity_title">Activité</string>
+    <string name="activity_add_cd">Ajouter une activité</string>
+    <string name="activity_add_button">Ajouter une activité</string>
+    <string name="activity_empty_title">Aucune activité aujourd\'hui</string>
+    <string name="activity_empty_subtitle">Bouge comme tu veux, à ton rythme 🌿</string>
+    <string name="activity_total_burned">%1$d kcal brûlées</string>
+    <string name="activity_kcal_burned">%1$d kcal</string>
+    <string name="activity_duration_min">%1$d min</string>
+    <string name="dialog_activity_title">Nouvelle activité</string>
+    <string name="activity_sport_label">Sport</string>
+    <string name="activity_duration_label">Durée (min)</string>
+    <string name="activity_delete_title">Supprimer cette activité ?</string>
+
     <!-- Shared actions -->
     <string name="action_delete">Supprimer</string>
     <string name="action_cancel">Annuler</string>
@@ -113,6 +128,9 @@
     <string name="profile_title">Mon profil</string>
     <string name="profile_section_info">Informations personnelles</string>
     <string name="profile_goal_section">Mon objectif</string>
+    <string name="profile_weight_label">Mon poids (kg) — optionnel</string>
+    <string name="profile_weight_placeholder">60</string>
+    <string name="profile_weight_hint">Sert uniquement à estimer les kcal brûlées</string>
     <string name="profile_goal_hint">Ta fourchette s\'ajuste, sans pression 🌿</string>
     <string name="profile_firstname_label">Prénom</string>
     <string name="profile_firstname_placeholder">Comment tu t\'appelles ?</string>
