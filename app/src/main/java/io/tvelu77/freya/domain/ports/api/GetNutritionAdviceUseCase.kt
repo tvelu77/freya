@@ -1,5 +1,7 @@
 package io.tvelu77.freya.domain.ports.api
 
+import io.tvelu77.freya.domain.models.EnergyTarget
+import io.tvelu77.freya.domain.models.Goal
 import io.tvelu77.freya.domain.models.NutritionAdvice
 import io.tvelu77.freya.domain.models.PhaseInfo
 import kotlinx.coroutines.flow.Flow
@@ -9,6 +11,6 @@ interface GetNutritionAdviceUseCase {
 
   fun getAdviceForToday(today: LocalDate = LocalDate.now()): Flow<NutritionAdvice?>
 
-  fun getCalorieTarget(baseCalories: Int, phaseInfo: PhaseInfo?): Int
+  fun getEnergyTarget(baseCalories: Int, goal: Goal, phaseInfo: PhaseInfo?): EnergyTarget
 
 }

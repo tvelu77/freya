@@ -1,8 +1,10 @@
 package io.tvelu77.freya.presentation.food
 
 import io.tvelu77.freya.domain.models.DailyNutrition
+import io.tvelu77.freya.domain.models.EnergyTarget
 import io.tvelu77.freya.domain.models.FoodEntry
 import io.tvelu77.freya.domain.models.FoodItem
+import io.tvelu77.freya.domain.models.Goal
 import io.tvelu77.freya.domain.models.MealType
 import io.tvelu77.freya.domain.models.NutritionAdvice
 import java.time.LocalDate
@@ -11,7 +13,7 @@ data class FoodUiState(
   val isLoading: Boolean = true,
   val todayEntries: List<FoodEntry> = emptyList(),
   val nutrition: DailyNutrition = DailyNutrition.empty(LocalDate.now()),
-  val caloriesTarget: Int = 2000,
+  val energyTarget: EnergyTarget = EnergyTarget.compute(2000, Goal.MAINTENANCE, 0),
   val advice: NutritionAdvice? = null,
   val showAddSheet: Boolean = false,
   val selectedMealType: MealType = MealType.LUNCH,

@@ -78,7 +78,7 @@ fun FoodScreen(
       item {
         NutritionSummaryCard(
           nutrition = uiState.nutrition,
-          caloriesTarget = uiState.caloriesTarget,
+          energyTarget = uiState.energyTarget,
           showCalories = uiState.showCalories,
           adviceMessage = uiState.advice?.tipMessage
         )

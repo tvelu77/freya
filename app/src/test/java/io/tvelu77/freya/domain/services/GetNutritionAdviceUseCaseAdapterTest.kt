@@ -1,6 +1,7 @@
 package io.tvelu77.freya.domain.services
 
 import io.tvelu77.freya.domain.models.CycleEntry
+import io.tvelu77.freya.domain.models.Goal
 import io.tvelu77.freya.domain.models.NutritionAdvice
 import io.tvelu77.freya.domain.models.PhaseInfo
 import io.tvelu77.freya.domain.models.PhaseType
@@ -50,7 +51,7 @@ class GetNutritionAdviceUseCaseAdapterTest {
   }
 
   @Test
-  fun `calorie target adds the phase surplus`() {
+  fun `energy target adds the phase surplus to the range`() {
     val lutealInfo = PhaseInfo(
       phase = PhaseType.LUTEAL,
       startDate = today.minusDays(5),
@@ -59,11 +60,14 @@ class GetNutritionAdviceUseCaseAdapterTest {
       nutritionAdvice = NutritionAdvice.forPhase(PhaseType.LUTEAL)
     )
 
-    assertEquals(2150, adapter.getCalorieTarget(2000, lutealInfo))
+    val target = adapter.getEnergyTarget(2000, Goal.MAINTENANCE, lutealInfo)
+
+    assertEquals(2050, target.low)
+    assertEquals(2250, target.high)
   }
 
   @Test
-  fun `calorie target never goes below the safety floor`() {
+  fun `energy target applies the goal and never goes below the safety floor`() {
     val menstrualInfo = PhaseInfo(
       phase = PhaseType.MENSTRUAL,
       startDate = today.minusDays(2),
@@ -72,11 +76,17 @@ class GetNutritionAdviceUseCaseAdapterTest {
       nutritionAdvice = NutritionAdvice.forPhase(PhaseType.MENSTRUAL)
     )
 
-    assertEquals(1200, adapter.getCalorieTarget(1000, menstrualInfo))
+    val target = adapter.getEnergyTarget(1000, Goal.LOSS, menstrualInfo)
+
+    assertEquals(1200, target.low)
+    assertEquals(1300, target.high)
   }
 
   @Test
-  fun `calorie target is the base when there is no phase`() {
-    assertEquals(2000, adapter.getCalorieTarget(2000, null))
+  fun `energy target is goal-only when there is no phase`() {
+    val target = adapter.getEnergyTarget(2000, Goal.GAIN, null)
+
+    assertEquals(2100, target.low)
+    assertEquals(2300, target.high)
   }
 }

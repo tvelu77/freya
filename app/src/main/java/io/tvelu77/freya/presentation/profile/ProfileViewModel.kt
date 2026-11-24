@@ -3,6 +3,7 @@ package io.tvelu77.freya.presentation.profile
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.tvelu77.freya.domain.models.Goal
 import io.tvelu77.freya.domain.ports.api.GetUserProfileUseCase
 import io.tvelu77.freya.domain.ports.api.TrackCycleUseCase
 import io.tvelu77.freya.domain.ports.api.UpdateUserProfileUseCase
@@ -47,6 +48,10 @@ class ProfileViewModel @Inject constructor(
 
   fun onCycleLengthChanged(value: String) =
     _uiState.update { it.copy(cycleLengthInput = value.filter { c -> c.isDigit() }) }
+
+  fun onGoalChanged(goal: Goal) {
+    viewModelScope.launch { updateProfile.updateGoal(goal) }
+  }
 
   fun onTcaFriendlyToggled(enabled: Boolean) {
     viewModelScope.launch { updateProfile.updateTcaFriendlyMode(enabled) }

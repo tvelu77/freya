@@ -1,5 +1,6 @@
 package io.tvelu77.freya.domain.ports.spi
 
+import io.tvelu77.freya.domain.models.Goal
 import io.tvelu77.freya.domain.models.UserProfile
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
@@ -20,6 +21,10 @@ class FakeUserProfileRepository : UserProfileRepository {
 
   override suspend fun updateBaseCalories(calories: Int) {
     profile = profile.copy(baseCalories = calories)
+  }
+
+  override suspend fun updateGoal(goal: Goal) {
+    profile = profile.copy(goal = goal)
   }
 
   override suspend fun updateCycleLength(days: Int) {

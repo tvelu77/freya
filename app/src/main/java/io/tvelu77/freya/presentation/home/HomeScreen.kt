@@ -41,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.tvelu77.freya.R
+import io.tvelu77.freya.domain.models.EnergyTarget
 import io.tvelu77.freya.domain.models.PhaseInfo
 import io.tvelu77.freya.domain.models.PhaseType
 import io.tvelu77.freya.domain.models.TCAAlert
@@ -136,6 +137,7 @@ private fun HomeContent(
           date = uiState.selectedDate,
           phase = uiState.selectedPhase?.phase,
           calories = uiState.selectedDayCalories,
+          energyTarget = uiState.energyTarget,
           showCalories = uiState.showCalories
         )
       }
@@ -176,6 +178,7 @@ private fun SelectedDayKpis(
   date: LocalDate,
   phase: PhaseType?,
   calories: Int,
+  energyTarget: EnergyTarget,
   showCalories: Boolean
 ) {
   Card(
@@ -203,11 +206,22 @@ private fun SelectedDayKpis(
       ) {
         phase?.let { PhaseChip(phase = it) }
         if (showCalories) {
-          Text(
-            text = stringResource(R.string.home_kcal, calories),
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-          )
+          Column(horizontalAlignment = Alignment.End) {
+            Text(
+              text = stringResource(R.string.home_kcal, calories),
+              style = MaterialTheme.typography.bodyMedium,
+              color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Text(
+              text = stringResource(
+                R.string.energy_target_range,
+                energyTarget.low,
+                energyTarget.high
+              ),
+              style = MaterialTheme.typography.labelSmall,
+              color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+          }
         }
       }
     }

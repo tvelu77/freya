@@ -68,8 +68,8 @@ class FoodViewModel @Inject constructor(
             todayEntries = entries,
             nutrition = nutrition,
             advice = advice,
-            caloriesTarget = getNutritionAdviceUseCase
-              .getCalorieTarget(profile.baseCalories, phase),
+            energyTarget = getNutritionAdviceUseCase
+              .getEnergyTarget(profile.baseCalories, profile.goal, phase),
             showCalories = !profile.tcaFriendlyMode,
             hasActiveCycle = phase != null
           )

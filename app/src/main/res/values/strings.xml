@@ -85,6 +85,9 @@
     <string name="food_kcal">%1$d kcal</string>
     <string name="food_kcal_hidden">— kcal</string>
     <string name="food_of_target">sur %1$d kcal</string>
+    <string name="food_target_range">sur %1$d – %2$d kcal</string>
+    <string name="food_target_hint">Une fourchette, pas une limite 🌿</string>
+    <string name="energy_target_range">%1$d – %2$d kcal</string>
     <string name="food_percent">%1$d %%</string>
     <string name="food_discreet_mode">Mode discret activé</string>
     <string name="food_macro_proteins">Protéines</string>
@@ -109,6 +112,8 @@
     <!-- Profile -->
     <string name="profile_title">Mon profil</string>
     <string name="profile_section_info">Informations personnelles</string>
+    <string name="profile_goal_section">Mon objectif</string>
+    <string name="profile_goal_hint">Ta fourchette s\'ajuste, sans pression 🌿</string>
     <string name="profile_firstname_label">Prénom</string>
     <string name="profile_firstname_placeholder">Comment tu t\'appelles ?</string>
     <string name="profile_calories_label">Objectif calorique quotidien (kcal)</string>
