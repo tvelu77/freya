@@ -19,7 +19,7 @@ import io.tvelu77.freya.R
 import io.tvelu77.freya.domain.models.FoodItem
 
 @Composable
-fun FoodResultRow(food: FoodItem, onClick: () -> Unit) {
+fun FoodResultRow(food: FoodItem, showCalories: Boolean, onClick: () -> Unit) {
   Row(
     modifier = Modifier
       .fillMaxWidth()
@@ -31,21 +31,25 @@ fun FoodResultRow(food: FoodItem, onClick: () -> Unit) {
   ) {
     Column(modifier = Modifier.weight(1f)) {
       Text(food.name, style = MaterialTheme.typography.bodyMedium)
+      if (showCalories) {
+        Text(
+          text = stringResource(
+            R.string.food_macros_short,
+            food.proteinsPer100g.toInt(),
+            food.carbsPer100g.toInt(),
+            food.fatsPer100g.toInt()
+          ),
+          style = MaterialTheme.typography.labelSmall,
+          color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+      }
+    }
+    if (showCalories) {
       Text(
-        text = stringResource(
-          R.string.food_macros_short,
-          food.proteinsPer100g.toInt(),
-          food.carbsPer100g.toInt(),
-          food.fatsPer100g.toInt()
-        ),
+        text = stringResource(R.string.food_kcal, food.caloriesPer100g),
         style = MaterialTheme.typography.labelSmall,
         color = MaterialTheme.colorScheme.onSurfaceVariant
       )
     }
-    Text(
-      text = stringResource(R.string.food_kcal, food.caloriesPer100g),
-      style = MaterialTheme.typography.labelSmall,
-      color = MaterialTheme.colorScheme.onSurfaceVariant
-    )
   }
 }

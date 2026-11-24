@@ -97,17 +97,19 @@ fun ProfileScreen(
           )
         )
 
-        ProfileTextField(
-          label = stringResource(R.string.profile_calories_label),
-          value = uiState.caloriesInput,
-          onValueChange = viewModel::onCaloriesChanged,
-          placeholder = stringResource(R.string.profile_calories_placeholder),
-          keyboardOptions = KeyboardOptions(
-            keyboardType = KeyboardType.Number,
-            imeAction = ImeAction.Next
-          ),
-          supportingText = stringResource(R.string.min_calories_hint)
-        )
+        if (!uiState.profile.tcaFriendlyMode) {
+          ProfileTextField(
+            label = stringResource(R.string.profile_calories_label),
+            value = uiState.caloriesInput,
+            onValueChange = viewModel::onCaloriesChanged,
+            placeholder = stringResource(R.string.profile_calories_placeholder),
+            keyboardOptions = KeyboardOptions(
+              keyboardType = KeyboardType.Number,
+              imeAction = ImeAction.Next
+            ),
+            supportingText = stringResource(R.string.min_calories_hint)
+          )
+        }
 
         ProfileTextField(
           label = stringResource(R.string.profile_cycle_length_label),
