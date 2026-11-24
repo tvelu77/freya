@@ -98,7 +98,6 @@ class HealthScoreTest {
 
     assertEquals(100, score.value)
     assertEquals(ScoreLevel.GOOD, score.level)
-    assertEquals("Tu as bien nourri ton corps aujourd'hui", score.message)
   }
 
   @Test
@@ -123,7 +122,6 @@ class HealthScoreTest {
 
     assertEquals(34, score.value)
     assertEquals(ScoreLevel.LOW, score.level)
-    assertEquals("Ton corps a peut-être besoin de plus d'énergie", score.message)
   }
 
   @Test

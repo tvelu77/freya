@@ -24,10 +24,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import io.tvelu77.freya.R
 import io.tvelu77.freya.domain.models.HealthScore
 import io.tvelu77.freya.domain.models.ScoreLevel
+import io.tvelu77.freya.ui.theme.FreyaTheme
 import io.tvelu77.freya.ui.theme.ScoreGood
 import io.tvelu77.freya.ui.theme.ScoreLow
 import io.tvelu77.freya.ui.theme.ScoreMedium
@@ -44,6 +46,12 @@ fun HealthScoreCard(score: HealthScore, modifier: Modifier = Modifier, onClick: 
     ScoreLevel.GOOD   -> ScoreGood
     ScoreLevel.MEDIUM -> ScoreMedium
     ScoreLevel.LOW    -> ScoreLow
+  }
+
+  val message = when (score.level) {
+    ScoreLevel.GOOD   -> stringResource(R.string.health_score_msg_good)
+    ScoreLevel.MEDIUM -> stringResource(R.string.health_score_msg_medium)
+    ScoreLevel.LOW    -> stringResource(R.string.health_score_msg_low)
   }
 
   Card(
@@ -91,7 +99,7 @@ fun HealthScoreCard(score: HealthScore, modifier: Modifier = Modifier, onClick: 
       Spacer(Modifier.height(12.dp))
 
       Text(
-        text = score.message,
+        text = message,
         style = MaterialTheme.typography.bodyMedium,
         color = MaterialTheme.colorScheme.onSurfaceVariant,
         textAlign = androidx.compose.ui.text.style.TextAlign.Center
@@ -119,8 +127,46 @@ fun HealthScoreCard(score: HealthScore, modifier: Modifier = Modifier, onClick: 
           stringResource(R.string.health_score_activity),
           score.activityScore
         )
+        ScoreDetail(
+          "💛",
+          stringResource(R.string.health_score_signals),
+          score.signalsScore
+        )
       }
     }
+  }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun HealthScoreCardGoodPreview() {
+  FreyaTheme {
+    HealthScoreCard(
+      score = HealthScore(85, 100, 80, 90, 70, ScoreLevel.GOOD),
+      onClick = {}
+    )
+  }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun HealthScoreCardMediumPreview() {
+  FreyaTheme {
+    HealthScoreCard(
+      score = HealthScore(52, 70, 60, 50, 50, ScoreLevel.MEDIUM),
+      onClick = {}
+    )
+  }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun HealthScoreCardLowPreview() {
+  FreyaTheme {
+    HealthScoreCard(
+      score = HealthScore(34, 40, 40, 0, 50, ScoreLevel.LOW),
+      onClick = {}
+    )
   }
 }
 
