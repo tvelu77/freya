@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.tvelu77.freya.domain.models.FoodItem
 import io.tvelu77.freya.domain.models.MealType
+import io.tvelu77.freya.domain.ports.api.GetDailyNutritionUseCase
 import io.tvelu77.freya.domain.ports.api.GetNutritionAdviceUseCase
 import io.tvelu77.freya.domain.ports.api.GetUserProfileUseCase
 import io.tvelu77.freya.domain.ports.api.LogFoodUseCase
@@ -29,6 +30,7 @@ import kotlin.collections.emptyList
 @HiltViewModel
 class FoodViewModel @Inject constructor(
   private val logFoodUseCase: LogFoodUseCase,
+  private val getDailyNutritionUseCase: GetDailyNutritionUseCase,
   private val searchFoodItemsUseCase: SearchFoodItemsUseCase,
   private val getNutritionAdviceUseCase: GetNutritionAdviceUseCase,
   private val getUserProfileUseCase: GetUserProfileUseCase,
@@ -55,19 +57,16 @@ class FoodViewModel @Inject constructor(
   private fun loadFoodData() {
       combine(
         logFoodUseCase.getFoodForDay(today),
+        getDailyNutritionUseCase.getForDay(today),
         getNutritionAdviceUseCase.getAdviceForToday(today),
         getUserProfileUseCase.execute(),
         trackCycleUseCase.getCurrentPhase()
-      ) { entries, advice, profile, phase ->
-        val totalKcal = entries.sumOf { it.calories }
+      ) { entries, nutrition, advice, profile, phase ->
         _uiState.update {
           it.copy(
             isLoading = false,
             todayEntries = entries,
-            totalCalories = totalKcal,
-            proteins = entries.sumOf { e -> e.proteins.toDouble() }.toFloat(),
-            carbs = entries.sumOf { e -> e.carbs.toDouble() }.toFloat(),
-            fats = entries.sumOf { e -> e.fats.toDouble() }.toFloat(),
+            nutrition = nutrition,
             advice = advice,
             caloriesTarget = getNutritionAdviceUseCase
               .getCalorieTarget(profile.baseCalories, phase),

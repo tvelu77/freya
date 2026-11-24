@@ -23,20 +23,22 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import io.tvelu77.freya.R
+import io.tvelu77.freya.domain.models.DailyNutrition
 import io.tvelu77.freya.ui.theme.ScoreGood
 import io.tvelu77.freya.ui.theme.ScoreLow
 import io.tvelu77.freya.ui.theme.ScoreMedium
 
 @Composable
 fun NutritionSummaryCard(
-  totalCalories: Int,
+  nutrition: DailyNutrition,
   caloriesTarget: Int,
-  proteins: Float,
-  carbs: Float,
-  fats: Float,
   showCalories: Boolean,
   adviceMessage: String?
 ) {
+  val totalCalories = nutrition.totalCalories
+  val proteins = nutrition.totalProteins
+  val carbs = nutrition.totalCarbs
+  val fats = nutrition.totalFats
   Card(
     modifier = Modifier
       .fillMaxWidth()

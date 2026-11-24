@@ -77,11 +77,8 @@ fun FoodScreen(
 
       item {
         NutritionSummaryCard(
-          totalCalories = uiState.totalCalories,
+          nutrition = uiState.nutrition,
           caloriesTarget = uiState.caloriesTarget,
-          proteins = uiState.proteins,
-          carbs = uiState.carbs,
-          fats = uiState.fats,
           showCalories = uiState.showCalories,
           adviceMessage = uiState.advice?.tipMessage
         )
@@ -92,6 +89,7 @@ fun FoodScreen(
           MealSection(
             mealType = mealType,
             entries = uiState.todayEntries.filter { it.mealType == mealType },
+            mealNutrition = uiState.nutrition.meals[mealType],
             showCalories = uiState.showCalories,
             onAddFood = { viewModel.onShowAddSheet(mealType) },
             onDeleteFood = viewModel::deleteFood
