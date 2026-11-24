@@ -52,7 +52,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.tvelu77.freya.R
 import io.tvelu77.freya.domain.models.ActivityEntry
+import io.tvelu77.freya.domain.models.DailyActivity
 import io.tvelu77.freya.domain.models.SportType
+import io.tvelu77.freya.ui.components.ActivityAdviceCard
 import io.tvelu77.freya.ui.components.SoftEmptyState
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -136,6 +138,23 @@ fun ActivityScreen(
         }
       }
 
+      uiState.activityAdvice?.let { advice ->
+        item {
+          ActivityAdviceCard(
+            advice = advice,
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp)
+          )
+        }
+      }
+
+      item {
+        DailyActivityCard(
+          dailyActivity = uiState.dailyActivity,
+          onSave = viewModel::saveDailyActivity,
+          modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp)
+        )
+      }
+
       if (uiState.activities.isEmpty()) {
         item {
           SoftEmptyState(
@@ -177,6 +196,67 @@ fun ActivityScreen(
       onConfirm = viewModel::logActivity,
       onDismiss = viewModel::onDismissDialog
     )
+  }
+}
+
+@Composable
+private fun DailyActivityCard(
+  dailyActivity: DailyActivity?,
+  onSave: (Int, Float) -> Unit,
+  modifier: Modifier = Modifier
+) {
+  var steps by remember(dailyActivity) {
+    mutableStateOf(dailyActivity?.steps?.takeIf { it > 0 }?.toString() ?: "")
+  }
+  var sleep by remember(dailyActivity) {
+    mutableStateOf(dailyActivity?.sleepHours?.takeIf { it > 0f }?.toString() ?: "")
+  }
+
+  Card(
+    modifier = modifier.fillMaxWidth(),
+    colors = CardDefaults.cardColors(
+      containerColor = MaterialTheme.colorScheme.surface
+    ),
+    shape = MaterialTheme.shapes.large
+  ) {
+    Column(modifier = Modifier.padding(16.dp)) {
+      Text(
+        text = stringResource(R.string.activity_daily_title),
+        style = MaterialTheme.typography.titleMedium
+      )
+      Spacer(Modifier.height(12.dp))
+      OutlinedTextField(
+        value = steps,
+        onValueChange = { steps = it.filter { c -> c.isDigit() } },
+        label = { Text(stringResource(R.string.activity_steps_label)) },
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+        singleLine = true,
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(12.dp)
+      )
+      Spacer(Modifier.height(8.dp))
+      OutlinedTextField(
+        value = sleep,
+        onValueChange = {
+          sleep = it.filter { c -> c.isDigit() || c == '.' || c == ',' }.replace(',', '.')
+        },
+        label = { Text(stringResource(R.string.activity_sleep_label)) },
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+        singleLine = true,
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(12.dp)
+      )
+      Spacer(Modifier.height(12.dp))
+      Button(
+        onClick = { onSave(steps.toIntOrNull() ?: 0, sleep.toFloatOrNull() ?: 0f) },
+        modifier = Modifier
+          .fillMaxWidth()
+          .height(48.dp),
+        shape = RoundedCornerShape(16.dp)
+      ) {
+        Text(stringResource(R.string.activity_save))
+      }
+    }
   }
 }
 

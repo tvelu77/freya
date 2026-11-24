@@ -6,6 +6,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import io.tvelu77.freya.domain.models.SportType
 import io.tvelu77.freya.domain.ports.api.GetUserProfileUseCase
 import io.tvelu77.freya.domain.ports.api.LogActivityUseCase
+import io.tvelu77.freya.domain.ports.api.TrackDailyActivityUseCase
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -17,6 +18,7 @@ import java.time.LocalDate
 @HiltViewModel
 class ActivityViewModel @Inject constructor(
   private val logActivityUseCase: LogActivityUseCase,
+  private val trackDailyActivityUseCase: TrackDailyActivityUseCase,
   private val getUserProfileUseCase: GetUserProfileUseCase
 ) : ViewModel() {
 
@@ -44,6 +46,16 @@ class ActivityViewModel @Inject constructor(
         }
       }
     }
+    viewModelScope.launch {
+      trackDailyActivityUseCase.getDailyActivity(today).collect { daily ->
+        _uiState.update { it.copy(dailyActivity = daily) }
+      }
+    }
+    viewModelScope.launch {
+      trackDailyActivityUseCase.getActivityAdviceForToday(today).collect { advice ->
+        _uiState.update { it.copy(activityAdvice = advice) }
+      }
+    }
   }
 
   fun onAddClicked() = _uiState.update { it.copy(showAddDialog = true) }
@@ -59,5 +71,12 @@ class ActivityViewModel @Inject constructor(
 
   fun deleteActivity(id: Long) {
     viewModelScope.launch { logActivityUseCase.deleteActivity(id) }
+  }
+
+  fun saveDailyActivity(steps: Int, sleepHours: Float) {
+    viewModelScope.launch {
+      trackDailyActivityUseCase.updateSteps(steps, today)
+      trackDailyActivityUseCase.updateSleep(sleepHours, today)
+    }
   }
 }
