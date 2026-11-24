@@ -22,9 +22,11 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.CheckCircle
+import androidx.compose.material.icons.rounded.ChevronRight
 import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material.icons.rounded.Notifications
 import androidx.compose.material.icons.rounded.Save
+import androidx.compose.material.icons.rounded.VolunteerActivism
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -56,6 +58,7 @@ import io.tvelu77.freya.ui.components.ToggleRow
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
+  onNavigateToResources: () -> Unit = {},
   viewModel: ProfileViewModel = hiltViewModel()
 ) {
   val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -206,6 +209,45 @@ fun ProfileScreen(
           onCheckedChange = viewModel::onNotificationsToggled,
           icon = Icons.Rounded.Notifications
         )
+      }
+
+      ProfileSection(title = stringResource(R.string.profile_section_help)) {
+        Card(
+          onClick = onNavigateToResources,
+          modifier = Modifier.fillMaxWidth(),
+          colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.tertiaryContainer
+          ),
+          shape = MaterialTheme.shapes.large
+        ) {
+          Row(
+            modifier = Modifier.padding(14.dp),
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
+            verticalAlignment = Alignment.CenterVertically
+          ) {
+            Icon(
+              imageVector = Icons.Rounded.VolunteerActivism,
+              contentDescription = null,
+              tint = MaterialTheme.colorScheme.onTertiaryContainer
+            )
+            Column(modifier = Modifier.weight(1f)) {
+              Text(
+                text = stringResource(R.string.profile_resources_title),
+                style = MaterialTheme.typography.titleSmall
+              )
+              Text(
+                text = stringResource(R.string.profile_resources_sub),
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onTertiaryContainer.copy(alpha = 0.7f)
+              )
+            }
+            Icon(
+              imageVector = Icons.Rounded.ChevronRight,
+              contentDescription = null,
+              tint = MaterialTheme.colorScheme.onTertiaryContainer.copy(alpha = 0.5f)
+            )
+          }
+        }
       }
 
       Spacer(Modifier.height(4.dp))
