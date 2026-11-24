@@ -113,7 +113,7 @@
     <string name="profile_title">Mon profil</string>
     <string name="profile_section_info">Informations personnelles</string>
     <string name="profile_goal_section">Mon objectif</string>
-    <string name="profile_goal_hint">Ta fourchette s'ajuste, sans pression 🌿</string>
+    <string name="profile_goal_hint">Ta fourchette s\'ajuste, sans pression 🌿</string>
     <string name="profile_firstname_label">Prénom</string>
     <string name="profile_firstname_placeholder">Comment tu t\'appelles ?</string>
     <string name="profile_calories_label">Objectif calorique quotidien (kcal)</string>
