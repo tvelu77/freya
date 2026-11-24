@@ -16,7 +16,26 @@ class WorkManagerNotificationScheduler @Inject constructor(
 ) : NotificationScheduler {
 
   override fun schedule(notifications: List<PhaseNotification>) {
-    cancelAll()
+    WorkManager.getInstance(context).cancelAllWorkByTag(NOTIFICATION_TAG)
+    enqueueAll(notifications, NOTIFICATION_TAG)
+  }
+
+  override fun scheduleHydrationReminders(notifications: List<PhaseNotification>) {
+    cancelHydrationReminders()
+    enqueueAll(notifications, HYDRATION_REMINDER_TAG)
+  }
+
+  override fun cancelAll() {
+    val workManager = WorkManager.getInstance(context)
+    workManager.cancelAllWorkByTag(NOTIFICATION_TAG)
+    workManager.cancelAllWorkByTag(HYDRATION_REMINDER_TAG)
+  }
+
+  override fun cancelHydrationReminders() {
+    WorkManager.getInstance(context).cancelAllWorkByTag(HYDRATION_REMINDER_TAG)
+  }
+
+  private fun enqueueAll(notifications: List<PhaseNotification>, tag: String) {
     val workManager = WorkManager.getInstance(context)
     notifications.forEach { notification ->
       val delay = Duration.between(LocalDateTime.now(), notification.triggerAt)
@@ -29,13 +48,9 @@ class WorkManagerNotificationScheduler @Inject constructor(
             "message" to notification.message
           )
         )
-        .addTag(NOTIFICATION_TAG)
+        .addTag(tag)
         .build()
       workManager.enqueue(request)
     }
-  }
-
-  override fun cancelAll() {
-    WorkManager.getInstance(context).cancelAllWorkByTag(NOTIFICATION_TAG)
   }
 }

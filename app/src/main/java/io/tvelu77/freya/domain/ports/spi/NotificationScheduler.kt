@@ -6,6 +6,10 @@ interface NotificationScheduler {
 
   fun schedule(notifications: List<PhaseNotification>)
 
+  fun scheduleHydrationReminders(notifications: List<PhaseNotification>)
+
   fun cancelAll()
+
+  fun cancelHydrationReminders()
 
 }

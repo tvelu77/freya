@@ -15,6 +15,7 @@ import io.tvelu77.freya.R
 
 const val NOTIFICATION_CHANNEL_ID = "freya_gentle_reminders"
 const val NOTIFICATION_TAG = "freya_phase_notifications"
+const val HYDRATION_REMINDER_TAG = "freya_hydration_reminders"
 
 class PhaseNotificationWorker(
   context: Context,

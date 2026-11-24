@@ -7,6 +7,7 @@ import io.tvelu77.freya.domain.models.SportType
 import io.tvelu77.freya.domain.ports.api.GetUserProfileUseCase
 import io.tvelu77.freya.domain.ports.api.LogActivityUseCase
 import io.tvelu77.freya.domain.ports.api.TrackDailyActivityUseCase
+import io.tvelu77.freya.domain.ports.api.TrackHydrationUseCase
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -19,6 +20,7 @@ import java.time.LocalDate
 class ActivityViewModel @Inject constructor(
   private val logActivityUseCase: LogActivityUseCase,
   private val trackDailyActivityUseCase: TrackDailyActivityUseCase,
+  private val trackHydrationUseCase: TrackHydrationUseCase,
   private val getUserProfileUseCase: GetUserProfileUseCase
 ) : ViewModel() {
 
@@ -56,6 +58,16 @@ class ActivityViewModel @Inject constructor(
         _uiState.update { it.copy(activityAdvice = advice) }
       }
     }
+    viewModelScope.launch {
+      trackHydrationUseCase.getHydrationForDay(today).collect { hydration ->
+        _uiState.update { it.copy(hydration = hydration) }
+      }
+    }
+    viewModelScope.launch {
+      trackHydrationUseCase.getGoalForDay(today).collect { goal ->
+        _uiState.update { it.copy(hydrationGoal = goal) }
+      }
+    }
   }
 
   fun onAddClicked() = _uiState.update { it.copy(showAddDialog = true) }
@@ -78,5 +90,9 @@ class ActivityViewModel @Inject constructor(
       trackDailyActivityUseCase.updateSteps(steps, today)
       trackDailyActivityUseCase.updateSleep(sleepHours, today)
     }
+  }
+
+  fun addWater(ml: Int) {
+    viewModelScope.launch { trackHydrationUseCase.addWater(ml, today) }
   }
 }

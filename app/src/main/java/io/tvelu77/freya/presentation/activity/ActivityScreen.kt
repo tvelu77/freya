@@ -30,7 +30,9 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -53,6 +55,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.tvelu77.freya.R
 import io.tvelu77.freya.domain.models.ActivityEntry
 import io.tvelu77.freya.domain.models.DailyActivity
+import io.tvelu77.freya.domain.models.DailyHydration
+import io.tvelu77.freya.domain.models.HydrationGoal
 import io.tvelu77.freya.domain.models.SportType
 import io.tvelu77.freya.ui.components.ActivityAdviceCard
 import io.tvelu77.freya.ui.components.SoftEmptyState
@@ -151,6 +155,15 @@ fun ActivityScreen(
         DailyActivityCard(
           dailyActivity = uiState.dailyActivity,
           onSave = viewModel::saveDailyActivity,
+          modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp)
+        )
+      }
+
+      item {
+        HydrationCard(
+          hydration = uiState.hydration,
+          goal = uiState.hydrationGoal,
+          onAddWater = viewModel::addWater,
           modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp)
         )
       }
@@ -255,6 +268,67 @@ private fun DailyActivityCard(
         shape = RoundedCornerShape(16.dp)
       ) {
         Text(stringResource(R.string.activity_save))
+      }
+    }
+  }
+}
+
+@Composable
+private fun HydrationCard(
+  hydration: DailyHydration?,
+  goal: HydrationGoal,
+  onAddWater: (Int) -> Unit,
+  modifier: Modifier = Modifier
+) {
+  val consumed = hydration?.waterMl ?: 0
+  val progress = (consumed.toFloat() / goal.targetMl).coerceIn(0f, 1f)
+
+  Card(
+    modifier = modifier.fillMaxWidth(),
+    colors = CardDefaults.cardColors(
+      containerColor = MaterialTheme.colorScheme.surface
+    ),
+    shape = MaterialTheme.shapes.large
+  ) {
+    Column(modifier = Modifier.padding(16.dp)) {
+      Text(
+        text = stringResource(R.string.hydration_title),
+        style = MaterialTheme.typography.titleMedium
+      )
+      Spacer(Modifier.height(8.dp))
+      Text(
+        text = stringResource(R.string.hydration_progress, consumed, goal.targetMl),
+        style = MaterialTheme.typography.bodyMedium
+      )
+      Spacer(Modifier.height(8.dp))
+      LinearProgressIndicator(
+        progress = { progress },
+        modifier = Modifier.fillMaxWidth(),
+        color = MaterialTheme.colorScheme.primary,
+        trackColor = MaterialTheme.colorScheme.secondaryContainer
+      )
+      Spacer(Modifier.height(6.dp))
+      Text(
+        text = stringResource(R.string.hydration_hint),
+        style = MaterialTheme.typography.labelSmall,
+        color = MaterialTheme.colorScheme.onSurfaceVariant
+      )
+      Spacer(Modifier.height(12.dp))
+      Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        OutlinedButton(
+          onClick = { onAddWater(250) },
+          modifier = Modifier.weight(1f),
+          shape = RoundedCornerShape(12.dp)
+        ) {
+          Text(stringResource(R.string.hydration_glass))
+        }
+        OutlinedButton(
+          onClick = { onAddWater(500) },
+          modifier = Modifier.weight(1f),
+          shape = RoundedCornerShape(12.dp)
+        ) {
+          Text(stringResource(R.string.hydration_bottle))
+        }
       }
     }
   }

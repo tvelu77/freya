@@ -10,11 +10,13 @@ import io.tvelu77.freya.database.repositories.RoomDailyActivityRepository
 import io.tvelu77.freya.database.repositories.RoomCycleRepository
 import io.tvelu77.freya.database.repositories.RoomFoodItemRepository
 import io.tvelu77.freya.database.repositories.RoomFoodRepository
+import io.tvelu77.freya.database.repositories.RoomHydrationRepository
 import io.tvelu77.freya.domain.ports.spi.ActivityRepository
 import io.tvelu77.freya.domain.ports.spi.CycleRepository
 import io.tvelu77.freya.domain.ports.spi.DailyActivityRepository
 import io.tvelu77.freya.domain.ports.spi.FoodItemRepository
 import io.tvelu77.freya.domain.ports.spi.FoodRepository
+import io.tvelu77.freya.domain.ports.spi.HydrationRepository
 import io.tvelu77.freya.domain.ports.spi.UserProfileRepository
 import jakarta.inject.Singleton
 
@@ -41,6 +43,10 @@ abstract class RepositoryModule {
   @Binds
   @Singleton
   abstract fun bindDailyActivityRepository(adapter: RoomDailyActivityRepository): DailyActivityRepository
+
+  @Binds
+  @Singleton
+  abstract fun bindHydrationRepository(adapter: RoomHydrationRepository): HydrationRepository
 
   @Binds
   @Singleton
