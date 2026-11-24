@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.tvelu77.freya.presentation.onboarding.disclaimer.DisclaimerPage
+import io.tvelu77.freya.presentation.onboarding.measures.MeasuresPage
 import io.tvelu77.freya.presentation.onboarding.preferences.PreferencesPage
 import io.tvelu77.freya.presentation.onboarding.profile.ProfilePage
 import io.tvelu77.freya.presentation.onboarding.target.TargetPage
@@ -23,12 +24,12 @@ import kotlinx.coroutines.launch
 fun OnboardingScreen(onFinished: () -> Unit,
                      viewModel: OnboardingViewModel = hiltViewModel()) {
   val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-  val pagerState = rememberPagerState(pageCount = { 4 })
+  val pagerState = rememberPagerState(pageCount = { 5 })
   val scope = rememberCoroutineScope()
 
   val goNext: () -> Unit = {
     scope.launch {
-      if (pagerState.currentPage < 3) {
+      if (pagerState.currentPage < 4) {
         pagerState.animateScrollToPage(pagerState.currentPage + 1)
       } else {
         viewModel.onFinish(onFinished)
@@ -57,9 +58,23 @@ fun OnboardingScreen(onFinished: () -> Unit,
         currentStep = page,
         calories = uiState.baseCalories,
         onCaloriesChanged = viewModel::onCaloriesChanged,
+        goal = uiState.goal,
+        onGoalChanged = viewModel::onGoalChanged,
+        cycleLengthInput = uiState.cycleLengthInput,
+        onCycleLengthInputChanged = viewModel::onCycleLengthInputChanged,
         onNext = goNext
       )
-      3 -> PreferencesPage(
+      3 -> MeasuresPage(
+        currentStep = page,
+        weightInput = uiState.weightInput,
+        ageInput = uiState.ageInput,
+        heightInput = uiState.heightInput,
+        onWeightInputChanged = viewModel::onWeightInputChanged,
+        onAgeInputChanged = viewModel::onAgeInputChanged,
+        onHeightInputChanged = viewModel::onHeightInputChanged,
+        onNext = goNext
+      )
+      4 -> PreferencesPage(
         currentStep = page,
         friendlyModeEnabled = uiState.friendlyModeEnabled,
         notificationsEnabled = uiState.notificationsEnabled,

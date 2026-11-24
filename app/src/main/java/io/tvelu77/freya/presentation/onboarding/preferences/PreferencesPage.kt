@@ -65,7 +65,7 @@ fun PreferencesPage(
     OnboardingFooter(
       modifier = Modifier
         .windowInsetsPadding(WindowInsets.navigationBars),
-      totalSteps = 4,
+      totalSteps = 5,
       currentStep = currentStep,
       buttonLabel = stringResource(R.string.onboarding_finish),
       onNext = onNext
