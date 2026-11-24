@@ -51,6 +51,28 @@ class GetNutritionAdviceUseCaseAdapterTest {
   }
 
   @Test
+  fun `advice changes with the current phase and carries concrete food examples`() = runTest {
+    val cases = listOf(
+      PhaseType.MENSTRUAL to 2L to "Lentilles cuites",
+      PhaseType.FOLLICULAR to 8L to "Quinoa cuit",
+      PhaseType.OVULATORY to 13L to "Saumon grillé",
+      PhaseType.LUTEAL to 25L to "Riz complet cuit"
+    )
+
+    cases.forEach { (phase, daysAgo, expectedFood) ->
+      repository.cycles.clear()
+      repository.cycles.add(
+        CycleEntry(startDate = today.minusDays(daysAgo), endDate = null, cycleLengthDays = 28)
+      )
+
+      val advice = adapter.getAdviceForToday(today).first()
+
+      assertEquals(phase, advice?.phaseType)
+      assertTrue(advice?.recommendedFoods?.contains(expectedFood) == true)
+    }
+  }
+
+  @Test
   fun `energy target adds the phase surplus to the range`() {
     val lutealInfo = PhaseInfo(
       phase = PhaseType.LUTEAL,
