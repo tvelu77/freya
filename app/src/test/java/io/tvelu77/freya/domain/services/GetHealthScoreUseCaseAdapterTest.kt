@@ -58,7 +58,6 @@ class GetHealthScoreUseCaseAdapterTest {
     assertEquals(100, score.activityScore)
     assertEquals(100, score.signalsScore)
     assertEquals(ScoreLevel.GOOD, score.level)
-    assertEquals("Tu as bien nourri ton corps aujourd'hui", score.message)
   }
 
   @Test
@@ -93,7 +92,6 @@ class GetHealthScoreUseCaseAdapterTest {
     val score = adapter.getScoreForDay(date).first()
 
     assertEquals(ScoreLevel.LOW, score.level)
-    assertEquals("Ton corps a peut-être besoin de plus d'énergie", score.message)
   }
 
   @Test

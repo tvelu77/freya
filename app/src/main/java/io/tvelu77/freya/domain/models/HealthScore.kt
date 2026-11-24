@@ -6,7 +6,6 @@ data class HealthScore(
   val hydrationScore: Int,
   val activityScore: Int,
   val signalsScore: Int,
-  val message: String,
   val level: ScoreLevel
 ) {
 
@@ -37,12 +36,12 @@ data class HealthScore(
         activity * W_ACTIVITY +
         signals * W_SIGNALS
       ).toInt().coerceIn(0, MAX_SCORE)
-      val (level, message) = when {
-        value >= 70 -> ScoreLevel.GOOD to "Tu as bien nourri ton corps aujourd'hui"
-        value >= 40 -> ScoreLevel.MEDIUM to "Tu peux essayer de boire un peu plus demain"
-        else -> ScoreLevel.LOW to "Ton corps a peut-être besoin de plus d'énergie"
+      val level = when {
+        value >= 70 -> ScoreLevel.GOOD
+        value >= 40 -> ScoreLevel.MEDIUM
+        else -> ScoreLevel.LOW
       }
-      return HealthScore(value, nutrition, hydration, activity, signals, message, level)
+      return HealthScore(value, nutrition, hydration, activity, signals, level)
     }
 
     private fun nutritionScore(consumed: Int?, target: Int): Int {

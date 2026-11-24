@@ -202,6 +202,10 @@
 
     <!-- Shared components -->
     <string name="health_score_title">Ton score du jour</string>
+    <string name="health_score_msg_good">🟢 Tu as bien nourri ton corps aujourd\'hui</string>
+    <string name="health_score_msg_medium">🟡 Tu peux essayer de boire un peu plus demain 💧</string>
+    <string name="health_score_msg_low">🟠 Ton corps a peut-être besoin de plus d\'énergie aujourd\'hui 💛</string>
+    <string name="health_score_signals">Signaux</string>
     <string name="health_score_nutrition">Nutrition</string>
     <string name="health_score_hydration">Hydratation</string>
     <string name="health_score_activity">Activité</string>
