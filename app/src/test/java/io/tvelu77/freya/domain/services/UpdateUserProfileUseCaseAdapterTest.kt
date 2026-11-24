@@ -66,4 +66,24 @@ class UpdateUserProfileUseCaseAdapterTest {
 
     assertEquals(Goal.LOSS, repository.profile.goal)
   }
+
+  @Test
+  fun `age and height stay within sane bounds and can be cleared`() = runTest {
+    adapter.updateAgeYears(8)
+    assertEquals(10, repository.profile.ageYears)
+
+    adapter.updateAgeYears(130)
+    assertEquals(120, repository.profile.ageYears)
+
+    adapter.updateHeightCm(90)
+    assertEquals(100, repository.profile.heightCm)
+
+    adapter.updateHeightCm(300)
+    assertEquals(250, repository.profile.heightCm)
+
+    adapter.updateAgeYears(null)
+    adapter.updateHeightCm(null)
+    assertEquals(null, repository.profile.ageYears)
+    assertEquals(null, repository.profile.heightCm)
+  }
 }

@@ -5,7 +5,8 @@ import java.time.LocalDate
 data class DailyActivity(
   val date: LocalDate,
   val steps: Int,
-  val sleepHours: Float
+  val sleepHours: Float,
+  val fatigue: FatigueLevel? = null
 ) {
 
   fun estimateStepsKcal(weightKg: Float?): Int = estimateStepsKcal(steps, weightKg)

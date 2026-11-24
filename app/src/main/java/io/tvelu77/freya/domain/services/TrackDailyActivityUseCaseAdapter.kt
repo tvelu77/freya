@@ -2,6 +2,7 @@ package io.tvelu77.freya.domain.services
 
 import io.tvelu77.freya.domain.models.ActivityAdvice
 import io.tvelu77.freya.domain.models.DailyActivity
+import io.tvelu77.freya.domain.models.FatigueLevel
 import io.tvelu77.freya.domain.ports.api.PhaseCalculator
 import io.tvelu77.freya.domain.ports.api.TrackDailyActivityUseCase
 import io.tvelu77.freya.domain.ports.spi.CycleRepository
@@ -34,6 +35,14 @@ class TrackDailyActivityUseCaseAdapter @Inject constructor(
     dailyActivityRepository.saveDailyActivity(
       (current ?: DailyActivity(date = date, steps = 0, sleepHours = 0f))
         .copy(sleepHours = sleepHours.coerceIn(0f, TrackDailyActivityUseCase.MAX_SLEEP_HOURS))
+    )
+  }
+
+  override suspend fun updateFatigue(fatigue: FatigueLevel?, date: LocalDate) {
+    val current = dailyActivityRepository.getDailyActivity(date).first()
+    dailyActivityRepository.saveDailyActivity(
+      (current ?: DailyActivity(date = date, steps = 0, sleepHours = 0f))
+        .copy(fatigue = fatigue)
     )
   }
 

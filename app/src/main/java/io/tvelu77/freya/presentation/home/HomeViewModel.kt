@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.tvelu77.freya.domain.models.CycleEntry
+import io.tvelu77.freya.domain.models.DailyEnergyNeed
 import io.tvelu77.freya.domain.models.EnergyTarget
 import io.tvelu77.freya.domain.models.Goal
 import io.tvelu77.freya.domain.models.HealthScore
@@ -11,6 +12,7 @@ import io.tvelu77.freya.domain.models.NutritionAdvice
 import io.tvelu77.freya.domain.models.PhaseInfo
 import io.tvelu77.freya.domain.models.PhaseType
 import io.tvelu77.freya.domain.models.TCAAlert
+import io.tvelu77.freya.domain.ports.api.GetDailyEnergyNeedUseCase
 import io.tvelu77.freya.domain.ports.api.GetHealthScoreUseCase
 import io.tvelu77.freya.domain.ports.api.GetNutritionAdviceUseCase
 import io.tvelu77.freya.domain.ports.api.GetUserProfileUseCase
@@ -50,6 +52,7 @@ data class HomeUiState(
   val selectedPhase: PhaseInfo? = null,
   val selectedDayCalories: Int = 0,
   val energyTarget: EnergyTarget = EnergyTarget.compute(2000, Goal.MAINTENANCE, 0),
+  val energyNeed: DailyEnergyNeed? = null,
   val showCalories: Boolean = true
 )
 
@@ -58,6 +61,7 @@ class HomeViewModel @Inject constructor(
   private val trackCycleUseCase: TrackCycleUseCase,
   private val getNutritionAdviceUseCase: GetNutritionAdviceUseCase,
   private val getHealthScoreUseCase: GetHealthScoreUseCase,
+  private val getDailyEnergyNeedUseCase: GetDailyEnergyNeedUseCase,
   private val tcaGuardUseCase: TCAGuardUseCase,
   private val getUserProfileUseCase: GetUserProfileUseCase,
   private val logFoodUseCase: LogFoodUseCase,
@@ -102,6 +106,12 @@ class HomeViewModel @Inject constructor(
     viewModelScope.launch {
       trackCycleUseCase.getNextCyclePredictions().collect { next ->
         _uiState.update { it.copy(nextCycles = next) }
+      }
+    }
+
+    viewModelScope.launch {
+      getDailyEnergyNeedUseCase.getNeedForDay(today).collect { need ->
+        _uiState.update { it.copy(energyNeed = need) }
       }
     }
 

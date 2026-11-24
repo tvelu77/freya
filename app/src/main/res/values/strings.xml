@@ -92,6 +92,14 @@
     <string name="activity_steps_label">Pas aujourd\'hui</string>
     <string name="activity_sleep_label">Sommeil (h)</string>
     <string name="activity_save">Enregistrer</string>
+    <string name="activity_fatigue_label">Fatigue ressentie</string>
+
+    <!-- Energy need (home) -->
+    <string name="energy_need_title">Besoin estim\u00e9 du jour</string>
+    <string name="energy_need_value">\u2248 %1$d kcal</string>
+    <string name="energy_need_higher">Ton corps a peut-\u00eatre besoin de plus d\'\u00e9nergie aujourd\'hui \ud83d\udc9b</string>
+    <string name="energy_need_ok">Une belle journ\u00e9e pour \u00e9couter ton corps \ud83c\udf3f</string>
+    <string name="energy_need_hint">Une estimation douce, pas un objectif \u00e0 atteindre</string>
     <string name="hydration_title">Hydratation</string>
     <string name="hydration_progress">%1$d / %2$d ml</string>
     <string name="hydration_hint">Une suggestion douce, pas une obligation \ud83d\udca7</string>
@@ -141,6 +149,11 @@
     <string name="profile_goal_section">Mon objectif</string>
     <string name="profile_weight_label">Mon poids (kg) — optionnel</string>
     <string name="profile_weight_placeholder">60</string>
+    <string name="profile_age_label">Mon \u00e2ge (ans) \u2014 optionnel</string>
+    <string name="profile_age_placeholder">30</string>
+    <string name="profile_height_label">Ma taille (cm) \u2014 optionnel</string>
+    <string name="profile_height_placeholder">165</string>
+    <string name="profile_measures_hint">Sert uniquement \u00e0 estimer ton besoin \u00e9nerg\u00e9tique</string>
     <string name="profile_weight_hint">Sert uniquement à estimer les kcal brûlées</string>
     <string name="profile_goal_hint">Ta fourchette s\'ajuste, sans pression 🌿</string>
     <string name="profile_firstname_label">Prénom</string>

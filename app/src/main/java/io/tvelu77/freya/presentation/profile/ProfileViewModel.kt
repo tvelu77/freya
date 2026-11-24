@@ -34,7 +34,9 @@ class ProfileViewModel @Inject constructor(
             firstNameInput   = profile.firstName,
             caloriesInput    = profile.baseCalories.toString(),
             cycleLengthInput = profile.cycleLengthDays.toString(),
-            weightInput      = profile.weightKg?.toString() ?: ""
+            weightInput      = profile.weightKg?.toString() ?: "",
+            ageInput         = profile.ageYears?.toString() ?: "",
+            heightInput      = profile.heightCm?.toString() ?: ""
           )
         }
       }
@@ -54,6 +56,12 @@ class ProfileViewModel @Inject constructor(
     _uiState.update {
       it.copy(weightInput = value.filter { c -> c.isDigit() || c == '.' || c == ',' })
     }
+
+  fun onAgeChanged(value: String) =
+    _uiState.update { it.copy(ageInput = value.filter { c -> c.isDigit() }) }
+
+  fun onHeightChanged(value: String) =
+    _uiState.update { it.copy(heightInput = value.filter { c -> c.isDigit() }) }
 
   fun onGoalChanged(goal: Goal) {
     viewModelScope.launch { updateProfile.updateGoal(goal) }
@@ -84,6 +92,8 @@ class ProfileViewModel @Inject constructor(
       updateProfile.updateWeight(
         state.weightInput.replace(',', '.').toFloatOrNull()
       )
+      updateProfile.updateAgeYears(state.ageInput.toIntOrNull())
+      updateProfile.updateHeightCm(state.heightInput.toIntOrNull())
       _uiState.update { it.copy(isSaving = false, savedFeedback = true) }
       kotlinx.coroutines.delay(2000)
       _uiState.update { it.copy(savedFeedback = false) }

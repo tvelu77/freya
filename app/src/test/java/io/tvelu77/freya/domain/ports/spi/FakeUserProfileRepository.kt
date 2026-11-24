@@ -31,6 +31,14 @@ class FakeUserProfileRepository : UserProfileRepository {
     profile = profile.copy(weightKg = weightKg)
   }
 
+  override suspend fun updateAgeYears(ageYears: Int?) {
+    profile = profile.copy(ageYears = ageYears)
+  }
+
+  override suspend fun updateHeightCm(heightCm: Int?) {
+    profile = profile.copy(heightCm = heightCm)
+  }
+
   override suspend fun updateCycleLength(days: Int) {
     profile = profile.copy(cycleLengthDays = days)
   }

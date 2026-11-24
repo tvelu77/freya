@@ -26,7 +26,7 @@ import io.tvelu77.freya.database.entities.FoodItemEntity
     DailyActivityEntity::class,
     HydrationEntity::class
   ],
-  version = 5,
+  version = 6,
   exportSchema = true
 )
 @TypeConverters(LocalDateConverter::class)

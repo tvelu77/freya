@@ -56,6 +56,7 @@ import io.tvelu77.freya.R
 import io.tvelu77.freya.domain.models.ActivityEntry
 import io.tvelu77.freya.domain.models.DailyActivity
 import io.tvelu77.freya.domain.models.DailyHydration
+import io.tvelu77.freya.domain.models.FatigueLevel
 import io.tvelu77.freya.domain.models.HydrationGoal
 import io.tvelu77.freya.domain.models.SportType
 import io.tvelu77.freya.ui.components.ActivityAdviceCard
@@ -215,7 +216,7 @@ fun ActivityScreen(
 @Composable
 private fun DailyActivityCard(
   dailyActivity: DailyActivity?,
-  onSave: (Int, Float) -> Unit,
+  onSave: (Int, Float, FatigueLevel?) -> Unit,
   modifier: Modifier = Modifier
 ) {
   var steps by remember(dailyActivity) {
@@ -224,6 +225,7 @@ private fun DailyActivityCard(
   var sleep by remember(dailyActivity) {
     mutableStateOf(dailyActivity?.sleepHours?.takeIf { it > 0f }?.toString() ?: "")
   }
+  var fatigue by remember(dailyActivity) { mutableStateOf(dailyActivity?.fatigue) }
 
   Card(
     modifier = modifier.fillMaxWidth(),
@@ -260,8 +262,24 @@ private fun DailyActivityCard(
         shape = RoundedCornerShape(12.dp)
       )
       Spacer(Modifier.height(12.dp))
+      Text(
+        text = stringResource(R.string.activity_fatigue_label),
+        style = MaterialTheme.typography.labelMedium,
+        color = MaterialTheme.colorScheme.onSurfaceVariant
+      )
+      Spacer(Modifier.height(6.dp))
+      Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+        FatigueLevel.entries.forEach { level ->
+          FilterChip(
+            selected = fatigue == level,
+            onClick = { fatigue = if (fatigue == level) null else level },
+            label = { Text(level.displayName, style = MaterialTheme.typography.labelSmall) }
+          )
+        }
+      }
+      Spacer(Modifier.height(12.dp))
       Button(
-        onClick = { onSave(steps.toIntOrNull() ?: 0, sleep.toFloatOrNull() ?: 0f) },
+        onClick = { onSave(steps.toIntOrNull() ?: 0, sleep.toFloatOrNull() ?: 0f, fatigue) },
         modifier = Modifier
           .fillMaxWidth()
           .height(48.dp),

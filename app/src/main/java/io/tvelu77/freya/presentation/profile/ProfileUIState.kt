@@ -9,6 +9,8 @@ data class ProfileUiState(
   val caloriesInput: String = "2000",
   val cycleLengthInput: String = "28",
   val weightInput: String = "",
+  val ageInput: String = "",
+  val heightInput: String = "",
   val isSaving: Boolean = false,
   val savedFeedback: Boolean = false
 )
