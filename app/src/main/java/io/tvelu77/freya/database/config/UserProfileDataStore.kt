@@ -10,6 +10,7 @@ import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import io.tvelu77.freya.domain.models.Goal
 import io.tvelu77.freya.domain.models.UserProfile
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
@@ -27,6 +28,7 @@ class UserProfileDataStore @Inject constructor(
   companion object {
     val KEY_FIRST_NAME  = stringPreferencesKey("first_name")
     val KEY_BASE_CALORIES = intPreferencesKey("base_calories")
+    val KEY_GOAL = stringPreferencesKey("goal")
     val KEY_CYCLE_LENGTH = intPreferencesKey("cycle_length")
     val KEY_TCA_FRIENDLY = booleanPreferencesKey("tca_friendly")
     val KEY_NOTIFICATIONS = booleanPreferencesKey("notifications")
@@ -39,6 +41,7 @@ class UserProfileDataStore @Inject constructor(
       UserProfile(
         firstName            = prefs[KEY_FIRST_NAME] ?: "",
         baseCalories         = prefs[KEY_BASE_CALORIES] ?: 2000,
+        goal                 = prefs[KEY_GOAL]?.let { runCatching { Goal.valueOf(it) }.getOrDefault(Goal.MAINTENANCE) } ?: Goal.MAINTENANCE,
         cycleLengthDays      = prefs[KEY_CYCLE_LENGTH] ?: 28,
         tcaFriendlyMode      = prefs[KEY_TCA_FRIENDLY] ?: false,
         notificationsEnabled = prefs[KEY_NOTIFICATIONS] ?: true,

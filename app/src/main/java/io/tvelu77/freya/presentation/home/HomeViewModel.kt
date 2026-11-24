@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.tvelu77.freya.domain.models.CycleEntry
+import io.tvelu77.freya.domain.models.EnergyTarget
+import io.tvelu77.freya.domain.models.Goal
 import io.tvelu77.freya.domain.models.HealthScore
 import io.tvelu77.freya.domain.models.NutritionAdvice
 import io.tvelu77.freya.domain.models.PhaseInfo
@@ -47,6 +49,7 @@ data class HomeUiState(
   val nextCycles: List<LocalDate> = emptyList(),
   val selectedPhase: PhaseInfo? = null,
   val selectedDayCalories: Int = 0,
+  val energyTarget: EnergyTarget = EnergyTarget.compute(2000, Goal.MAINTENANCE, 0),
   val showCalories: Boolean = true
 )
 
@@ -89,6 +92,8 @@ class HomeViewModel @Inject constructor(
           healthScore     = score,
           hasActiveCycle  = phase != null,
           greetingName    = profile.firstName,
+          energyTarget    = getNutritionAdviceUseCase
+            .getEnergyTarget(profile.baseCalories, profile.goal, phase),
           showCalories    = !profile.tcaFriendlyMode
         )
       }

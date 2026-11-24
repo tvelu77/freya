@@ -24,6 +24,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import io.tvelu77.freya.R
 import io.tvelu77.freya.domain.models.DailyNutrition
+import io.tvelu77.freya.domain.models.EnergyTarget
 import io.tvelu77.freya.ui.theme.ScoreGood
 import io.tvelu77.freya.ui.theme.ScoreLow
 import io.tvelu77.freya.ui.theme.ScoreMedium
@@ -31,7 +32,7 @@ import io.tvelu77.freya.ui.theme.ScoreMedium
 @Composable
 fun NutritionSummaryCard(
   nutrition: DailyNutrition,
-  caloriesTarget: Int,
+  energyTarget: EnergyTarget,
   showCalories: Boolean,
   adviceMessage: String?
 ) {
@@ -39,6 +40,7 @@ fun NutritionSummaryCard(
   val proteins = nutrition.totalProteins
   val carbs = nutrition.totalCarbs
   val fats = nutrition.totalFats
+  val targetCenter = energyTarget.center
   Card(
     modifier = Modifier
       .fillMaxWidth()
@@ -66,18 +68,25 @@ fun NutritionSummaryCard(
           )
           Text(
             text = if (showCalories)
-              stringResource(R.string.food_of_target, caloriesTarget)
+              stringResource(R.string.food_target_range, energyTarget.low, energyTarget.high)
             else
               stringResource(R.string.food_discreet_mode),
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f)
           )
+          if (showCalories) {
+            Text(
+              text = stringResource(R.string.food_target_hint),
+              style = MaterialTheme.typography.labelSmall,
+              color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.55f)
+            )
+          }
         }
         if (showCalories) {
           Text(
             text = stringResource(
               R.string.food_percent,
-              ((totalCalories.toFloat() / caloriesTarget) * 100).toInt()
+              ((totalCalories.toFloat() / targetCenter) * 100).toInt()
             ),
             style = MaterialTheme.typography.titleLarge,
             color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.6f)
@@ -88,14 +97,14 @@ fun NutritionSummaryCard(
       if (showCalories) {
         Spacer(Modifier.height(10.dp))
         LinearProgressIndicator(
-          progress = { (totalCalories.toFloat() / caloriesTarget).coerceIn(0f, 1f) },
+          progress = { (totalCalories.toFloat() / targetCenter).coerceIn(0f, 1f) },
           modifier = Modifier
             .fillMaxWidth()
             .height(8.dp)
             .clip(RoundedCornerShape(4.dp)),
           color = when {
-            totalCalories < caloriesTarget * 0.6f -> ScoreLow
-            totalCalories <= caloriesTarget * 1.1f -> ScoreGood
+            totalCalories < targetCenter * 0.6f -> ScoreLow
+            totalCalories <= targetCenter * 1.1f -> ScoreGood
             else -> ScoreMedium
           },
           trackColor = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.1f),

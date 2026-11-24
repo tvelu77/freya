@@ -30,6 +30,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -49,6 +50,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.tvelu77.freya.R
+import io.tvelu77.freya.domain.models.Goal
 import io.tvelu77.freya.ui.components.ToggleRow
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -125,6 +127,25 @@ fun ProfileScreen(
             onDone = { focusManager.clearFocus() }
           )
         )
+      }
+
+      ProfileSection(title = stringResource(R.string.profile_goal_section)) {
+        Text(
+          text = stringResource(R.string.profile_goal_hint),
+          style = MaterialTheme.typography.labelSmall,
+          color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+        Row(
+          horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+          Goal.entries.forEach { goal ->
+            FilterChip(
+              selected = uiState.profile.goal == goal,
+              onClick = { viewModel.onGoalChanged(goal) },
+              label = { Text(goal.displayName, style = MaterialTheme.typography.labelSmall) }
+            )
+          }
+        }
       }
 
       ProfileSection(title = stringResource(R.string.profile_section_display)) {

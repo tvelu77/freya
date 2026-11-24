@@ -1,5 +1,7 @@
 package io.tvelu77.freya.domain.services
 
+import io.tvelu77.freya.domain.models.EnergyTarget
+import io.tvelu77.freya.domain.models.Goal
 import io.tvelu77.freya.domain.models.NutritionAdvice
 import io.tvelu77.freya.domain.models.PhaseInfo
 import io.tvelu77.freya.domain.ports.api.GetNutritionAdviceUseCase
@@ -23,11 +25,14 @@ class GetNutritionAdviceUseCaseAdapter @Inject constructor(
       }
     }
 
-  override fun getCalorieTarget(
+  override fun getEnergyTarget(
     baseCalories: Int,
+    goal: Goal,
     phaseInfo: PhaseInfo?
-  ): Int =
-    phaseInfo?.let {
-      (baseCalories + it.nutritionAdvice.calorieSurplus).coerceAtLeast(1200)
-    } ?: baseCalories
+  ): EnergyTarget =
+    EnergyTarget.compute(
+      baseCalories,
+      goal,
+      phaseInfo?.nutritionAdvice?.calorieSurplus ?: 0
+    )
 }

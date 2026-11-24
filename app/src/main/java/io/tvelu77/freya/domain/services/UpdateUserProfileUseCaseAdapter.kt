@@ -1,5 +1,6 @@
 package io.tvelu77.freya.domain.services
 
+import io.tvelu77.freya.domain.models.Goal
 import io.tvelu77.freya.domain.ports.api.UpdateUserProfileUseCase
 import io.tvelu77.freya.domain.ports.spi.UserProfileRepository
 import jakarta.inject.Inject
@@ -15,6 +16,9 @@ class UpdateUserProfileUseCaseAdapter @Inject constructor(
     val safe = calories.coerceAtLeast(1200)
     repository.updateBaseCalories(safe)
   }
+
+  override suspend fun updateGoal(goal: Goal) =
+    repository.updateGoal(goal)
 
   override suspend fun updateCycleLength(days: Int) {
     val safe = days.coerceIn(21, 45)
