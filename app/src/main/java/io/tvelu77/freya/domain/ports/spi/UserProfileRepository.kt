@@ -16,5 +16,7 @@ interface UserProfileRepository {
   suspend fun updateCycleLength(days: Int)
   suspend fun updateTcaFriendlyMode(enabled: Boolean)
   suspend fun updateNotifications(enabled: Boolean)
+  suspend fun updateHydrationReminders(enabled: Boolean)
+  suspend fun updateShowScoreNumber(enabled: Boolean)
   suspend fun completeOnboarding()
 }

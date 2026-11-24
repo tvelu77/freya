@@ -182,7 +182,11 @@ private fun HomeContent(
       }
 
       uiState.healthScore?.let { score ->
-        HealthScoreCard(score = score, onClick = onNavigateToFood)
+        HealthScoreCard(
+          score = score,
+          onClick = onNavigateToFood,
+          showNumber = uiState.showHealthScoreNumber
+        )
       }
 
       Spacer(Modifier.height(24.dp))

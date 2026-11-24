@@ -6,6 +6,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import io.tvelu77.freya.domain.models.Goal
 import io.tvelu77.freya.domain.ports.api.GetUserProfileUseCase
 import io.tvelu77.freya.domain.ports.api.TrackCycleUseCase
+import io.tvelu77.freya.domain.ports.api.TrackHydrationUseCase
 import io.tvelu77.freya.domain.ports.api.UpdateUserProfileUseCase
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,7 +19,8 @@ import kotlinx.coroutines.launch
 class ProfileViewModel @Inject constructor(
   private val getProfile: GetUserProfileUseCase,
   private val updateProfile: UpdateUserProfileUseCase,
-  private val trackCycleUseCase: TrackCycleUseCase
+  private val trackCycleUseCase: TrackCycleUseCase,
+  private val trackHydrationUseCase: TrackHydrationUseCase
 ) : ViewModel() {
 
   private val _uiState = MutableStateFlow(ProfileUiState())
@@ -76,6 +78,17 @@ class ProfileViewModel @Inject constructor(
       updateProfile.updateNotifications(enabled)
       trackCycleUseCase.rescheduleNotifications()
     }
+  }
+
+  fun onHydrationRemindersToggled(enabled: Boolean) {
+    viewModelScope.launch {
+      updateProfile.updateHydrationReminders(enabled)
+      trackHydrationUseCase.rescheduleHydrationReminders()
+    }
+  }
+
+  fun onShowScoreNumberToggled(enabled: Boolean) {
+    viewModelScope.launch { updateProfile.updateShowScoreNumber(enabled) }
   }
 
   fun onSaveProfile() {

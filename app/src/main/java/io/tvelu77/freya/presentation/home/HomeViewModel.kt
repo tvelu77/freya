@@ -53,7 +53,8 @@ data class HomeUiState(
   val selectedDayCalories: Int = 0,
   val energyTarget: EnergyTarget = EnergyTarget.compute(2000, Goal.MAINTENANCE, 0),
   val energyNeed: DailyEnergyNeed? = null,
-  val showCalories: Boolean = true
+  val showCalories: Boolean = true,
+  val showHealthScoreNumber: Boolean = true
 )
 
 @HiltViewModel
@@ -98,7 +99,8 @@ class HomeViewModel @Inject constructor(
           greetingName    = profile.firstName,
           energyTarget    = getNutritionAdviceUseCase
             .getEnergyTarget(profile.baseCalories, profile.goal, phase),
-          showCalories    = !profile.tcaFriendlyMode
+          showCalories    = !profile.tcaFriendlyMode,
+          showHealthScoreNumber = profile.showHealthScoreNumber
         )
       }
     }.launchIn(viewModelScope)

@@ -40,6 +40,12 @@ class UpdateUserProfileUseCaseAdapter @Inject constructor(
   override suspend fun updateNotifications(enabled: Boolean) =
     repository.updateNotifications(enabled)
 
+  override suspend fun updateHydrationReminders(enabled: Boolean) =
+    repository.updateHydrationReminders(enabled)
+
+  override suspend fun updateShowScoreNumber(enabled: Boolean) =
+    repository.updateShowScoreNumber(enabled)
+
   override suspend fun completeOnboarding() =
     repository.completeOnboarding()
 

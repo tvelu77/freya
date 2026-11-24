@@ -36,6 +36,8 @@ class UserProfileDataStore @Inject constructor(
     val KEY_CYCLE_LENGTH = intPreferencesKey("cycle_length")
     val KEY_TCA_FRIENDLY = booleanPreferencesKey("tca_friendly")
     val KEY_NOTIFICATIONS = booleanPreferencesKey("notifications")
+    val KEY_HYDRATION_REMINDERS = booleanPreferencesKey("hydration_reminders")
+    val KEY_SHOW_SCORE_NUMBER = booleanPreferencesKey("show_score_number")
     val KEY_ONBOARDING_COMPLETED = booleanPreferencesKey("onboarding_completed")
   }
 
@@ -52,6 +54,8 @@ class UserProfileDataStore @Inject constructor(
         cycleLengthDays      = prefs[KEY_CYCLE_LENGTH] ?: 28,
         tcaFriendlyMode      = prefs[KEY_TCA_FRIENDLY] ?: false,
         notificationsEnabled = prefs[KEY_NOTIFICATIONS] ?: true,
+        hydrationRemindersEnabled = prefs[KEY_HYDRATION_REMINDERS] ?: true,
+        showHealthScoreNumber = prefs[KEY_SHOW_SCORE_NUMBER] ?: true,
         onboardingCompleted  = prefs[KEY_ONBOARDING_COMPLETED] ?: false
       )
     }

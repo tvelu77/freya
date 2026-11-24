@@ -54,8 +54,8 @@ class TrackHydrationUseCaseAdapter @Inject constructor(
   }
 
   override suspend fun rescheduleHydrationReminders() {
-    val enabled = profileRepository.getProfile().first().notificationsEnabled
-    if (!enabled) {
+    val profile = profileRepository.getProfile().first()
+    if (!profile.notificationsEnabled || !profile.hydrationRemindersEnabled) {
       notificationScheduler.cancelHydrationReminders()
       return
     }
