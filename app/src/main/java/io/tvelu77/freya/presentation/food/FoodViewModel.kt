@@ -113,15 +113,7 @@ class FoodViewModel @Inject constructor(
 
   fun logFood(food: FoodItem, quantity: Float, mealType: MealType) {
     viewModelScope.launch {
-      logFoodUseCase.logFood(
-        foodName = food.name,
-        quantity = quantity,
-        calories = food.caloriesFor(quantity),
-        proteins = food.proteinsFor(quantity),
-        carbs = food.carbsFor(quantity),
-        fats = food.fatsFor(quantity),
-        mealType = mealType
-      )
+      logFoodUseCase.logFood(food = food, quantityG = quantity, mealType = mealType)
       _uiState.update { it.copy(showAddSheet = false, searchQuery = "") }
     }
   }

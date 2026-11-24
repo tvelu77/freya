@@ -52,6 +52,7 @@ import androidx.compose.ui.unit.dp
 import io.tvelu77.freya.R
 import io.tvelu77.freya.domain.models.FoodItem
 import io.tvelu77.freya.domain.models.MealType
+import io.tvelu77.freya.domain.models.PortionPreset
 import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -186,6 +187,30 @@ fun AddFoodSheet(
                     ),
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f)
+                  )
+                }
+              }
+
+              Spacer(Modifier.height(10.dp))
+
+              Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.horizontalScroll(rememberScrollState())
+              ) {
+                PortionPreset.entries.forEach { preset ->
+                  val grams = preset.gramsFor(food.category)
+                  SuggestionChip(
+                    onClick = { quantity = grams.toInt().toString() },
+                    label = {
+                      Text(
+                        text = stringResource(
+                          R.string.food_portion_chip,
+                          preset.displayName,
+                          grams.toInt()
+                        ),
+                        style = MaterialTheme.typography.labelSmall
+                      )
+                    }
                   )
                 }
               }
