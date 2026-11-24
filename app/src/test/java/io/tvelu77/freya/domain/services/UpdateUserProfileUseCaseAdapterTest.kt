@@ -1,5 +1,6 @@
 package io.tvelu77.freya.domain.services
 
+import io.tvelu77.freya.domain.models.Goal
 import io.tvelu77.freya.domain.ports.spi.FakeUserProfileRepository
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
@@ -55,5 +56,14 @@ class UpdateUserProfileUseCaseAdapterTest {
     adapter.updateFirstName("  Léa  ")
 
     assertEquals("Léa", repository.profile.firstName)
+  }
+
+  @Test
+  fun `goal defaults to maintenance and is persisted when changed`() = runTest {
+    assertEquals(Goal.MAINTENANCE, repository.profile.goal)
+
+    adapter.updateGoal(Goal.LOSS)
+
+    assertEquals(Goal.LOSS, repository.profile.goal)
   }
 }
