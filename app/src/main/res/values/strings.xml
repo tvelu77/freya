@@ -21,6 +21,12 @@
     <string name="home_no_cycle_body">Indique le début de ton cycle pour des conseils personnalisés</string>
     <string name="home_no_cycle_cta">Mes règles ont commencé aujourd\'hui</string>
     <string name="home_tca_reminder_title">Un petit rappel doux</string>
+    <string name="tca_alert_cta">Voir les ressources d\'aide</string>
+
+    <!-- TCA resources -->
+    <string name="tca_resources_title">Ressources d\'aide</string>
+    <string name="tca_resources_intro">Si tu traverses un moment difficile avec l\'alimentation, des professionnels peuvent t\'accompagner \u2014 sans jugement. \ud83d\udc9b</string>
+    <string name="tca_resources_body">Tu trouveras ici des ressources en nutrition et en sant\u00e9 mentale, propos\u00e9es par des professionnels et des associations sp\u00e9cialis\u00e9es.</string>
     <string name="home_close_cd">Fermer</string>
 
     <!-- Cycle -->

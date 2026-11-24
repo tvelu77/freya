@@ -6,6 +6,7 @@ import androidx.compose.material.icons.rounded.CalendarMonth
 import androidx.compose.material.icons.rounded.DirectionsRun
 import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material.icons.rounded.SetMeal
+import androidx.compose.material.icons.rounded.VolunteerActivism
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
@@ -25,6 +26,7 @@ import io.tvelu77.freya.presentation.food.FoodScreen
 import io.tvelu77.freya.presentation.home.HomeScreen
 import io.tvelu77.freya.R
 import io.tvelu77.freya.presentation.profile.ProfileScreen
+import io.tvelu77.freya.presentation.tca.ResourcesScreen
 
 sealed class Screen(val route: String, val labelRes: Int, val icon: ImageVector) {
   object Home  : Screen("home", R.string.nav_home, Icons.Rounded.Home)
@@ -32,6 +34,7 @@ sealed class Screen(val route: String, val labelRes: Int, val icon: ImageVector)
   object Food  : Screen("food", R.string.nav_food, Icons.Rounded.SetMeal)
   object Activity : Screen("activity", R.string.nav_activity, Icons.Rounded.DirectionsRun)
   object Profile : Screen("profile", R.string.nav_profile, Icons.Rounded.AccountCircle)
+  object Resources : Screen("resources", R.string.tca_resources_title, Icons.Rounded.VolunteerActivism)
 }
 
 @Composable
@@ -75,7 +78,8 @@ fun NavGraph(
               popUpTo(navController.graph.startDestinationId) { saveState = true }
               launchSingleTop = true
               restoreState = true
-          }) }
+          }) },
+          onNavigateToResources = { navController.navigate(Screen.Resources.route) }
         )
       }
       composable(Screen.Cycle.route) {
@@ -89,6 +93,9 @@ fun NavGraph(
       }
       composable(Screen.Profile.route) {
         ProfileScreen()
+      }
+      composable(Screen.Resources.route) {
+        ResourcesScreen()
       }
     }
   }

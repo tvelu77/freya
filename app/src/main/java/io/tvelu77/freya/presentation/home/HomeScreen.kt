@@ -30,6 +30,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -62,6 +63,7 @@ import java.util.Locale
 fun HomeScreen(
   onNavigateToCycle: () -> Unit,
   onNavigateToFood: () -> Unit,
+  onNavigateToResources: () -> Unit = {},
   viewModel: HomeViewModel = hiltViewModel()
 ) {
   val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -86,6 +88,7 @@ fun HomeScreen(
           onDismissTcaAlert = viewModel::dismissTcaAlert,
           onNavigateToCycle = onNavigateToCycle,
           onNavigateToFood = onNavigateToFood,
+          onNavigateToResources = onNavigateToResources,
           onDateSelected = viewModel::onDateSelected,
           onMonthChanged = viewModel::onMonthChanged,
           phaseForDate = viewModel::phaseForDate,
@@ -103,6 +106,7 @@ private fun HomeContent(
   onDismissTcaAlert: () -> Unit,
   onNavigateToCycle: () -> Unit,
   onNavigateToFood: () -> Unit,
+  onNavigateToResources: () -> Unit,
   onDateSelected: (LocalDate) -> Unit,
   onMonthChanged: (YearMonth) -> Unit,
   phaseForDate: (LocalDate) -> PhaseType?,
@@ -149,7 +153,11 @@ private fun HomeContent(
         exit = fadeOut() + shrinkVertically()
       ) {
         uiState.tcaAlert?.let { alert ->
-          TCAAlertBanner(alert = alert, onDismiss = onDismissTcaAlert)
+          TCAAlertBanner(
+            alert = alert,
+            onDismiss = onDismissTcaAlert,
+            onSeeResources = onNavigateToResources
+          )
         }
       }
 
@@ -401,7 +409,8 @@ private fun NoCycleCard(onStartCycle: () -> Unit) {
 @Composable
 private fun TCAAlertBanner(
   alert: TCAAlert,
-  onDismiss: () -> Unit
+  onDismiss: () -> Unit,
+  onSeeResources: () -> Unit
 ) {
   Card(
     modifier = Modifier.fillMaxWidth(),
@@ -424,6 +433,12 @@ private fun TCAAlertBanner(
           text = alert.message,
           style = MaterialTheme.typography.bodyMedium
         )
+        if (alert.ctaLabel.isNotEmpty()) {
+          Spacer(Modifier.height(8.dp))
+          TextButton(onClick = onSeeResources) {
+            Text(stringResource(R.string.tca_alert_cta))
+          }
+        }
       }
       IconButton(onClick = onDismiss, modifier = Modifier.size(24.dp)) {
         Icon(
