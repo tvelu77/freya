@@ -3,6 +3,7 @@ package io.tvelu77.freya.presentation.food
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.tvelu77.freya.domain.models.FoodEntry
 import io.tvelu77.freya.domain.models.FoodItem
 import io.tvelu77.freya.domain.models.MealType
 import io.tvelu77.freya.domain.ports.api.GetDailyNutritionUseCase
@@ -117,7 +118,23 @@ class FoodViewModel @Inject constructor(
     }
   }
 
+  private var lastDeletedFood: FoodEntry? = null
+
   fun deleteFood(id: Long) {
-    viewModelScope.launch { logFoodUseCase.deleteFood(id) }
+    viewModelScope.launch {
+      lastDeletedFood = _uiState.value.todayEntries.firstOrNull { it.id == id }
+      logFoodUseCase.deleteFood(id)
+    }
+  }
+
+  fun undoDeleteFood() {
+    viewModelScope.launch {
+      lastDeletedFood?.let { logFoodUseCase.updateFoodEntry(it) }
+      lastDeletedFood = null
+    }
+  }
+
+  fun updateFoodQuantity(id: Long, quantityG: Float) {
+    viewModelScope.launch { logFoodUseCase.updateFoodQuantity(id, quantityG) }
   }
 }

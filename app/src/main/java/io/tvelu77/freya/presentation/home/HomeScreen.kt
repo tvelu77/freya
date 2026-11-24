@@ -129,24 +129,6 @@ private fun HomeContent(
       verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
 
-      if (uiState.hasActiveCycle) {
-        CycleCalendar(
-          selectedMonth = uiState.selectedMonth,
-          selectedDate = uiState.selectedDate,
-          onDateSelected = onDateSelected,
-          onMonthChanged = onMonthChanged,
-          getPhaseForDate = phaseForDate,
-          isPredictedStart = isPredictedStart
-        )
-        SelectedDayKpis(
-          date = uiState.selectedDate,
-          phase = uiState.selectedPhase?.phase,
-          calories = uiState.selectedDayCalories,
-          energyTarget = uiState.energyTarget,
-          showCalories = uiState.showCalories
-        )
-      }
-
       AnimatedVisibility(
         visible = uiState.tcaAlert?.triggered == true,
         enter = fadeIn() + expandVertically(),
@@ -169,16 +151,17 @@ private fun HomeContent(
         PhaseCard(phaseInfo = phase, onClick = onNavigateToCycle)
       }
 
+      TodaySummaryCard(
+        date = uiState.currentDate,
+        phase = uiState.phaseInfo?.phase,
+        calories = uiState.todayCalories,
+        energyTarget = uiState.energyTarget,
+        energyNeed = uiState.energyNeed,
+        showCalories = uiState.showCalories
+      )
+
       uiState.nutritionAdvice?.let { advice ->
         NutritionAdviceCard(advice = advice)
-      }
-
-      uiState.energyNeed?.let { need ->
-        EnergyNeedCard(
-          need = need,
-          targetHigh = uiState.energyTarget.high,
-          showCalories = uiState.showCalories
-        )
       }
 
       uiState.healthScore?.let { score ->
@@ -186,6 +169,24 @@ private fun HomeContent(
           score = score,
           onClick = onNavigateToFood,
           showNumber = uiState.showHealthScoreNumber
+        )
+      }
+
+      if (uiState.hasActiveCycle) {
+        CycleCalendar(
+          selectedMonth = uiState.selectedMonth,
+          selectedDate = uiState.selectedDate,
+          onDateSelected = onDateSelected,
+          onMonthChanged = onMonthChanged,
+          getPhaseForDate = phaseForDate,
+          isPredictedStart = isPredictedStart
+        )
+        SelectedDayKpis(
+          date = uiState.selectedDate,
+          phase = uiState.selectedPhase?.phase,
+          calories = uiState.selectedDayCalories,
+          energyTarget = uiState.energyTarget,
+          showCalories = uiState.showCalories
         )
       }
 
@@ -286,12 +287,15 @@ private fun HomeHeader(uiState: HomeUiState, date: String, phaseInfo: PhaseInfo?
 }
 
 @Composable
-private fun EnergyNeedCard(
-  need: DailyEnergyNeed,
-  targetHigh: Int,
+private fun TodaySummaryCard(
+  date: String,
+  phase: PhaseType?,
+  calories: Int,
+  energyTarget: EnergyTarget,
+  energyNeed: DailyEnergyNeed?,
   showCalories: Boolean
 ) {
-  val message = if (need.totalKcal > targetHigh) {
+  val message = if (energyNeed != null && energyNeed.totalKcal > energyTarget.high) {
     stringResource(R.string.energy_need_higher)
   } else {
     stringResource(R.string.energy_need_ok)
@@ -305,18 +309,42 @@ private fun EnergyNeedCard(
     shape = MaterialTheme.shapes.large
   ) {
     Column(modifier = Modifier.padding(16.dp)) {
-      Text(
-        text = stringResource(R.string.energy_need_title),
-        style = MaterialTheme.typography.titleMedium
-      )
-      Spacer(Modifier.height(6.dp))
+      Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+      ) {
+        Text(
+          text = date,
+          style = MaterialTheme.typography.titleSmall
+        )
+        phase?.let { PhaseChip(phase = it) }
+      }
+      Spacer(Modifier.height(8.dp))
       if (showCalories) {
         Text(
-          text = stringResource(R.string.energy_need_value, need.totalKcal),
-          style = MaterialTheme.typography.headlineMedium,
+          text = stringResource(R.string.home_kcal, calories),
+          style = MaterialTheme.typography.bodyMedium,
           color = MaterialTheme.colorScheme.onTertiaryContainer
         )
-        Spacer(Modifier.height(6.dp))
+        Text(
+          text = stringResource(
+            R.string.energy_target_range,
+            energyTarget.low,
+            energyTarget.high
+          ),
+          style = MaterialTheme.typography.labelSmall,
+          color = MaterialTheme.colorScheme.onTertiaryContainer.copy(alpha = 0.8f)
+        )
+        energyNeed?.let { need ->
+          Spacer(Modifier.height(4.dp))
+          Text(
+            text = stringResource(R.string.energy_need_value, need.totalKcal),
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.onTertiaryContainer
+          )
+        }
+        Spacer(Modifier.height(8.dp))
       }
       Text(
         text = message,

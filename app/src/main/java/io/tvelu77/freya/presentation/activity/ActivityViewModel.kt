@@ -3,6 +3,7 @@ package io.tvelu77.freya.presentation.activity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.tvelu77.freya.domain.models.ActivityEntry
 import io.tvelu77.freya.domain.models.FatigueLevel
 import io.tvelu77.freya.domain.models.SportType
 import io.tvelu77.freya.domain.ports.api.GetUserProfileUseCase
@@ -82,8 +83,39 @@ class ActivityViewModel @Inject constructor(
     }
   }
 
+  private var lastDeletedActivity: ActivityEntry? = null
+
   fun deleteActivity(id: Long) {
-    viewModelScope.launch { logActivityUseCase.deleteActivity(id) }
+    viewModelScope.launch {
+      lastDeletedActivity = _uiState.value.activities.firstOrNull { it.id == id }
+      logActivityUseCase.deleteActivity(id)
+    }
+  }
+
+  fun undoDeleteActivity() {
+    viewModelScope.launch {
+      lastDeletedActivity?.let { logActivityUseCase.updateActivity(it) }
+      lastDeletedActivity = null
+    }
+  }
+
+  fun updateActivityDuration(id: Long, durationMin: Int) {
+    viewModelScope.launch {
+      val entry = _uiState.value.activities.firstOrNull { it.id == id } ?: return@launch
+      logActivityUseCase.updateActivity(
+        entry.copy(
+          durationMin = durationMin,
+          kcalBurned = ActivityEntry.computeKcal(entry.sportType, durationMin, weightKg)
+        )
+      )
+    }
+  }
+
+  fun addSteps(delta: Int) {
+    viewModelScope.launch {
+      val current = _uiState.value.dailyActivity?.steps ?: 0
+      trackDailyActivityUseCase.updateSteps(current + delta, today)
+    }
   }
 
   fun saveDailyActivity(steps: Int, sleepHours: Float, fatigue: FatigueLevel?) {

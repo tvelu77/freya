@@ -111,6 +111,12 @@
     <string name="activity_sleep_label">Sommeil (h)</string>
     <string name="activity_save">Enregistrer</string>
     <string name="activity_fatigue_label">Fatigue ressentie</string>
+    <string name="activity_steps_plus_500">+ 500 pas</string>
+    <string name="activity_steps_plus_1000">+ 1 000 pas</string>
+    <string name="activity_deleted">Activit\u00e9 supprim\u00e9e</string>
+    <string name="activity_edit_title">Modifier la dur\u00e9e</string>
+    <string name="food_deleted">Aliment supprim\u00e9</string>
+    <string name="food_edit_title">Modifier la quantit\u00e9</string>
 
     <!-- Energy need (home) -->
     <string name="energy_need_title">Besoin estim\u00e9 du jour</string>

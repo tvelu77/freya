@@ -13,7 +13,8 @@ class FakeActivityRepository : ActivityRepository {
     flowOf(entries.filter { it.date == date })
 
   override suspend fun saveActivity(entry: ActivityEntry): Long {
-    val id = (entries.size + 1).toLong()
+    val id = if (entry.id == 0L) (entries.size + 1).toLong() else entry.id
+    entries.removeAll { it.id == id }
     entries.add(entry.copy(id = id))
     return id
   }

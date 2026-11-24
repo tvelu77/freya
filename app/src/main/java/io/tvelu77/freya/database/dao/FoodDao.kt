@@ -20,6 +20,9 @@ interface FoodDao {
   @Query("SELECT COALESCE(SUM(calories), 0) FROM food_entries WHERE date = :date")
   suspend fun getTotalCaloriesForDate(date: LocalDate): Int
 
+  @Query("SELECT * FROM food_entries WHERE id = :id")
+  suspend fun getById(id: Long): FoodEntryEntity?
+
   @Insert(onConflict = OnConflictStrategy.REPLACE)
   suspend fun insert(entry: FoodEntryEntity): Long
 

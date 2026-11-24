@@ -22,6 +22,9 @@ class RoomFoodRepository @Inject constructor(
   override suspend fun saveFoodEntry(entry: FoodEntry): Long =
     dao.insert(FoodEntryEntity.fromDomain(entry))
 
+  override suspend fun getFoodEntryById(id: Long): FoodEntry? =
+    dao.getById(id)?.toDomain()
+
   override suspend fun deleteFoodEntry(id: Long) =
     dao.deleteById(id)
 

@@ -35,6 +35,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
@@ -43,7 +46,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -52,6 +57,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import kotlinx.coroutines.launch
 import io.tvelu77.freya.R
 import io.tvelu77.freya.domain.models.ActivityEntry
 import io.tvelu77.freya.domain.models.DailyActivity
@@ -68,8 +74,12 @@ fun ActivityScreen(
   viewModel: ActivityViewModel = hiltViewModel()
 ) {
   val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+  val snackbarHostState = remember { SnackbarHostState() }
+  val scope = rememberCoroutineScope()
+  val context = LocalContext.current
 
   Scaffold(
+    snackbarHost = { SnackbarHost(snackbarHostState) },
     topBar = {
       TopAppBar(
         title = {
@@ -156,6 +166,7 @@ fun ActivityScreen(
         DailyActivityCard(
           dailyActivity = uiState.dailyActivity,
           onSave = viewModel::saveDailyActivity,
+          onAddSteps = viewModel::addSteps,
           modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp)
         )
       }
@@ -183,7 +194,19 @@ fun ActivityScreen(
           ActivityEntryRow(
             entry = entry,
             showCalories = uiState.showCalories,
-            onDelete = { viewModel.deleteActivity(entry.id) }
+            onEdit = viewModel::updateActivityDuration,
+            onDelete = {
+              viewModel.deleteActivity(entry.id)
+              scope.launch {
+                val result = snackbarHostState.showSnackbar(
+                  message = context.getString(R.string.activity_deleted),
+                  actionLabel = context.getString(R.string.action_cancel)
+                )
+                if (result == SnackbarResult.ActionPerformed) {
+                  viewModel.undoDeleteActivity()
+                }
+              }
+            }
           )
         }
       }
@@ -217,6 +240,7 @@ fun ActivityScreen(
 private fun DailyActivityCard(
   dailyActivity: DailyActivity?,
   onSave: (Int, Float, FatigueLevel?) -> Unit,
+  onAddSteps: (Int) -> Unit,
   modifier: Modifier = Modifier
 ) {
   var steps by remember(dailyActivity) {
@@ -249,6 +273,23 @@ private fun DailyActivityCard(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(12.dp)
       )
+      Spacer(Modifier.height(6.dp))
+      Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        OutlinedButton(
+          onClick = { onAddSteps(500) },
+          modifier = Modifier.weight(1f),
+          shape = RoundedCornerShape(12.dp)
+        ) {
+          Text(stringResource(R.string.activity_steps_plus_500))
+        }
+        OutlinedButton(
+          onClick = { onAddSteps(1000) },
+          modifier = Modifier.weight(1f),
+          shape = RoundedCornerShape(12.dp)
+        ) {
+          Text(stringResource(R.string.activity_steps_plus_1000))
+        }
+      }
       Spacer(Modifier.height(8.dp))
       OutlinedTextField(
         value = sleep,
@@ -356,11 +397,14 @@ private fun HydrationCard(
 private fun ActivityEntryRow(
   entry: ActivityEntry,
   showCalories: Boolean,
+  onEdit: (Long, Int) -> Unit,
   onDelete: () -> Unit
 ) {
   var showDeleteConfirm by remember { mutableStateOf(false) }
+  var showEditDialog by remember { mutableStateOf(false) }
 
   Card(
+    onClick = { showEditDialog = true },
     modifier = Modifier
       .fillMaxWidth()
       .padding(horizontal = 16.dp, vertical = 6.dp),
@@ -415,6 +459,40 @@ private fun ActivityEntryRow(
         }
       }
     }
+  }
+
+  if (showEditDialog) {
+    var duration by remember { mutableStateOf(entry.durationMin.toString()) }
+    AlertDialog(
+      onDismissRequest = { showEditDialog = false },
+      title = { Text(stringResource(R.string.activity_edit_title)) },
+      text = {
+        OutlinedTextField(
+          value = duration,
+          onValueChange = { duration = it.filter { c -> c.isDigit() } },
+          label = { Text(stringResource(R.string.activity_duration_label)) },
+          keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+          singleLine = true,
+          shape = RoundedCornerShape(12.dp)
+        )
+      },
+      confirmButton = {
+        TextButton(
+          onClick = {
+            onEdit(entry.id, duration.toIntOrNull() ?: entry.durationMin)
+            showEditDialog = false
+          },
+          enabled = (duration.toIntOrNull() ?: 0) > 0
+        ) {
+          Text(stringResource(R.string.dialog_save))
+        }
+      },
+      dismissButton = {
+        TextButton(onClick = { showEditDialog = false }) {
+          Text(stringResource(R.string.action_cancel))
+        }
+      }
+    )
   }
 
   if (showDeleteConfirm) {

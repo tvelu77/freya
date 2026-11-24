@@ -39,7 +39,8 @@ fun MealSection(
   mealNutrition: MealNutrition?,
   showCalories: Boolean,
   onAddFood: () -> Unit,
-  onDeleteFood: (Long) -> Unit
+  onDeleteFood: (Long) -> Unit,
+  onEditFood: (Long, Float) -> Unit
 ) {
   val emoji = when (mealType) {
     MealType.BREAKFAST -> "☀️"
@@ -121,6 +122,7 @@ fun MealSection(
           FoodEntryRow(
             entry = entry,
             showCalories = showCalories,
+            onEdit = onEditFood,
             onDelete = { onDeleteFood(entry.id) }
           )
           if (index < entries.size - 1) {

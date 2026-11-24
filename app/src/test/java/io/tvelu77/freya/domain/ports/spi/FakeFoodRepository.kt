@@ -16,10 +16,14 @@ class FakeFoodRepository : FoodRepository {
     flowOf(entries.filter { it.date in from..to })
 
   override suspend fun saveFoodEntry(entry: FoodEntry): Long {
-    val id = (entries.size + 1).toLong()
+    val id = if (entry.id == 0L) (entries.size + 1).toLong() else entry.id
+    entries.removeAll { it.id == id }
     entries.add(entry.copy(id = id))
     return id
   }
+
+  override suspend fun getFoodEntryById(id: Long): FoodEntry? =
+    entries.firstOrNull { it.id == id }
 
   override suspend fun deleteFoodEntry(id: Long) {
     entries.removeAll { it.id == id }

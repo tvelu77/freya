@@ -67,4 +67,17 @@ class LogActivityUseCaseAdapterTest {
 
     assertTrue(repository.entries.isEmpty())
   }
+
+  @Test
+  fun `updateActivity re-saves the entry under the same id with new values`() = runTest {
+    val id = adapter.logActivity(SportType.YOGA, 45, 60f, date = date)
+    val original = repository.entries.single()
+
+    adapter.updateActivity(original.copy(durationMin = 60, kcalBurned = 180))
+
+    assertEquals(1, repository.entries.size)
+    assertEquals(id, repository.entries.single().id)
+    assertEquals(60, repository.entries.single().durationMin)
+    assertEquals(180, repository.entries.single().kcalBurned)
+  }
 }
