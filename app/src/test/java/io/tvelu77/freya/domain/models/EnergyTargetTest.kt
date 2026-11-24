@@ -16,7 +16,7 @@ class EnergyTargetTest {
 
   @Test
   fun `goal shifts the center of the range`() {
-    assertEquals(2100, EnergyTarget.compute(2000, Goal.GAIN, 0).center)
+    assertEquals(2200, EnergyTarget.compute(2000, Goal.GAIN, 0).center)
     assertEquals(1800, EnergyTarget.compute(2000, Goal.LOSS, 0).center)
   }
 
