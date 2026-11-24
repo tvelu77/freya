@@ -50,8 +50,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import io.tvelu77.freya.R
+import io.tvelu77.freya.domain.models.FoodItem
 import io.tvelu77.freya.domain.models.MealType
-import io.tvelu77.freya.domain.models.QuickFood
 import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -59,13 +59,14 @@ import java.util.Locale
 fun AddFoodSheet(
   mealType: MealType,
   searchQuery: String,
-  searchResults: List<QuickFood>,
+  searchResults: List<FoodItem>,
+  quickFoods: List<FoodItem>,
   onQueryChanged: (String) -> Unit,
-  onFoodSelected: (QuickFood, Float) -> Unit,
+  onFoodSelected: (FoodItem, Float) -> Unit,
   onDismiss: () -> Unit
 ) {
-  var selectedFood by remember { mutableStateOf<QuickFood?>(null) }
-  var quantity by remember { mutableStateOf("100") }
+  var selectedFood by remember { mutableStateOf<FoodItem?>(null) }
+  var quantity by remember { mutableStateOf(FoodItem.DEFAULT_SERVING_G.toInt().toString()) }
 
   ModalBottomSheet(
     onDismissRequest = onDismiss,
@@ -169,23 +170,19 @@ fun AddFoodSheet(
                   shape = RoundedCornerShape(12.dp)
                 )
 
-                val q = quantity.toFloatOrNull() ?: 100f
-                val ratio = q / food.defaultQuantity
+                val q = quantity.toFloatOrNull() ?: FoodItem.DEFAULT_SERVING_G
                 Column {
                   Text(
-                    text = stringResource(
-                      R.string.food_kcal,
-                      (food.calories * ratio).toInt()
-                    ),
+                    text = stringResource(R.string.food_kcal, food.caloriesFor(q)),
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.onPrimaryContainer
                   )
                   Text(
                     text = stringResource(
                       R.string.food_macros_short,
-                      (food.proteins * ratio).toInt(),
-                      (food.carbs * ratio).toInt(),
-                      (food.fats * ratio).toInt()
+                      food.proteinsFor(q).toInt(),
+                      food.carbsFor(q).toInt(),
+                      food.fatsFor(q).toInt()
                     ),
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f)
@@ -197,7 +194,7 @@ fun AddFoodSheet(
 
               Button(
                 onClick = {
-                  val q = quantity.toFloatOrNull() ?: 100f
+                  val q = quantity.toFloatOrNull() ?: FoodItem.DEFAULT_SERVING_G
                   onFoodSelected(food, q)
                 },
                 modifier = Modifier.fillMaxWidth(),
@@ -221,12 +218,12 @@ fun AddFoodSheet(
             .heightIn(max = 280.dp),
           verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
-          items(searchResults, key = { it.name }) { food ->
+          items(searchResults, key = { it.id }) { food ->
             FoodResultRow(
               food = food,
               onClick = {
                 selectedFood = food
-                quantity = food.defaultQuantity.toInt().toString()
+                quantity = food.defaultServingG.toInt().toString()
               }
             )
           }
@@ -258,19 +255,17 @@ fun AddFoodSheet(
           horizontalArrangement = Arrangement.spacedBy(8.dp),
           modifier = Modifier.horizontalScroll(rememberScrollState())
         ) {
-          listOf("Œuf entier", "Banane", "Yaourt nature", "Pain complet", "Poulet rôti")
-            .mapNotNull { name -> FoodViewModel.FOOD_DATABASE.find { it.name == name } }
-            .forEach { food ->
-              SuggestionChip(
-                onClick = {
-                  selectedFood = food
-                  quantity = food.defaultQuantity.toInt().toString()
-                },
-                label = {
-                  Text(food.name, style = MaterialTheme.typography.labelSmall)
-                }
-              )
-            }
+          quickFoods.forEach { food ->
+            SuggestionChip(
+              onClick = {
+                selectedFood = food
+                quantity = food.defaultServingG.toInt().toString()
+              },
+              label = {
+                Text(food.name, style = MaterialTheme.typography.labelSmall)
+              }
+            )
+          }
         }
       }
     }

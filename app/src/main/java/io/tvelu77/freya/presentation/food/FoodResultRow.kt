@@ -16,10 +16,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import io.tvelu77.freya.R
-import io.tvelu77.freya.domain.models.QuickFood
+import io.tvelu77.freya.domain.models.FoodItem
 
 @Composable
-fun FoodResultRow(food: QuickFood, onClick: () -> Unit) {
+fun FoodResultRow(food: FoodItem, onClick: () -> Unit) {
   Row(
     modifier = Modifier
       .fillMaxWidth()
@@ -34,16 +34,16 @@ fun FoodResultRow(food: QuickFood, onClick: () -> Unit) {
       Text(
         text = stringResource(
           R.string.food_macros_short,
-          food.proteins.toInt(),
-          food.carbs.toInt(),
-          food.fats.toInt()
+          food.proteinsPer100g.toInt(),
+          food.carbsPer100g.toInt(),
+          food.fatsPer100g.toInt()
         ),
         style = MaterialTheme.typography.labelSmall,
         color = MaterialTheme.colorScheme.onSurfaceVariant
       )
     }
     Text(
-      text = stringResource(R.string.food_kcal, food.calories),
+      text = stringResource(R.string.food_kcal, food.caloriesPer100g),
       style = MaterialTheme.typography.labelSmall,
       color = MaterialTheme.colorScheme.onSurfaceVariant
     )

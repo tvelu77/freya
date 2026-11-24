@@ -11,6 +11,7 @@ import io.tvelu77.freya.domain.ports.api.GetUserProfileUseCase
 import io.tvelu77.freya.domain.ports.api.LogFoodUseCase
 import io.tvelu77.freya.domain.ports.api.PhaseCalculator
 import io.tvelu77.freya.domain.ports.api.PhaseNotificationPlanner
+import io.tvelu77.freya.domain.ports.api.SearchFoodItemsUseCase
 import io.tvelu77.freya.domain.ports.api.TCAGuardUseCase
 import io.tvelu77.freya.domain.ports.api.TrackCycleUseCase
 import io.tvelu77.freya.domain.ports.api.UpdateUserProfileUseCase
@@ -21,6 +22,7 @@ import io.tvelu77.freya.domain.services.GetUserProfileUseCaseAdapter
 import io.tvelu77.freya.domain.services.LogFoodUseCaseAdapter
 import io.tvelu77.freya.domain.services.PhaseCalculatorAdapter
 import io.tvelu77.freya.domain.services.PhaseNotificationPlannerAdapter
+import io.tvelu77.freya.domain.services.SearchFoodItemsUseCaseAdapter
 import io.tvelu77.freya.domain.services.TCAGuardUseCaseAdapter
 import io.tvelu77.freya.domain.services.TrackCycleUseCaseAdapter
 import io.tvelu77.freya.domain.services.UpdateUserProfileUseCaseAdapter
@@ -61,6 +63,10 @@ abstract class UseCaseModule {
   @Binds
   @Singleton
   abstract fun bindLogFoodUseCase(adapter: LogFoodUseCaseAdapter): LogFoodUseCase
+
+  @Binds
+  @Singleton
+  abstract fun bindSearchFoodItemsUseCase(adapter: SearchFoodItemsUseCaseAdapter): SearchFoodItemsUseCase
 
   @Binds
   @Singleton
