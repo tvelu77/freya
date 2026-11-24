@@ -5,6 +5,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.MutablePreferences
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.doublePreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.intPreferencesKey
@@ -29,6 +30,7 @@ class UserProfileDataStore @Inject constructor(
     val KEY_FIRST_NAME  = stringPreferencesKey("first_name")
     val KEY_BASE_CALORIES = intPreferencesKey("base_calories")
     val KEY_GOAL = stringPreferencesKey("goal")
+    val KEY_WEIGHT_KG = doublePreferencesKey("weight_kg")
     val KEY_CYCLE_LENGTH = intPreferencesKey("cycle_length")
     val KEY_TCA_FRIENDLY = booleanPreferencesKey("tca_friendly")
     val KEY_NOTIFICATIONS = booleanPreferencesKey("notifications")
@@ -42,6 +44,7 @@ class UserProfileDataStore @Inject constructor(
         firstName            = prefs[KEY_FIRST_NAME] ?: "",
         baseCalories         = prefs[KEY_BASE_CALORIES] ?: 2000,
         goal                 = prefs[KEY_GOAL]?.let { runCatching { Goal.valueOf(it) }.getOrDefault(Goal.MAINTENANCE) } ?: Goal.MAINTENANCE,
+        weightKg             = prefs[KEY_WEIGHT_KG]?.toFloat(),
         cycleLengthDays      = prefs[KEY_CYCLE_LENGTH] ?: 28,
         tcaFriendlyMode      = prefs[KEY_TCA_FRIENDLY] ?: false,
         notificationsEnabled = prefs[KEY_NOTIFICATIONS] ?: true,

@@ -4,6 +4,7 @@ data class UserProfile(
   val firstName: String = "",
   val baseCalories: Int = 2000,
   val goal: Goal = Goal.MAINTENANCE,
+  val weightKg: Float? = null,
   val cycleLengthDays: Int = 28,
   val showCalories: Boolean = true,
   val tcaFriendlyMode: Boolean = false,

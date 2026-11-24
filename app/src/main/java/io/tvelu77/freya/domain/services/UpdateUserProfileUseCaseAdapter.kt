@@ -20,6 +20,9 @@ class UpdateUserProfileUseCaseAdapter @Inject constructor(
   override suspend fun updateGoal(goal: Goal) =
     repository.updateGoal(goal)
 
+  override suspend fun updateWeight(weightKg: Float?) =
+    repository.updateWeight(weightKg?.takeIf { it > 0f })
+
   override suspend fun updateCycleLength(days: Int) {
     val safe = days.coerceIn(21, 45)
     repository.updateCycleLength(safe)

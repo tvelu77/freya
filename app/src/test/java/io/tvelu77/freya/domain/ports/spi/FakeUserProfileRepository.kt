@@ -27,6 +27,10 @@ class FakeUserProfileRepository : UserProfileRepository {
     profile = profile.copy(goal = goal)
   }
 
+  override suspend fun updateWeight(weightKg: Float?) {
+    profile = profile.copy(weightKg = weightKg)
+  }
+
   override suspend fun updateCycleLength(days: Int) {
     profile = profile.copy(cycleLengthDays = days)
   }

@@ -4,6 +4,7 @@ import io.tvelu77.freya.database.config.UserProfileDataStore
 import io.tvelu77.freya.database.config.UserProfileDataStore.Companion.KEY_BASE_CALORIES
 import io.tvelu77.freya.database.config.UserProfileDataStore.Companion.KEY_CYCLE_LENGTH
 import io.tvelu77.freya.database.config.UserProfileDataStore.Companion.KEY_GOAL
+import io.tvelu77.freya.database.config.UserProfileDataStore.Companion.KEY_WEIGHT_KG
 import io.tvelu77.freya.database.config.UserProfileDataStore.Companion.KEY_NOTIFICATIONS
 import io.tvelu77.freya.database.config.UserProfileDataStore.Companion.KEY_ONBOARDING_COMPLETED
 import io.tvelu77.freya.database.config.UserProfileDataStore.Companion.KEY_TCA_FRIENDLY
@@ -24,6 +25,7 @@ class DataStoreUserProfileRepository @Inject constructor(
       this[UserProfileDataStore.KEY_FIRST_NAME] = profile.firstName
       this[KEY_BASE_CALORIES] = profile.baseCalories
       this[KEY_GOAL] = profile.goal.name
+      profile.weightKg?.let { this[KEY_WEIGHT_KG] = it.toDouble() }
       this[KEY_CYCLE_LENGTH] = profile.cycleLengthDays
       this[KEY_TCA_FRIENDLY] = profile.tcaFriendlyMode
       this[KEY_NOTIFICATIONS] = profile.notificationsEnabled
@@ -39,6 +41,11 @@ class DataStoreUserProfileRepository @Inject constructor(
 
   override suspend fun updateGoal(goal: Goal) =
     dataStore.update { this[KEY_GOAL] = goal.name }
+
+  override suspend fun updateWeight(weightKg: Float?) =
+    dataStore.update {
+      if (weightKg == null) remove(KEY_WEIGHT_KG) else this[KEY_WEIGHT_KG] = weightKg.toDouble()
+    }
 
   override suspend fun updateCycleLength(days: Int) =
     dataStore.update { this[KEY_CYCLE_LENGTH] = days }

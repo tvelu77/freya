@@ -9,6 +9,7 @@ import io.tvelu77.freya.domain.ports.api.GetDailyNutritionUseCase
 import io.tvelu77.freya.domain.ports.api.GetHealthScoreUseCase
 import io.tvelu77.freya.domain.ports.api.GetNutritionAdviceUseCase
 import io.tvelu77.freya.domain.ports.api.GetUserProfileUseCase
+import io.tvelu77.freya.domain.ports.api.LogActivityUseCase
 import io.tvelu77.freya.domain.ports.api.LogFoodUseCase
 import io.tvelu77.freya.domain.ports.api.PhaseCalculator
 import io.tvelu77.freya.domain.ports.api.PhaseNotificationPlanner
@@ -21,6 +22,7 @@ import io.tvelu77.freya.domain.services.GetDailyNutritionUseCaseAdapter
 import io.tvelu77.freya.domain.services.GetHealthScoreUseCaseAdapter
 import io.tvelu77.freya.domain.services.GetNutritionAdviceUseCaseAdapter
 import io.tvelu77.freya.domain.services.GetUserProfileUseCaseAdapter
+import io.tvelu77.freya.domain.services.LogActivityUseCaseAdapter
 import io.tvelu77.freya.domain.services.LogFoodUseCaseAdapter
 import io.tvelu77.freya.domain.services.PhaseCalculatorAdapter
 import io.tvelu77.freya.domain.services.PhaseNotificationPlannerAdapter
@@ -69,6 +71,10 @@ abstract class UseCaseModule {
   @Binds
   @Singleton
   abstract fun bindGetDailyNutritionUseCase(adapter: GetDailyNutritionUseCaseAdapter): GetDailyNutritionUseCase
+
+  @Binds
+  @Singleton
+  abstract fun bindLogActivityUseCase(adapter: LogActivityUseCaseAdapter): LogActivityUseCase
 
   @Binds
   @Singleton

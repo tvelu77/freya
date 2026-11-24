@@ -127,6 +127,21 @@ fun ProfileScreen(
             onDone = { focusManager.clearFocus() }
           )
         )
+
+        ProfileTextField(
+          label = stringResource(R.string.profile_weight_label),
+          value = uiState.weightInput,
+          onValueChange = viewModel::onWeightChanged,
+          placeholder = stringResource(R.string.profile_weight_placeholder),
+          keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Decimal,
+            imeAction = ImeAction.Done
+          ),
+          supportingText = stringResource(R.string.profile_weight_hint),
+          keyboardActions = KeyboardActions(
+            onDone = { focusManager.clearFocus() }
+          )
+        )
       }
 
       ProfileSection(title = stringResource(R.string.profile_goal_section)) {

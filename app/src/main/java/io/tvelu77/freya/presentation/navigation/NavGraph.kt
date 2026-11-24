@@ -3,6 +3,7 @@ package io.tvelu77.freya.presentation.navigation
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.AccountCircle
 import androidx.compose.material.icons.rounded.CalendarMonth
+import androidx.compose.material.icons.rounded.DirectionsRun
 import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material.icons.rounded.SetMeal
 import androidx.compose.material3.Icon
@@ -18,6 +19,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
+import io.tvelu77.freya.presentation.activity.ActivityScreen
 import io.tvelu77.freya.presentation.cycle.CycleScreen
 import io.tvelu77.freya.presentation.food.FoodScreen
 import io.tvelu77.freya.presentation.home.HomeScreen
@@ -28,6 +30,7 @@ sealed class Screen(val route: String, val labelRes: Int, val icon: ImageVector)
   object Home  : Screen("home", R.string.nav_home, Icons.Rounded.Home)
   object Cycle : Screen("cycle", R.string.nav_cycle, Icons.Rounded.CalendarMonth)
   object Food  : Screen("food", R.string.nav_food, Icons.Rounded.SetMeal)
+  object Activity : Screen("activity", R.string.nav_activity, Icons.Rounded.DirectionsRun)
   object Profile : Screen("profile", R.string.nav_profile, Icons.Rounded.AccountCircle)
 }
 
@@ -40,7 +43,7 @@ fun NavGraph(
 
   NavigationSuiteScaffold(
     navigationSuiteItems = {
-      listOf(Screen.Home, Screen.Cycle, Screen.Food, Screen.Profile).forEach {
+      listOf(Screen.Home, Screen.Cycle, Screen.Food, Screen.Activity, Screen.Profile).forEach {
         item(
           icon = {
             Icon(
@@ -80,6 +83,9 @@ fun NavGraph(
       }
       composable(Screen.Food.route) {
         FoodScreen()
+      }
+      composable(Screen.Activity.route) {
+        ActivityScreen()
       }
       composable(Screen.Profile.route) {
         ProfileScreen()

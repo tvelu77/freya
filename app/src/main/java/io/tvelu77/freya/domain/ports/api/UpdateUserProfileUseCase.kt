@@ -7,6 +7,7 @@ interface UpdateUserProfileUseCase {
   suspend fun updateFirstName(name: String)
   suspend fun updateBaseCalories(calories: Int)
   suspend fun updateGoal(goal: Goal)
+  suspend fun updateWeight(weightKg: Float?)
   suspend fun updateCycleLength(days: Int)
   suspend fun updateTcaFriendlyMode(enabled: Boolean)
   suspend fun updateNotifications(enabled: Boolean)
