@@ -26,7 +26,19 @@
     <!-- TCA resources -->
     <string name="tca_resources_title">Ressources d\'aide</string>
     <string name="tca_resources_intro">Si tu traverses un moment difficile avec l\'alimentation, des professionnels peuvent t\'accompagner \u2014 sans jugement. \ud83d\udc9b</string>
-    <string name="tca_resources_body">Tu trouveras ici des ressources en nutrition et en sant\u00e9 mentale, propos\u00e9es par des professionnels et des associations sp\u00e9cialis\u00e9es.</string>
+    <string name="tca_resources_section_pro">Parler \u00e0 un professionnel</string>
+    <string name="tca_res_nutritionist_title">Nutritionniste-di\u00e9t\u00e9ticien</string>
+    <string name="tca_res_nutritionist_desc">Un professionnel dipl\u00f4m\u00e9 d\'\u00c9tat peut t\'aider \u00e0 retrouver une alimentation sereine. Annuaire sur ameli.fr.</string>
+    <string name="tca_res_psy_title">Psychologue ou psychiatre</string>
+    <string name="tca_res_psy_desc">Pour parler de ce que tu ressens, sans jugement. Via ton m\u00e9decin traitant ou un annuaire en ligne.</string>
+    <string name="tca_resources_section_help">Lignes d\'\u00e9coute &amp; associations</string>
+    <string name="tca_res_3114_title">3114 \u2014 Pr\u00e9vention du suicide</string>
+    <string name="tca_res_3114_desc">Gratuit, confidentiel, 24h/24 et 7j/7.</string>
+    <string name="tca_res_ffab_title">0810 037 037 \u2014 Anorexie Boulimie Info \u00c9coute</string>
+    <string name="tca_res_ffab_desc">La ligne d\'\u00e9coute de la FFAB, pour toi ou pour un proche.</string>
+    <string name="tca_res_emergency_title">15 / 112 \u2014 Urgences</string>
+    <string name="tca_res_emergency_desc">En cas de danger imm\u00e9diat pour toi ou quelqu\'un d\'autre.</string>
+    <string name="tca_resources_footer">Ces ressources sont l\u00e0 pour t\'accompagner, \u00e0 ton rythme. \ud83c\udf31</string>
     <string name="home_close_cd">Fermer</string>
 
     <!-- Cycle -->
@@ -174,6 +186,9 @@
     <string name="profile_friendly_mode">Mode bienveillant</string>
     <string name="profile_friendly_mode_sub">Masque les kcals — focus sur le ressenti</string>
     <string name="profile_section_notifications">Notifications</string>
+    <string name="profile_section_help">Aide &amp; accompagnement</string>
+    <string name="profile_resources_title">Ressources d\'aide</string>
+    <string name="profile_resources_sub">Un accompagnement professionnel, sans jugement</string>
     <string name="profile_notifications">Rappels &amp; conseils</string>
     <string name="profile_notifications_sub">Changements de phase, hydratation, conseils doux</string>
     <string name="profile_saved">Profil sauvegardé !</string>

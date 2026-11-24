@@ -92,7 +92,9 @@ fun NavGraph(
         ActivityScreen()
       }
       composable(Screen.Profile.route) {
-        ProfileScreen()
+        ProfileScreen(
+          onNavigateToResources = { navController.navigate(Screen.Resources.route) }
+        )
       }
       composable(Screen.Resources.route) {
         ResourcesScreen()
