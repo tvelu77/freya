@@ -48,6 +48,18 @@ fun FoodEntryRow(
         style = MaterialTheme.typography.labelSmall,
         color = MaterialTheme.colorScheme.onSurfaceVariant
       )
+      if (showCalories) {
+        Text(
+          text = stringResource(
+            R.string.food_macros_short,
+            entry.proteins.toInt(),
+            entry.carbs.toInt(),
+            entry.fats.toInt()
+          ),
+          style = MaterialTheme.typography.labelSmall,
+          color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+      }
     }
     Row(
       verticalAlignment = Alignment.CenterVertically,

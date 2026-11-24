@@ -100,6 +100,7 @@
     <string name="food_clear_cd">Effacer</string>
     <string name="food_deselect_cd">Désélectionner</string>
     <string name="food_quantity_label">Quantité (g)</string>
+    <string name="food_portion_chip">%1$s · %2$d g</string>
     <string name="food_add_button">Ajouter</string>
     <string name="food_no_results">Aucun résultat pour « %1$s » — essaie un autre aliment 🌱</string>
     <string name="food_quick_suggestions">Suggestions rapides</string>

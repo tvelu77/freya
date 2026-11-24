@@ -1,6 +1,7 @@
 package io.tvelu77.freya.domain.ports.api
 
 import io.tvelu77.freya.domain.models.FoodEntry
+import io.tvelu77.freya.domain.models.FoodItem
 import io.tvelu77.freya.domain.models.MealType
 import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
@@ -9,12 +10,8 @@ import java.time.LocalTime
 interface LogFoodUseCase {
 
   suspend fun logFood(
-    foodName: String,
-    quantity: Float,
-    calories: Int,
-    proteins: Float,
-    carbs: Float,
-    fats: Float,
+    food: FoodItem,
+    quantityG: Float,
     mealType: MealType,
     date: LocalDate = LocalDate.now(),
     time: LocalTime = LocalTime.now()
