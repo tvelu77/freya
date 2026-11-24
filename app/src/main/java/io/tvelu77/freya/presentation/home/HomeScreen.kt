@@ -41,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.tvelu77.freya.R
+import io.tvelu77.freya.domain.models.DailyEnergyNeed
 import io.tvelu77.freya.domain.models.EnergyTarget
 import io.tvelu77.freya.domain.models.PhaseInfo
 import io.tvelu77.freya.domain.models.PhaseType
@@ -164,6 +165,14 @@ private fun HomeContent(
         NutritionAdviceCard(advice = advice)
       }
 
+      uiState.energyNeed?.let { need ->
+        EnergyNeedCard(
+          need = need,
+          targetHigh = uiState.energyTarget.high,
+          showCalories = uiState.showCalories
+        )
+      }
+
       uiState.healthScore?.let { score ->
         HealthScoreCard(score = score, onClick = onNavigateToFood)
       }
@@ -262,6 +271,53 @@ private fun HomeHeader(uiState: HomeUiState, date: String, phaseInfo: PhaseInfo?
     }
   }
   Spacer(Modifier.height(16.dp))
+}
+
+@Composable
+private fun EnergyNeedCard(
+  need: DailyEnergyNeed,
+  targetHigh: Int,
+  showCalories: Boolean
+) {
+  val message = if (need.totalKcal > targetHigh) {
+    stringResource(R.string.energy_need_higher)
+  } else {
+    stringResource(R.string.energy_need_ok)
+  }
+
+  Card(
+    modifier = Modifier.fillMaxWidth(),
+    colors = CardDefaults.cardColors(
+      containerColor = MaterialTheme.colorScheme.tertiaryContainer
+    ),
+    shape = MaterialTheme.shapes.large
+  ) {
+    Column(modifier = Modifier.padding(16.dp)) {
+      Text(
+        text = stringResource(R.string.energy_need_title),
+        style = MaterialTheme.typography.titleMedium
+      )
+      Spacer(Modifier.height(6.dp))
+      if (showCalories) {
+        Text(
+          text = stringResource(R.string.energy_need_value, need.totalKcal),
+          style = MaterialTheme.typography.headlineMedium,
+          color = MaterialTheme.colorScheme.onTertiaryContainer
+        )
+        Spacer(Modifier.height(6.dp))
+      }
+      Text(
+        text = message,
+        style = MaterialTheme.typography.bodyMedium
+      )
+      Spacer(Modifier.height(4.dp))
+      Text(
+        text = stringResource(R.string.energy_need_hint),
+        style = MaterialTheme.typography.labelSmall,
+        color = MaterialTheme.colorScheme.onTertiaryContainer.copy(alpha = 0.7f)
+      )
+    }
+  }
 }
 
 @Composable

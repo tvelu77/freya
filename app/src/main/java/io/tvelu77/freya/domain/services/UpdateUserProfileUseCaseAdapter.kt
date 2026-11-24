@@ -23,6 +23,12 @@ class UpdateUserProfileUseCaseAdapter @Inject constructor(
   override suspend fun updateWeight(weightKg: Float?) =
     repository.updateWeight(weightKg?.takeIf { it > 0f })
 
+  override suspend fun updateAgeYears(ageYears: Int?) =
+    repository.updateAgeYears(ageYears?.coerceIn(MIN_AGE_YEARS, MAX_AGE_YEARS))
+
+  override suspend fun updateHeightCm(heightCm: Int?) =
+    repository.updateHeightCm(heightCm?.coerceIn(MIN_HEIGHT_CM, MAX_HEIGHT_CM))
+
   override suspend fun updateCycleLength(days: Int) {
     val safe = days.coerceIn(21, 45)
     repository.updateCycleLength(safe)
@@ -36,4 +42,11 @@ class UpdateUserProfileUseCaseAdapter @Inject constructor(
 
   override suspend fun completeOnboarding() =
     repository.completeOnboarding()
+
+  companion object {
+    const val MIN_AGE_YEARS = 10
+    const val MAX_AGE_YEARS = 120
+    const val MIN_HEIGHT_CM = 100
+    const val MAX_HEIGHT_CM = 250
+  }
 }

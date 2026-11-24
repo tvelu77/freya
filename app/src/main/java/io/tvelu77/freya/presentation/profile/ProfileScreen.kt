@@ -135,9 +135,33 @@ fun ProfileScreen(
           placeholder = stringResource(R.string.profile_weight_placeholder),
           keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Decimal,
+            imeAction = ImeAction.Next
+          ),
+          supportingText = stringResource(R.string.profile_weight_hint)
+        )
+
+        ProfileTextField(
+          label = stringResource(R.string.profile_age_label),
+          value = uiState.ageInput,
+          onValueChange = viewModel::onAgeChanged,
+          placeholder = stringResource(R.string.profile_age_placeholder),
+          keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Number,
+            imeAction = ImeAction.Next
+          ),
+          supportingText = stringResource(R.string.profile_measures_hint)
+        )
+
+        ProfileTextField(
+          label = stringResource(R.string.profile_height_label),
+          value = uiState.heightInput,
+          onValueChange = viewModel::onHeightChanged,
+          placeholder = stringResource(R.string.profile_height_placeholder),
+          keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Number,
             imeAction = ImeAction.Done
           ),
-          supportingText = stringResource(R.string.profile_weight_hint),
+          supportingText = stringResource(R.string.profile_measures_hint),
           keyboardActions = KeyboardActions(
             onDone = { focusManager.clearFocus() }
           )

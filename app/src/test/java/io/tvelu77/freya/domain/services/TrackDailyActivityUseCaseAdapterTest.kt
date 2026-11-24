@@ -1,6 +1,7 @@
 package io.tvelu77.freya.domain.services
 
 import io.tvelu77.freya.domain.models.CycleEntry
+import io.tvelu77.freya.domain.models.FatigueLevel
 import io.tvelu77.freya.domain.models.PhaseType
 import io.tvelu77.freya.domain.ports.spi.FakeCycleRepository
 import io.tvelu77.freya.domain.ports.spi.FakeDailyActivityRepository
@@ -83,6 +84,27 @@ class TrackDailyActivityUseCaseAdapterTest {
 
     adapter.updateSleep(-2f, today)
     assertEquals(0f, adapter.getDailyActivity(today).first()?.sleepHours)
+  }
+
+  @Test
+  fun `updateFatigue persists the level and keeps steps and sleep`() = runTest {
+    adapter.updateSteps(8500, today)
+    adapter.updateSleep(7.5f, today)
+    adapter.updateFatigue(FatigueLevel.HIGH, today)
+
+    val saved = adapter.getDailyActivity(today).first()
+    assertEquals(FatigueLevel.HIGH, saved?.fatigue)
+    assertEquals(8500, saved?.steps)
+    assertEquals(7.5f, saved?.sleepHours)
+    assertEquals(1, dailyRepository.entries.size)
+  }
+
+  @Test
+  fun `updateFatigue with null clears the level`() = runTest {
+    adapter.updateFatigue(FatigueLevel.LOW, today)
+    adapter.updateFatigue(null, today)
+
+    assertEquals(null, adapter.getDailyActivity(today).first()?.fatigue)
   }
 
   @Test

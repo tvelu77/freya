@@ -3,6 +3,7 @@ package io.tvelu77.freya.presentation.activity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.tvelu77.freya.domain.models.FatigueLevel
 import io.tvelu77.freya.domain.models.SportType
 import io.tvelu77.freya.domain.ports.api.GetUserProfileUseCase
 import io.tvelu77.freya.domain.ports.api.LogActivityUseCase
@@ -85,10 +86,11 @@ class ActivityViewModel @Inject constructor(
     viewModelScope.launch { logActivityUseCase.deleteActivity(id) }
   }
 
-  fun saveDailyActivity(steps: Int, sleepHours: Float) {
+  fun saveDailyActivity(steps: Int, sleepHours: Float, fatigue: FatigueLevel?) {
     viewModelScope.launch {
       trackDailyActivityUseCase.updateSteps(steps, today)
       trackDailyActivityUseCase.updateSleep(sleepHours, today)
+      trackDailyActivityUseCase.updateFatigue(fatigue, today)
     }
   }
 

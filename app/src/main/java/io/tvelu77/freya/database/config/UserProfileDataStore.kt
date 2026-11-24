@@ -31,6 +31,8 @@ class UserProfileDataStore @Inject constructor(
     val KEY_BASE_CALORIES = intPreferencesKey("base_calories")
     val KEY_GOAL = stringPreferencesKey("goal")
     val KEY_WEIGHT_KG = doublePreferencesKey("weight_kg")
+    val KEY_AGE_YEARS = intPreferencesKey("age_years")
+    val KEY_HEIGHT_CM = intPreferencesKey("height_cm")
     val KEY_CYCLE_LENGTH = intPreferencesKey("cycle_length")
     val KEY_TCA_FRIENDLY = booleanPreferencesKey("tca_friendly")
     val KEY_NOTIFICATIONS = booleanPreferencesKey("notifications")
@@ -45,6 +47,8 @@ class UserProfileDataStore @Inject constructor(
         baseCalories         = prefs[KEY_BASE_CALORIES] ?: 2000,
         goal                 = prefs[KEY_GOAL]?.let { runCatching { Goal.valueOf(it) }.getOrDefault(Goal.MAINTENANCE) } ?: Goal.MAINTENANCE,
         weightKg             = prefs[KEY_WEIGHT_KG]?.toFloat(),
+        ageYears             = prefs[KEY_AGE_YEARS],
+        heightCm             = prefs[KEY_HEIGHT_CM],
         cycleLengthDays      = prefs[KEY_CYCLE_LENGTH] ?: 28,
         tcaFriendlyMode      = prefs[KEY_TCA_FRIENDLY] ?: false,
         notificationsEnabled = prefs[KEY_NOTIFICATIONS] ?: true,
