@@ -28,6 +28,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import io.tvelu77.freya.R
 import io.tvelu77.freya.domain.models.FoodEntry
+import io.tvelu77.freya.domain.models.MealNutrition
 import io.tvelu77.freya.domain.models.MealType
 import io.tvelu77.freya.ui.components.SoftEmptyState
 
@@ -35,6 +36,7 @@ import io.tvelu77.freya.ui.components.SoftEmptyState
 fun MealSection(
   mealType: MealType,
   entries: List<FoodEntry>,
+  mealNutrition: MealNutrition?,
   showCalories: Boolean,
   onAddFood: () -> Unit,
   onDeleteFood: (Long) -> Unit
@@ -59,11 +61,28 @@ fun MealSection(
         Text(emoji, style = MaterialTheme.typography.titleMedium)
         Text(mealType.displayName, style = MaterialTheme.typography.titleMedium)
         if (entries.isNotEmpty() && showCalories) {
-          Text(
-            text = stringResource(R.string.food_kcal, entries.sumOf { it.calories }),
-            style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-          )
+          Column(horizontalAlignment = Alignment.End) {
+            Text(
+              text = stringResource(
+                R.string.food_kcal,
+                mealNutrition?.calories ?: entries.sumOf { it.calories }
+              ),
+              style = MaterialTheme.typography.labelSmall,
+              color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            mealNutrition?.let {
+              Text(
+                text = stringResource(
+                  R.string.food_macros_short,
+                  it.proteins.toInt(),
+                  it.carbs.toInt(),
+                  it.fats.toInt()
+                ),
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+              )
+            }
+          }
         }
       }
       IconButton(

@@ -5,6 +5,7 @@ import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import io.tvelu77.freya.domain.ports.api.GetCycleStatsUseCase
+import io.tvelu77.freya.domain.ports.api.GetDailyNutritionUseCase
 import io.tvelu77.freya.domain.ports.api.GetHealthScoreUseCase
 import io.tvelu77.freya.domain.ports.api.GetNutritionAdviceUseCase
 import io.tvelu77.freya.domain.ports.api.GetUserProfileUseCase
@@ -16,6 +17,7 @@ import io.tvelu77.freya.domain.ports.api.TCAGuardUseCase
 import io.tvelu77.freya.domain.ports.api.TrackCycleUseCase
 import io.tvelu77.freya.domain.ports.api.UpdateUserProfileUseCase
 import io.tvelu77.freya.domain.services.GetCycleStatsUseCaseAdapter
+import io.tvelu77.freya.domain.services.GetDailyNutritionUseCaseAdapter
 import io.tvelu77.freya.domain.services.GetHealthScoreUseCaseAdapter
 import io.tvelu77.freya.domain.services.GetNutritionAdviceUseCaseAdapter
 import io.tvelu77.freya.domain.services.GetUserProfileUseCaseAdapter
@@ -63,6 +65,10 @@ abstract class UseCaseModule {
   @Binds
   @Singleton
   abstract fun bindLogFoodUseCase(adapter: LogFoodUseCaseAdapter): LogFoodUseCase
+
+  @Binds
+  @Singleton
+  abstract fun bindGetDailyNutritionUseCase(adapter: GetDailyNutritionUseCaseAdapter): GetDailyNutritionUseCase
 
   @Binds
   @Singleton
