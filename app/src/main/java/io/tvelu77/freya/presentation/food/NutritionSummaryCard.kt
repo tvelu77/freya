@@ -2,6 +2,7 @@ package io.tvelu77.freya.presentation.food
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,6 +13,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.SuggestionChip
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import io.tvelu77.freya.R
 import io.tvelu77.freya.domain.models.DailyNutrition
 import io.tvelu77.freya.domain.models.EnergyTarget
+import io.tvelu77.freya.domain.models.NutritionAdvice
 import io.tvelu77.freya.ui.theme.ScoreGood
 import io.tvelu77.freya.ui.theme.ScoreLow
 import io.tvelu77.freya.ui.theme.ScoreMedium
@@ -34,7 +37,7 @@ fun NutritionSummaryCard(
   nutrition: DailyNutrition,
   energyTarget: EnergyTarget,
   showCalories: Boolean,
-  adviceMessage: String?
+  advice: NutritionAdvice?
 ) {
   val totalCalories = nutrition.totalCalories
   val proteins = nutrition.totalProteins
@@ -123,7 +126,7 @@ fun NutritionSummaryCard(
         MacroItem(stringResource(R.string.food_macro_fats), fats, Color(0xFFFFB74D), showCalories)
       }
 
-      adviceMessage?.let {
+      advice?.let {
         Spacer(Modifier.height(12.dp))
         HorizontalDivider(
           thickness = 0.5.dp,
@@ -131,10 +134,22 @@ fun NutritionSummaryCard(
         )
         Spacer(Modifier.height(10.dp))
         Text(
-          text = stringResource(R.string.advice_tip, it),
+          text = stringResource(R.string.advice_tip, it.tipMessage),
           style = MaterialTheme.typography.bodyMedium,
           color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.85f)
         )
+        Spacer(Modifier.height(8.dp))
+        FlowRow(
+          horizontalArrangement = Arrangement.spacedBy(6.dp),
+          verticalArrangement = Arrangement.spacedBy(6.dp)
+        ) {
+          it.recommendedFoods.forEach { food ->
+            SuggestionChip(
+              onClick = {},
+              label = { Text(food, style = MaterialTheme.typography.labelSmall) }
+            )
+          }
+        }
       }
     }
   }
