@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.tvelu77.freya.domain.ports.api.GetUserProfileUseCase
+import io.tvelu77.freya.domain.ports.api.TrackHydrationUseCase
 import io.tvelu77.freya.domain.ports.api.UpdateUserProfileUseCase
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.SharingStarted
@@ -15,8 +16,17 @@ import kotlinx.coroutines.launch
 @HiltViewModel
 class MainActivityViewModel @Inject constructor(
   private val getProfile: GetUserProfileUseCase,
-  private val updateUserProfileUseCase: UpdateUserProfileUseCase
+  private val updateUserProfileUseCase: UpdateUserProfileUseCase,
+  private val trackHydrationUseCase: TrackHydrationUseCase
 ): ViewModel() {
+
+  init {
+    viewModelScope.launch {
+      getProfile.execute().collect {
+        trackHydrationUseCase.rescheduleHydrationReminders()
+      }
+    }
+  }
 
   val isOnboardingCompleted: StateFlow<Boolean?> = getProfile
     .execute()

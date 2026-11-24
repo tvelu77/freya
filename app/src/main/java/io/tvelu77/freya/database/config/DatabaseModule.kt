@@ -12,6 +12,7 @@ import io.tvelu77.freya.database.dao.CycleDao
 import io.tvelu77.freya.database.dao.DailyActivityDao
 import io.tvelu77.freya.database.dao.FoodDao
 import io.tvelu77.freya.database.dao.FoodItemDao
+import io.tvelu77.freya.database.dao.HydrationDao
 import jakarta.inject.Singleton
 
 @Module
@@ -30,6 +31,7 @@ object DatabaseModule {
   @Provides fun provideFoodItemDao(db: FreyaDatabase): FoodItemDao = db.foodItemDao()
   @Provides fun provideActivityDao(db: FreyaDatabase): ActivityDao = db.activityDao()
   @Provides fun provideDailyActivityDao(db: FreyaDatabase): DailyActivityDao = db.dailyActivityDao()
+  @Provides fun provideHydrationDao(db: FreyaDatabase): HydrationDao = db.hydrationDao()
 
   @Provides @Singleton
   fun provideUserProfileDataStore(

@@ -9,6 +9,7 @@ import io.tvelu77.freya.domain.ports.api.GetDailyNutritionUseCase
 import io.tvelu77.freya.domain.ports.api.GetHealthScoreUseCase
 import io.tvelu77.freya.domain.ports.api.GetNutritionAdviceUseCase
 import io.tvelu77.freya.domain.ports.api.GetUserProfileUseCase
+import io.tvelu77.freya.domain.ports.api.HydrationReminderPlanner
 import io.tvelu77.freya.domain.ports.api.LogActivityUseCase
 import io.tvelu77.freya.domain.ports.api.LogFoodUseCase
 import io.tvelu77.freya.domain.ports.api.PhaseCalculator
@@ -17,12 +18,14 @@ import io.tvelu77.freya.domain.ports.api.SearchFoodItemsUseCase
 import io.tvelu77.freya.domain.ports.api.TCAGuardUseCase
 import io.tvelu77.freya.domain.ports.api.TrackCycleUseCase
 import io.tvelu77.freya.domain.ports.api.TrackDailyActivityUseCase
+import io.tvelu77.freya.domain.ports.api.TrackHydrationUseCase
 import io.tvelu77.freya.domain.ports.api.UpdateUserProfileUseCase
 import io.tvelu77.freya.domain.services.GetCycleStatsUseCaseAdapter
 import io.tvelu77.freya.domain.services.GetDailyNutritionUseCaseAdapter
 import io.tvelu77.freya.domain.services.GetHealthScoreUseCaseAdapter
 import io.tvelu77.freya.domain.services.GetNutritionAdviceUseCaseAdapter
 import io.tvelu77.freya.domain.services.GetUserProfileUseCaseAdapter
+import io.tvelu77.freya.domain.services.HydrationReminderPlannerAdapter
 import io.tvelu77.freya.domain.services.LogActivityUseCaseAdapter
 import io.tvelu77.freya.domain.services.LogFoodUseCaseAdapter
 import io.tvelu77.freya.domain.services.PhaseCalculatorAdapter
@@ -31,6 +34,7 @@ import io.tvelu77.freya.domain.services.SearchFoodItemsUseCaseAdapter
 import io.tvelu77.freya.domain.services.TCAGuardUseCaseAdapter
 import io.tvelu77.freya.domain.services.TrackCycleUseCaseAdapter
 import io.tvelu77.freya.domain.services.TrackDailyActivityUseCaseAdapter
+import io.tvelu77.freya.domain.services.TrackHydrationUseCaseAdapter
 import io.tvelu77.freya.domain.services.UpdateUserProfileUseCaseAdapter
 import jakarta.inject.Singleton
 
@@ -81,6 +85,14 @@ abstract class UseCaseModule {
   @Binds
   @Singleton
   abstract fun bindTrackDailyActivityUseCase(adapter: TrackDailyActivityUseCaseAdapter): TrackDailyActivityUseCase
+
+  @Binds
+  @Singleton
+  abstract fun bindTrackHydrationUseCase(adapter: TrackHydrationUseCaseAdapter): TrackHydrationUseCase
+
+  @Binds
+  @Singleton
+  abstract fun bindHydrationReminderPlanner(adapter: HydrationReminderPlannerAdapter): HydrationReminderPlanner
 
   @Binds
   @Singleton

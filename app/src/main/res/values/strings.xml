@@ -92,6 +92,11 @@
     <string name="activity_steps_label">Pas aujourd\'hui</string>
     <string name="activity_sleep_label">Sommeil (h)</string>
     <string name="activity_save">Enregistrer</string>
+    <string name="hydration_title">Hydratation</string>
+    <string name="hydration_progress">%1$d / %2$d ml</string>
+    <string name="hydration_hint">Une suggestion douce, pas une obligation \ud83d\udca7</string>
+    <string name="hydration_glass">+ 1 verre \u00b7 250 ml</string>
+    <string name="hydration_bottle">+ 1 gourde \u00b7 500 ml</string>
 
     <!-- Shared actions -->
     <string name="action_delete">Supprimer</string>
