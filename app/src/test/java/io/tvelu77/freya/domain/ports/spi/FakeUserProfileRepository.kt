@@ -51,6 +51,14 @@ class FakeUserProfileRepository : UserProfileRepository {
     profile = profile.copy(notificationsEnabled = enabled)
   }
 
+  override suspend fun updateHydrationReminders(enabled: Boolean) {
+    profile = profile.copy(hydrationRemindersEnabled = enabled)
+  }
+
+  override suspend fun updateShowScoreNumber(enabled: Boolean) {
+    profile = profile.copy(showHealthScoreNumber = enabled)
+  }
+
   override suspend fun completeOnboarding() {
     profile = profile.copy(onboardingCompleted = true)
   }

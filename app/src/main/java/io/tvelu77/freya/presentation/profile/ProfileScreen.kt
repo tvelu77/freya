@@ -25,8 +25,10 @@ import androidx.compose.material.icons.rounded.CheckCircle
 import androidx.compose.material.icons.rounded.ChevronRight
 import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material.icons.rounded.Notifications
+import androidx.compose.material.icons.rounded.Numbers
 import androidx.compose.material.icons.rounded.Save
 import androidx.compose.material.icons.rounded.VolunteerActivism
+import androidx.compose.material.icons.rounded.WaterDrop
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -199,6 +201,14 @@ fun ProfileScreen(
           onCheckedChange = viewModel::onTcaFriendlyToggled,
           icon = Icons.Rounded.Favorite
         )
+
+        ToggleRow(
+          title = stringResource(R.string.profile_score_number),
+          subtitle = stringResource(R.string.profile_score_number_sub),
+          checked = uiState.profile.showHealthScoreNumber,
+          onCheckedChange = viewModel::onShowScoreNumberToggled,
+          icon = Icons.Rounded.Numbers
+        )
       }
 
       ProfileSection(title = stringResource(R.string.profile_section_notifications)) {
@@ -208,6 +218,14 @@ fun ProfileScreen(
           checked = uiState.profile.notificationsEnabled,
           onCheckedChange = viewModel::onNotificationsToggled,
           icon = Icons.Rounded.Notifications
+        )
+
+        ToggleRow(
+          title = stringResource(R.string.profile_hydration_reminders),
+          subtitle = stringResource(R.string.profile_hydration_reminders_sub),
+          checked = uiState.profile.hydrationRemindersEnabled,
+          onCheckedChange = viewModel::onHydrationRemindersToggled,
+          icon = Icons.Rounded.WaterDrop
         )
       }
 

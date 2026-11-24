@@ -68,6 +68,24 @@ class UpdateUserProfileUseCaseAdapterTest {
   }
 
   @Test
+  fun `hydration reminders toggle is persisted`() = runTest {
+    adapter.updateHydrationReminders(false)
+    assertFalse(repository.profile.hydrationRemindersEnabled)
+
+    adapter.updateHydrationReminders(true)
+    assertTrue(repository.profile.hydrationRemindersEnabled)
+  }
+
+  @Test
+  fun `health score number visibility toggle is persisted`() = runTest {
+    adapter.updateShowScoreNumber(false)
+    assertFalse(repository.profile.showHealthScoreNumber)
+
+    adapter.updateShowScoreNumber(true)
+    assertTrue(repository.profile.showHealthScoreNumber)
+  }
+
+  @Test
   fun `age and height stay within sane bounds and can be cleared`() = runTest {
     adapter.updateAgeYears(8)
     assertEquals(10, repository.profile.ageYears)

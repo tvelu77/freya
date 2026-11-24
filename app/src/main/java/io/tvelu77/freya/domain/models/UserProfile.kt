@@ -11,5 +11,7 @@ data class UserProfile(
   val showCalories: Boolean = true,
   val tcaFriendlyMode: Boolean = false,
   val notificationsEnabled: Boolean = true,
+  val hydrationRemindersEnabled: Boolean = true,
+  val showHealthScoreNumber: Boolean = true,
   val onboardingCompleted: Boolean = false
 )

@@ -35,7 +35,12 @@ import io.tvelu77.freya.ui.theme.ScoreLow
 import io.tvelu77.freya.ui.theme.ScoreMedium
 
 @Composable
-fun HealthScoreCard(score: HealthScore, modifier: Modifier = Modifier, onClick: () -> Unit) {
+fun HealthScoreCard(
+  score: HealthScore,
+  modifier: Modifier = Modifier,
+  onClick: () -> Unit,
+  showNumber: Boolean = true
+) {
   val animatedValue by animateFloatAsState(
     targetValue = score.value / 100f,
     animationSpec = tween(1000, easing = EaseOutCubic),
@@ -89,11 +94,13 @@ fun HealthScoreCard(score: HealthScore, modifier: Modifier = Modifier, onClick: 
             useCenter = false, style = stroke
           )
         }
-        Text(
-          text = "${score.value}",
-          style = MaterialTheme.typography.headlineLarge,
-          color = arcColor
-        )
+        if (showNumber) {
+          Text(
+            text = "${score.value}",
+            style = MaterialTheme.typography.headlineLarge,
+            color = arcColor
+          )
+        }
       }
 
       Spacer(Modifier.height(12.dp))

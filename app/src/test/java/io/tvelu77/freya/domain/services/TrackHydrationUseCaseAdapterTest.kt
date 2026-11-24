@@ -141,4 +141,17 @@ class TrackHydrationUseCaseAdapterTest {
     assertTrue(scheduler.hydrationScheduled.single().size <= 2)
     assertEquals(0, scheduler.cancelHydrationCount)
   }
+
+  @Test
+  fun `hydration reminders toggle off cancels even when notifications are enabled`() = runTest {
+    profileRepository.profile = profileRepository.profile.copy(
+      notificationsEnabled = true,
+      hydrationRemindersEnabled = false
+    )
+
+    adapter.rescheduleHydrationReminders()
+
+    assertEquals(1, scheduler.cancelHydrationCount)
+    assertTrue(scheduler.hydrationScheduled.isEmpty())
+  }
 }

@@ -5,10 +5,12 @@ import io.tvelu77.freya.database.config.UserProfileDataStore.Companion.KEY_AGE_Y
 import io.tvelu77.freya.database.config.UserProfileDataStore.Companion.KEY_BASE_CALORIES
 import io.tvelu77.freya.database.config.UserProfileDataStore.Companion.KEY_CYCLE_LENGTH
 import io.tvelu77.freya.database.config.UserProfileDataStore.Companion.KEY_HEIGHT_CM
+import io.tvelu77.freya.database.config.UserProfileDataStore.Companion.KEY_HYDRATION_REMINDERS
 import io.tvelu77.freya.database.config.UserProfileDataStore.Companion.KEY_GOAL
 import io.tvelu77.freya.database.config.UserProfileDataStore.Companion.KEY_WEIGHT_KG
 import io.tvelu77.freya.database.config.UserProfileDataStore.Companion.KEY_NOTIFICATIONS
 import io.tvelu77.freya.database.config.UserProfileDataStore.Companion.KEY_ONBOARDING_COMPLETED
+import io.tvelu77.freya.database.config.UserProfileDataStore.Companion.KEY_SHOW_SCORE_NUMBER
 import io.tvelu77.freya.database.config.UserProfileDataStore.Companion.KEY_TCA_FRIENDLY
 import io.tvelu77.freya.domain.models.Goal
 import io.tvelu77.freya.domain.models.UserProfile
@@ -33,6 +35,8 @@ class DataStoreUserProfileRepository @Inject constructor(
       this[KEY_CYCLE_LENGTH] = profile.cycleLengthDays
       this[KEY_TCA_FRIENDLY] = profile.tcaFriendlyMode
       this[KEY_NOTIFICATIONS] = profile.notificationsEnabled
+      this[KEY_HYDRATION_REMINDERS] = profile.hydrationRemindersEnabled
+      this[KEY_SHOW_SCORE_NUMBER] = profile.showHealthScoreNumber
       this[KEY_ONBOARDING_COMPLETED] = profile.onboardingCompleted
     }
   }
@@ -69,6 +73,12 @@ class DataStoreUserProfileRepository @Inject constructor(
 
   override suspend fun updateNotifications(enabled: Boolean) =
     dataStore.update { this[KEY_NOTIFICATIONS] = enabled }
+
+  override suspend fun updateHydrationReminders(enabled: Boolean) =
+    dataStore.update { this[KEY_HYDRATION_REMINDERS] = enabled }
+
+  override suspend fun updateShowScoreNumber(enabled: Boolean) =
+    dataStore.update { this[KEY_SHOW_SCORE_NUMBER] = enabled }
 
   override suspend fun completeOnboarding() =
     dataStore.update { this[KEY_ONBOARDING_COMPLETED] = true }

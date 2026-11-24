@@ -184,13 +184,17 @@
     <string name="profile_cycle_length_hint">Entre 21 et 45 jours</string>
     <string name="profile_section_display">Affichage &amp; confidentialité</string>
     <string name="profile_friendly_mode">Mode bienveillant</string>
+    <string name="profile_score_number">Afficher le score en chiffres</string>
+    <string name="profile_score_number_sub">Sinon, seule la couleur douce s\'affiche</string>
     <string name="profile_friendly_mode_sub">Masque les kcals — focus sur le ressenti</string>
     <string name="profile_section_notifications">Notifications</string>
     <string name="profile_section_help">Aide &amp; accompagnement</string>
     <string name="profile_resources_title">Ressources d\'aide</string>
     <string name="profile_resources_sub">Un accompagnement professionnel, sans jugement</string>
     <string name="profile_notifications">Rappels &amp; conseils</string>
-    <string name="profile_notifications_sub">Changements de phase, hydratation, conseils doux</string>
+    <string name="profile_notifications_sub">Changements de phase et conseils doux</string>
+    <string name="profile_hydration_reminders">Rappels d\'hydratation</string>
+    <string name="profile_hydration_reminders_sub">Jusqu\'\u00e0 2 rappels doux par jour</string>
     <string name="profile_saved">Profil sauvegardé !</string>
     <string name="profile_save">Sauvegarder</string>
 
