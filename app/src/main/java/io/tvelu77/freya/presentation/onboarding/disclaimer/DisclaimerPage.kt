@@ -34,7 +34,7 @@ fun DisclaimerPage(currentStep: Int, onNext: () -> Unit) {
     OnboardingFooter(
       modifier = Modifier
         .windowInsetsPadding(WindowInsets.navigationBars),
-      totalSteps = 4,
+      totalSteps = 5,
       currentStep = currentStep,
       buttonLabel = stringResource(R.string.onboarding_start),
       onNext = onNext

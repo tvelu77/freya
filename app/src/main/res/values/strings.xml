@@ -216,6 +216,11 @@
     <string name="onboarding_target_title">Objectif calorique</string>
     <string name="onboarding_target_sub">Pas d\'inquiétude si tu ne sais pas exactement — 2 000 kcal est une bonne base pour commencer.</string>
     <string name="onboarding_target_value">%1$d kcal</string>
+    <string name="onboarding_goal_label">Mon objectif</string>
+    <string name="onboarding_cycle_length_label">Dur\u00e9e habituelle de mon cycle (jours)</string>
+    <string name="onboarding_measures_welcome">Tes mesures</string>
+    <string name="onboarding_measures_title">Quelques infos sur toi</string>
+    <string name="onboarding_measures_sub">Tout est optionnel \u2014 cela sert uniquement \u00e0 personnaliser ton besoin \u00e9nerg\u00e9tique et tes objectifs. Modifiable plus tard dans ton profil.</string>
     <string name="onboarding_prefs_welcome">Ton confort avant tout</string>
     <string name="onboarding_prefs_title">Mode bienveillant</string>
     <string name="onboarding_prefs_sub">Tu peux masquer tous les chiffres et te concentrer uniquement sur le ressenti. Modifiable à tout moment.</string>
