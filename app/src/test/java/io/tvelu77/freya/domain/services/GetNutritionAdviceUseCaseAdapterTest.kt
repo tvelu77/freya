@@ -53,10 +53,10 @@ class GetNutritionAdviceUseCaseAdapterTest {
   @Test
   fun `advice changes with the current phase and carries concrete food examples`() = runTest {
     val cases = listOf(
-      PhaseType.MENSTRUAL to 2L to "Lentilles cuites",
-      PhaseType.FOLLICULAR to 8L to "Quinoa cuit",
-      PhaseType.OVULATORY to 13L to "Saumon grillé",
-      PhaseType.LUTEAL to 25L to "Riz complet cuit"
+      Triple(PhaseType.MENSTRUAL, 2L, "Lentilles cuites"),
+      Triple(PhaseType.FOLLICULAR, 8L, "Quinoa cuit"),
+      Triple(PhaseType.OVULATORY, 13L, "Saumon grillé"),
+      Triple(PhaseType.LUTEAL, 25L, "Riz complet cuit")
     )
 
     cases.forEach { (phase, daysAgo, expectedFood) ->
